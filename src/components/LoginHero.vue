@@ -4,7 +4,7 @@
       <div class="row align-items-center g-lg-5 py-5" style="min-height: 94vh">
         <div
           v-if="data"
-          class="alert alert-warning alert-dismissible fade show"
+          class="alert alert-light alert-dismissible fade show"
           role="alert"
         >
           {{ data.message }}
@@ -105,7 +105,7 @@ export default {
   },
   mounted() {
     if (this.$store.getters.getAuthentication) {
-      this.$router.push("/home");
+      this.$router.push("/feed");
     }
   },
   methods: {
@@ -141,7 +141,8 @@ export default {
       this.invalidpassword = null;
     },
     submitForm: function () {
-      var url = "http://127.0.0.1:5000/api/login";
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/login";
       var form = {
         email: this.email,
         password: this.password,
@@ -158,16 +159,19 @@ export default {
       fetch(url, requestOptions)
         .then((response) => {
           if (response.status == 201) {
-            this.$store.commit("loginUser"), this.$router.push("/home");
+            this.$store.commit("loginUser"), this.$router.push("/feed");
           }
           return response.json();
         })
         // .then((response) => response.json())
         .then((data) => {
           (this.data = data),
-            // console.log(this.$store.state.count),
-            // localStorage.setItem("token", JSON.stringify(data.access_token));
-            this.$store.commit("setToken", JSON.stringify(data.access_token));
+            this.$store.commit("setToken", data.access_token),
+            this.$store.commit("setRefreshToken", data.refresh_token);
+          // console.log(data),
+          // console.log(this.$store.state.count),
+          // localStorage.setItem("token", JSON.stringify(data.access_token));
+          // this.$store.commit("setToken", JSON.stringify(data.access_token));
         });
       //WORKING ABOVE
       // const response = await fetch(url, requestOptions);

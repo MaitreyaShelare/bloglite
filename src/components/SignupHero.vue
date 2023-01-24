@@ -7,7 +7,7 @@
       >
         <div
           v-if="data"
-          class="alert alert-warning alert-dismissible fade show"
+          class="alert alert-light alert-dismissible fade show"
           role="alert"
         >
           {{ data.message }}
@@ -115,7 +115,7 @@ export default {
   },
   mounted() {
     if (this.$store.getters.getAuthentication) {
-      this.$router.push("/home");
+      this.$router.push("/feed");
     }
   },
   methods: {
@@ -161,7 +161,8 @@ export default {
       this.invalidpassword = null;
     },
     submitForm: function () {
-      var url = "http://127.0.0.1:5000/api/signup";
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/signup";
       var form = {
         name: this.name,
         email: this.email,
@@ -176,13 +177,15 @@ export default {
       fetch(url, requestOptions)
         .then((response) => {
           if (response.status == 201) {
-            this.$store.commit("loginUser"), this.$router.push("/home");
+            this.$store.commit("loginUser"), this.$router.push("/feed");
           }
           return response.json();
         })
         .then((data) => {
           (this.data = data),
-            this.$store.commit("setToken", JSON.stringify(data.access_token));
+            this.$store.commit("setToken", data.access_token),
+            this.$store.commit("setRefreshToken", data.refresh_token);
+          // this.$store.commit("setToken", JSON.stringify(data.access_token));
         });
       // .then((v) => console.log(v));
       // fetch(url, requestOptions)

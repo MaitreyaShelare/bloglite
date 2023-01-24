@@ -2,7 +2,7 @@
 from flask import Blueprint,request,jsonify
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token,create_refresh_token
+from flask_jwt_extended import jwt_required, create_access_token,create_refresh_token,get_jwt_identity
 from __init__ import db
 auth = Blueprint('auth', __name__)
 
@@ -18,9 +18,10 @@ def signup():
     else:
             new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
             access_token = create_access_token(identity=email)
+            refresh_token = create_refresh_token(identity=email)
             db.session.add(new_user)
             db.session.commit()
-            return jsonify(message="User added sucessfully", access_token=access_token), 201
+            return jsonify(access_token=access_token, refresh_token=refresh_token), 201
 
 
 @auth.route('api/login', methods=['POST'])
@@ -32,5 +33,13 @@ def login():
     if user:
         if check_password_hash(user.password, password): 
             access_token = create_access_token(identity=email)
-            return jsonify(message="Login Succeeded!", access_token=access_token), 201
-    return jsonify(message="Invalid Email or Password"), 401
+            refresh_token = create_refresh_token(identity=email)
+            return jsonify(access_token=access_token, refresh_token=refresh_token), 201
+    return jsonify(message="Invalid Email or Password"), 403
+
+@auth.route("api/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+    return jsonify(access_token=access_token),201    

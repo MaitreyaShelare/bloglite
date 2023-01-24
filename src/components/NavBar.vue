@@ -34,18 +34,18 @@
           </form> -->
         </div>
         <div class="text-end">
-          <a
-            href="/signup"
+          <button
             class="btn btn-outline-light text-dark border-white rounded-pill"
+            @click="$router.push('/signup')"
           >
             Join now
-          </a>
-          <a
-            href="/"
+          </button>
+          <button
             class="btn btn-outline-light text-primary border-primary rounded-pill mx-3"
+            @click="$router.push('/')"
           >
             Sign in
-          </a>
+          </button>
         </div>
       </div>
     </nav>
