@@ -21,7 +21,7 @@
         </div>
         <div class="col-lg-6 align-items-center">
           <h1 class="display-5 fw-bold lh-1 mb-1 mt-1 p-4">
-            Join now to connect with the world
+            Join Now to Connect with the World
           </h1>
           <div class="col-md-10 mx-auto">
             <form

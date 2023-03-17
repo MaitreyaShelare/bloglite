@@ -23,6 +23,7 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = "jwtkey"
     
     db.init_app(app)
+    ma.init_app(app)
     
     CORS(app)
     
@@ -39,7 +40,7 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(list, url_prefix='/')
 
-    from models import User, List, Task
+    from models import User, Blog
 
     create_database(app)
     return app

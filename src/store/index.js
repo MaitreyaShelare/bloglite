@@ -29,8 +29,8 @@ export default new Vuex.Store({
     setToken(state, token) {
       state.token = token;
     },
-    setRefreshToken(state, token) {
-      state.refreshtoken = token;
+    setRefreshToken(state, refreshtoken) {
+      state.refreshtoken = refreshtoken;
     },
     loginUser(state) {
       state.Authenticated = true;
