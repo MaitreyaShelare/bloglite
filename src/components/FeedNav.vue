@@ -1,31 +1,16 @@
 <template>
   <div class="NavBar">
-    <nav class="navbar fixed-top bg-white shadow-sm">
+    <nav class="navbar fixed-top bg-white border-light shadow-sm">
       <div class="container">
-        <div
-          class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
-        >
-          <!-- <div class="container-fluid">
-            <a class="navbar-brand h1 text-primary" href="/">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="currentColor"
-                class="bi bi-alexa"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M7.996 0A7.998 7.998 0 0 0 0 8a8 8 0 0 0 6.93 7.93v-1.613a1.06 1.06 0 0 0-.717-1.008A5.602 5.602 0 0 1 2.4 7.865 5.579 5.579 0 0 1 8.054 2.4a5.599 5.599 0 0 1 5.535 5.81l-.002.046a6.116 6.116 0 0 1-.012.192l-.005.061a4.85 4.85 0 0 1-.033.284l-.01.068c-.685 4.516-6.564 7.054-6.596 7.068A7.998 7.998 0 0 0 15.992 8 7.998 7.998 0 0 0 7.996.001Z"
-                />
-              </svg>
-            </a>
-          </div> -->
-          <a class="navbar-brand text-primary" href="/">
+        <div class="text-start">
+          <a
+            class="navbar-brand text-primary align-items-center mx-auto"
+            href="/"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="36"
-              height="36"
+              width="28"
+              height="28"
               fill="currentColor"
               class="bi bi-alexa"
               viewBox="0 0 16 16"
@@ -35,107 +20,148 @@
               />
             </svg>
           </a>
-          <form>
+          <!-- <form>
             <input
-              class="form-control search-input bg-light border-light fuzzy-search"
+              class="form-control search-input bg-light border-light fuzzy-search mx-auto"
               type="search"
               placeholder="Search"
             />
-          </form>
+          </form> -->
         </div>
-        <div class="text-end">
-          <!-- <button
-            class="btn btn-outline-light text-dark border-white rounded-pill"
-            @click="$router.push('/signup')"
+        <div class="text-center">
+          <ul class="nav nav-pills">
+            <li class="nav-item me-2 me-lg-5">
+              <a class="nav-link link-dark" href="/">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  fill="currentColor"
+                  class="bi bi-house"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li class="nav-item me-2 me-lg-5">
+              <a class="nav-link link-dark" href="/">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  fill="currentColor"
+                  class="bi bi-compass"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016zm6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
+                  />
+                  <path
+                    d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li class="nav-item me-2 me-lg-5">
+              <a class="nav-link link-dark" href="/">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  fill="currentColor"
+                  class="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-dark" href="/">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  fill="currentColor"
+                  class="bi bi-person"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"
+                  />
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="text-end dropdown">
+          <a
+            class="navbar-brand text-primary align-items-center mx-auto"
+            data-bs-toggle="dropdown"
+            href="/"
           >
-            Join now
-          </button>
-          <button
-            class="btn btn-outline-light text-primary border-primary rounded-pill mx-3"
-            @click="$router.push('/')"
-          >
-            Sign in
-          </button> -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              fill="currentColor"
+              class="bi bi-list"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+              />
+            </svg>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/">Settings</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" @click="logout">Sign out</a></li>
+          </ul>
+          <!-- <div class="flex-shrink-0 dropdown">
+            <a
+              href="#"
+              class="d-block link-dark text-decoration-none dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="https://github.com/mdo.png"
+                alt="mdo"
+                width="32"
+                height="32"
+                class="rounded-circle"
+              />
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-sm-start text-small shadow"
+              style=""
+            >
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="#">Sign out</a></li>
+            </ul>
+          </div> -->
         </div>
       </div>
     </nav>
-    <!-- <nav class="navbar navbar-light bg-light fixed-top p-2 shadow">
-        <div class="container py-0">
-          <a class="navbar-brand" href="/">
-            <i class="bi bi-bootstrap-fill" style="font-size: 36px"></i>
-          </a>
-        </div>
-      </nav> -->
-    <!-- <header class="py-2 mb-3 bg-light border-light border-bottom">
-        <div
-          class="container-fluid d-grid gap-3 align-items-center"
-          style="grid-template-columns: 1fr 2fr"
-        >
-          <div class="dropdown">
-            <a
-              href="#"
-              class="d-flex align-items-center col-lg-4 mb-lg-0 link-dark"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="40"
-                height="32"
-                fill="currentColor"
-                class="bi bi-bootstrap-fill"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M6.375 7.125V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762h1.898c1.184 0 1.81-.48 1.81-1.377 0-.885-.65-1.348-1.886-1.348H6.375v2.725z"
-                />
-                <path
-                  d="M4.002 0a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4a4 4 0 0 0-4-4h-8zm1.06 12V3.545h3.399c1.587 0 2.543.809 2.543 2.11 0 .884-.65 1.675-1.483 1.816v.1c1.143.117 1.904.931 1.904 2.033 0 1.488-1.084 2.396-2.888 2.396H5.062z"
-                />
-              </svg>
-            </a>
-          </div>
-  
-          <div class="d-flex align-items-center">
-            <form class="w-100 me-3" role="search">
-              <input
-                type="search"
-                class="form-control"
-                placeholder="Search..."
-                aria-label="Search"
-              />
-            </form>
-  
-            <div class="flex-shrink-0 dropdown">
-              <a
-                href="#"
-                class="d-block link-dark text-decoration-none"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <img
-                  src="https://github.com/mdo.png"
-                  alt="mdo"
-                  width="32"
-                  height="32"
-                  class="rounded-circle"
-                />
-              </a>
-              <ul class="dropdown-menu text-small shadow">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </header> -->
   </div>
 </template>
 
 <script>
 export default {
   name: "FeedNav",
+  methods: {
+    logout: function () {
+      this.$store.commit("logoutUser"), this.$router.push("/");
+    },
+  },
   // props: {
   //   msg: String,
   // },
