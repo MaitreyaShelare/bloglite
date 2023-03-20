@@ -96,11 +96,44 @@ export default {
       this.preview = null;
       this.blogtext = "";
     },
-    async PostBlog() {
+    PostBlog: function () {
+      // console.log(this.image);
+      // console.log(this.blogtext);
       var base = this.$store.getters.getBaseURL;
       var url = base + "/api/blog";
-      const photo = document.getElementById("blog-image").files[0];
-      // console.log(photo);
+
+      const formData = new FormData();
+      formData.append("image", this.image);
+      formData.append("text", this.blogtext);
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+        body: formData,
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.$emit("BlogCreated");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.reset();
+    },
+    async postBlog() {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog";
+      var photo = document.getElementById("blog-image").files[0];
+      console.log(photo);
       // const photo = this.$refs.image.files[0];
       var form = {
         text: this.blogtext,
