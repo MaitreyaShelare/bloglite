@@ -35,10 +35,10 @@ def create_app():
         return User.query.filter_by(email=identity).one_or_none()
 
     from auth import auth
-    # from list import list
+    from blog import blog
 
     app.register_blueprint(auth, url_prefix='/')
-    # app.register_blueprint(list, url_prefix='/')
+    app.register_blueprint(blog, url_prefix='/')
 
     from models import User, Blog, Like, Comment
 

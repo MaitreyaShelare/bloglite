@@ -1,6 +1,11 @@
 <template>
   <div class="home">
-    <FeedNav />
+    <div class="navbar">
+      <FeedNav />
+    </div>
+    <div class="feed py-5">
+      <BlogAdd />
+    </div>
     <!-- <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
@@ -9,11 +14,13 @@
 <script>
 // @ is an alias to /src
 import FeedNav from "@/components/FeedNav.vue";
+import BlogAdd from "@/components/BlogAdd.vue";
 
 export default {
   name: "HomeView",
   components: {
     FeedNav,
+    BlogAdd,
   },
   mounted() {
     if (!this.$store.getters.getAuthentication) {

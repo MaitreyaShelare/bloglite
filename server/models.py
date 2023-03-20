@@ -20,6 +20,9 @@ class User(db.Model):
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    bio = db.Column(db.String(255), nullable=True)
+    dp = db.Column(db.String(255), nullable=True)
+    dp_mimetype = db.Column(db.String(255), nullable=True)
     followers = db.Column(db.Integer, default=0)
     posts = db.Column(db.Integer, default=0)
     likes = db.relationship('Like', backref='user', lazy=True)
@@ -32,14 +35,13 @@ class User(db.Model):
         backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
     
     def __repr__(self):
-        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}')"
+        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.bio}', '{self.dp}', '{self.dp_mimetype}')"
 
 
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    caption = db.Column(db.String(255))
-    image_url = db.Column(db.String(255), nullable=False)
+    text = db.Column(db.String(255), nullable=False)
+    photo = db.Column(db.LargeBinary, nullable=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blogs')
@@ -48,7 +50,7 @@ class Blog(db.Model):
     hidden = db.Column(db.Boolean, default=False)  
 
     def __repr__(self):
-        return f"Blog('{self.title}', '{self.caption}', '{self.image_url}', '{self.timestamp}', '{self.hidden}')"
+        return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}')"
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,7 +76,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
 
-    blogs = ma.Nested('BlogSchema', many=True, only=('id', 'title', 'caption', 'image_url', 'timestamp'))
+    blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
     likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
     comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 
