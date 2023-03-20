@@ -20,9 +20,7 @@ class User(db.Model):
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    bio = db.Column(db.String(255), nullable=True)
-    dp = db.Column(db.String(255), nullable=True)
-    dp_mimetype = db.Column(db.String(255), nullable=True)
+    dp = db.Column(db.LargeBinary, nullable=True)
     followers = db.Column(db.Integer, default=0)
     posts = db.Column(db.Integer, default=0)
     likes = db.relationship('Like', backref='user', lazy=True)
@@ -35,13 +33,13 @@ class User(db.Model):
         backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
     
     def __repr__(self):
-        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.bio}', '{self.dp}', '{self.dp_mimetype}')"
+        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}')"
 
 
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255), nullable=False)
-    photo = db.Column(db.LargeBinary, nullable=True)
+    photo = db.Column(db.LargeBinary, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blogs')

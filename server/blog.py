@@ -25,7 +25,7 @@ def createBlog():
         text = request.form["text"]
         photo = request.files["image"].read()
         # photo_json = json.dumps(photo)
-        print(photo,text)
+        # print(photo,text)
         new_blog = Blog(text=text, photo=photo, user_id=current_user.id)
         db.session.add(new_blog)
         db.session.commit()

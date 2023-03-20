@@ -1,11 +1,11 @@
 <template>
   <div class="blogadd">
     <div class="container">
-      <div class="card col col-md-6 mx-auto mt-2 mb-5">
+      <div class="card col col-md-6 mx-auto mt-2 mb-3">
         <textarea
           class="form-control border-200 rounded border-0 flex-1 fs-0"
           rows="3"
-          placeholder="What do you want to talk about?"
+          placeholder="What's on your mind?"
           v-model="blogtext"
           id="blog-text"
         ></textarea>
@@ -50,7 +50,7 @@
         <div pt-2 mt-3 v-if="preview">
           <!-- <div v-for="(item, index) in preview_list" :key="index"> -->
           <!-- <p class="text-center">{{ image_list[index].name }}</p> -->
-          <div class="text-center col-lg-6 mx-auto">
+          <div class="text-center col-lg-10 mx-auto">
             <img :src="preview" class="img-fluid my-4" />
             <!-- <img :src="item" class="img-fluid mt-4" /> -->
           </div>
@@ -129,39 +129,39 @@ export default {
         });
       this.reset();
     },
-    async postBlog() {
-      var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/blog";
-      var photo = document.getElementById("blog-image").files[0];
-      console.log(photo);
-      // const photo = this.$refs.image.files[0];
-      var form = {
-        text: this.blogtext,
-        photo: photo,
-      };
-      var token = this.$store.getters.getToken;
-      var pureToken = token.replace(/["]+/g, "");
-      var auth = `Bearer ${pureToken}`;
-      // console.log(auth);
-      var requestOptions = {
-        method: "POST",
-        headers: {
-          // Authorization: this.$store.getters.getToken,
-          "Content-Type": "application/json",
-          Authorization: auth,
-        },
-        body: JSON.stringify(form),
-      };
-      const response = await fetch(url, requestOptions);
-      if (response.status == 201) {
-        this.$emit("BlogCreated");
-        console.log("Blog Successfully Created");
-      }
-      if (response.status == 401) {
-        console.log("Failure");
-      }
-      this.reset();
-    },
+    // async postBlog() {
+    //   var base = this.$store.getters.getBaseURL;
+    //   var url = base + "/api/blog";
+    //   var photo = document.getElementById("blog-image").files[0];
+    //   console.log(photo);
+    //   // const photo = this.$refs.image.files[0];
+    //   var form = {
+    //     text: this.blogtext,
+    //     photo: photo,
+    //   };
+    //   var token = this.$store.getters.getToken;
+    //   var pureToken = token.replace(/["]+/g, "");
+    //   var auth = `Bearer ${pureToken}`;
+    //   // console.log(auth);
+    //   var requestOptions = {
+    //     method: "POST",
+    //     headers: {
+    //       // Authorization: this.$store.getters.getToken,
+    //       "Content-Type": "application/json",
+    //       Authorization: auth,
+    //     },
+    //     body: JSON.stringify(form),
+    //   };
+    //   const response = await fetch(url, requestOptions);
+    //   if (response.status == 201) {
+    //     this.$emit("BlogCreated");
+    //     console.log("Blog Successfully Created");
+    //   }
+    //   if (response.status == 401) {
+    //     console.log("Failure");
+    //   }
+    //   this.reset();
+    // },
   },
 };
 </script>

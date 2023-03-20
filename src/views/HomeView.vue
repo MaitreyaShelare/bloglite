@@ -3,8 +3,12 @@
     <div class="navbar">
       <FeedNav />
     </div>
-    <div class="feed py-5">
+    <div class="blogadd pt-5">
       <BlogAdd />
+    </div>
+    <div class="blogs">
+      <BlogComp />
+      <BlogComp />
     </div>
     <!-- <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" /> -->
@@ -15,12 +19,14 @@
 // @ is an alias to /src
 import FeedNav from "@/components/FeedNav.vue";
 import BlogAdd from "@/components/BlogAdd.vue";
+import BlogComp from "@/components/BlogComp.vue";
 
 export default {
   name: "HomeView",
   components: {
     FeedNav,
     BlogAdd,
+    BlogComp,
   },
   mounted() {
     if (!this.$store.getters.getAuthentication) {
@@ -34,7 +40,8 @@ export default {
 .home {
   height: 100vh;
   width: 100%;
-  /* background-color: #eeeeee; */
-  background-color: #e9ebee;
+  background-color: #eeeeee;
+  /* background-color: #e9ebee; */
+  overflow-y: auto;
 }
 </style>
