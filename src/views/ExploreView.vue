@@ -1,31 +1,27 @@
 <template>
-  <div class="profile">
+  <div class="explore">
     <div class="navbar">
       <FeedNav />
     </div>
-    <div class="userprofile pt-5">
-      <ProfileComp />
-    </div>
-    <div class="userPosts pt-2">
+    <div class="AlluserPosts pt-5">
+      <BlogComp />
       <BlogComp />
       <BlogComp />
     </div>
     <!-- <img alt="Vue logo" src="../assets/logo.png" />
-      <HelloWorld msg="Welcome to Your Vue.js App" /> -->
+        <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import FeedNav from "@/components/FeedNav.vue";
-import ProfileComp from "@/components/ProfileComp.vue";
 import BlogComp from "@/components/BlogComp.vue";
 
 export default {
-  name: "ProfileView",
+  name: "ExploreView",
   components: {
     FeedNav,
-    ProfileComp,
     BlogComp,
   },
   mounted() {
@@ -37,7 +33,7 @@ export default {
 </script>
 
 <style>
-.profile {
+.explore {
   height: 100vh;
   width: 100%;
   background-color: #eeeeee;

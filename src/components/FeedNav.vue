@@ -47,7 +47,7 @@
               </a>
             </li>
             <li class="nav-item me-2 me-lg-5">
-              <a class="nav-link btn-dark" href="/">
+              <a class="nav-link btn-dark" href="#/explore">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -66,7 +66,7 @@
               </a>
             </li>
             <li class="nav-item me-2 me-lg-5">
-              <a class="nav-link btn-dark" href="/">
+              <a class="nav-link btn-dark" href="#/search">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
