@@ -31,7 +31,7 @@
         <div class="text-center">
           <ul class="nav nav-pills">
             <li class="nav-item me-2 me-lg-5">
-              <a class="nav-link link-dark" href="/">
+              <a class="nav-link btn-dark" href="#/feed">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -47,7 +47,7 @@
               </a>
             </li>
             <li class="nav-item me-2 me-lg-5">
-              <a class="nav-link link-dark" href="/">
+              <a class="nav-link btn-dark" href="/">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -66,7 +66,7 @@
               </a>
             </li>
             <li class="nav-item me-2 me-lg-5">
-              <a class="nav-link link-dark" href="/">
+              <a class="nav-link btn-dark" href="/">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -82,7 +82,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link link-dark" href="/">
+              <a class="nav-link btn-dark" href="#/profile">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"

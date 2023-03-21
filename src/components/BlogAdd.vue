@@ -39,6 +39,7 @@
             <div class="d-grid col-2 align-items-center">
               <button
                 class="btn btn-primary btn-sm rounded-pill mx-2"
+                :disabled="blogtext.length < 2 || !image"
                 type="submit"
                 @click="PostBlog"
               >

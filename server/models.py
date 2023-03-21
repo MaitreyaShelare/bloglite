@@ -20,7 +20,7 @@ class User(db.Model):
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    dp = db.Column(db.LargeBinary, nullable=True)
+    dp = db.Column(db.LargeBinary, nullable=False)
     followers = db.Column(db.Integer, default=0)
     posts = db.Column(db.Integer, default=0)
     likes = db.relationship('Like', backref='user', lazy=True)

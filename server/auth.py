@@ -11,12 +11,14 @@ def signup():
     name = request.json["name"]
     email = request.json["email"]
     password = request.json["password"]
+    dp = open('bloglite/src/assets/person_circle_icon.png', 'rb').read()
+    # print(dp)
     
     user = User.query.filter_by(email=email).first()
     if user:
         return jsonify(message="User Already Exists"), 409
     else:
-            new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+            new_user = User(email=email, name=name, dp=dp, password=generate_password_hash(password, method='sha256'))
             access_token = create_access_token(identity=email)
             refresh_token = create_refresh_token(identity=email)
             db.session.add(new_user)

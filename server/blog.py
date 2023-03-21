@@ -15,17 +15,21 @@ blog = Blueprint('blog', __name__)
 #     # print(output)
 #     return jsonify(output), 201
 
+@blog.route('api/blogs', methods=['GET'])
+@jwt_required()
+def getAllBlogs():
+    blog_all = Blog.query.filter_by(user_id=current_user.id).all()
+    blog_schema = BlogSchema(many=True)
+    output = blog_schema.dump(blog_all)
+    # print(output)
+    return jsonify(output), 201
 
 @blog.route('api/blog', methods=['POST'])
 @jwt_required()
 def createBlog():
     if request.method == 'POST':
-        # text = request.json["text"]
-        # photo = request.json["photo"]
         text = request.form["text"]
         photo = request.files["image"].read()
-        # photo_json = json.dumps(photo)
-        # print(photo,text)
         new_blog = Blog(text=text, photo=photo, user_id=current_user.id)
         db.session.add(new_blog)
         db.session.commit()
