@@ -15,9 +15,9 @@
             <div class="d-flex">
               <h2 class="mx-auto py-2">Erza Bridgest</h2>
             </div>
-            <div class="row">
+            <div class="d-flex">
               <button
-                class="btn btn-primary mx-auto rounded-pill w-25 lh-1"
+                class="btn btn-primary mx-auto rounded-pill lh-1"
                 type="button"
                 @click="toggleFollow"
               >
@@ -29,50 +29,20 @@
                 ></i
                 >&nbsp;{{ followed ? "Following" : "Follow" }}
               </button>
-              <!-- <button
-                class="btn mx-auto btn-link p-0 me-3 fs-6 fw-bolder text-decoration-none"
-                type="button"
-                @click="toggleLike"
-              >
-                <i
-                  :class="{
-                    'bi bi-hand-thumbs-up': !liked,
-                    'bi bi-hand-thumbs-up-fill': liked,
-                  }"
-                ></i
-                >&nbsp;Like
-              </button> -->
             </div>
 
-            <!-- <div class="d-flex">
-              <button
-                class="btn btn-link float-start p-0 me-3 fs-6 fw-bolder text-decoration-none"
-                type="button"
-                @click="toggleLike"
-              >
-                <i
-                  :class="{
-                    'bi bi-hand-thumbs-up': !liked,
-                    'bi bi-hand-thumbs-up-fill': liked,
-                  }"
-                ></i
-                >&nbsp;Like
+            <div class="d-flex pt-2 mx-auto text-center justify-content-center">
+              <button class="btn btn-link text-decoration-none">
+                <i class="bi bi-people-fill"></i>&nbsp;50 Followers
               </button>
-              <button
-                class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
-                type="button"
-                @click="toggleComments"
-              >
-                <i
-                  :class="{
-                    'bi bi-chat': !showComments,
-                    'bi bi-chat-fill': showComments,
-                  }"
-                ></i
-                >&nbsp;Comment
+              <button class="btn btn-link text-decoration-none" type="button">
+                <i class="bi bi-person-check-fill"></i>&nbsp;50 Following
               </button>
-              <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button>
-            </div> -->
+              <button class="btn btn-link text-decoration-none" type="button">
+                <i class="bi bi-clipboard2-fill"></i>&nbsp;50 Posts
+              </button>
+              <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
+            </div>
           </div>
         </div>
       </div>
@@ -85,15 +55,11 @@ export default {
   name: "ProfileComp",
   data: function () {
     return {
-      showComments: false,
       followed: false,
     };
   },
 
   methods: {
-    toggleComments() {
-      this.showComments = !this.showComments;
-    },
     toggleFollow() {
       this.followed = !this.followed;
     },

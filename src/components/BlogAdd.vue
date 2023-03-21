@@ -52,18 +52,19 @@
           <!-- <div v-for="(item, index) in preview_list" :key="index"> -->
           <!-- <p class="text-center">{{ image_list[index].name }}</p> -->
           <div class="text-center col-lg-10 mx-auto">
+            <div class="text-end mt-2">
+              <button class="btn-close" @click="clearImage"></button>
+            </div>
             <img :src="preview" class="img-fluid my-4" />
             <!-- <img :src="item" class="img-fluid mt-4" /> -->
           </div>
           <!-- <p>size: {{ image_list[index].size / 1024 }}KB</p> -->
           <!-- </div> -->
-          <div
+          <!-- <div
             class="container-fluid d-grid col-2 align-items-center text-center py-3"
           >
-            <button class="btn btn-primary btn-sm rounded-pill" @click="reset">
-              Clear
-            </button>
-          </div>
+            
+          </div> -->
         </div>
       </div>
     </div>
@@ -91,6 +92,10 @@ export default {
         this.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
+    },
+    clearImage: function () {
+      this.image = null;
+      this.preview = null;
     },
     reset: function () {
       this.image = null;
