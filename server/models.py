@@ -85,7 +85,7 @@ class BlogSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Blog
 
-    user = ma.Nested('UserSchema', only=('id', 'name'))
+    user = ma.Nested('UserSchema', only=('id', 'name', 'dp', 'dp_mimetype'))
     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 

@@ -182,7 +182,7 @@ export default {
     },
     FetchData() {
       var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/blog/3";
+      var url = base + "/api/blog/1";
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
@@ -202,7 +202,7 @@ export default {
           img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
 
           var dp = document.getElementById("dp-image-small");
-          dp.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
+          dp.src = `data:${data.user.dp_mimetype};charset=utf-8;base64,${data.user.dp}`;
 
           var text = document.getElementById("single-blog-text");
           text.textContent = data.text;

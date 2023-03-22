@@ -53,6 +53,9 @@
 <script>
 export default {
   name: "ProfileComp",
+  mounted() {
+    this.FetchProfile();
+  },
   data: function () {
     return {
       followed: false,
@@ -62,6 +65,40 @@ export default {
   methods: {
     toggleFollow() {
       this.followed = !this.followed;
+    },
+    FetchProfile() {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/1";
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          // var img = document.getElementById("blog-image");
+          // img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
+
+          // var dp = document.getElementById("dp-image-small");
+          // dp.src = `data:${data.user.dp_mimetype};charset=utf-8;base64,${data.user.dp}`;
+
+          // var text = document.getElementById("single-blog-text");
+          // text.textContent = data.text;
+
+          // var author = document.getElementById("blog-author");
+          // author.textContent = data.user.name;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
   },
 };
