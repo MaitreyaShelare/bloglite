@@ -20,7 +20,8 @@ class User(db.Model):
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    dp = db.Column(db.LargeBinary, nullable=False)
+    dp = db.Column(db.String, nullable=True)
+    dp_mimetype = db.Column(db.String, nullable=True)
     followers = db.Column(db.Integer, default=0)
     posts = db.Column(db.Integer, default=0)
     likes = db.relationship('Like', backref='user', lazy=True)
@@ -33,7 +34,7 @@ class User(db.Model):
         backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
     
     def __repr__(self):
-        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}')"
+        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}', '{self.dp_mimetype}')"
 
 
 class Blog(db.Model):
@@ -75,7 +76,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
 
-    # blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
+    blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 
@@ -84,7 +85,7 @@ class BlogSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Blog
 
-    # user = ma.Nested('UserSchema', only=('id', 'name'))
+    user = ma.Nested('UserSchema', only=('id', 'name'))
     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 

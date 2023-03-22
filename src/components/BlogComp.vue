@@ -8,19 +8,27 @@
               <div class="d-flex align-items-center mb-3">
                 <a href="/" class="d-block link-dark text-decoration-none">
                   <img
+                    id="dp-image-small"
+                    src=""
+                    alt="dp"
+                    width="32"
+                    height="32"
+                    class="rounded-circle"
+                  />
+                  <!-- <img
                     src="https://github.com/mdo.png"
                     alt="mdo"
                     width="32"
                     height="32"
                     class="rounded-circle"
-                  />
+                  /> -->
                 </a>
                 <div class="flex-1">
                   <a
+                    id="blog-author"
                     class="fw-bold fs-6 ms-2 mb-0 text-decoration-none text-black"
                     href="/"
-                    >Erza Bridgest</a
-                  >
+                  ></a>
                 </div>
                 <div class="ms-auto">
                   <button
@@ -39,7 +47,7 @@
                   </ul>
                 </div>
               </div>
-              <p class="text-800" id="blog-text">
+              <p class="text-800" id="single-blog-text">
                 <!-- Hello, it's really a pain to be followed. Those who praise,
                 however, are spurned by the necessities from which they are to
                 assume the comforts of forgiveness, because unless they flee
@@ -174,7 +182,7 @@ export default {
     },
     FetchData() {
       var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/blog/1";
+      var url = base + "/api/blog/3";
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
@@ -190,18 +198,17 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          // do something with the blog data
-          console.log(data.text); // prints the text of the blog
-          // console.log(data.image_id); // prints the ID of the image for the blog
-          console.log(data.photo_mimetype); // prints the mimetype of the image
+          var img = document.getElementById("blog-image");
+          img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
 
-          // update the src attribute of the img tag with the image URL
-          const img = document.getElementById("blog-image");
-          img.src = `data:${data.photo_mimetype};base64,${data.photo_b64}`;
+          var dp = document.getElementById("dp-image-small");
+          dp.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
 
-          // update the text content of the p tag with the blog text
-          const text = document.getElementById("blog-text");
+          var text = document.getElementById("single-blog-text");
           text.textContent = data.text;
+
+          var author = document.getElementById("blog-author");
+          author.textContent = data.user.name;
         })
         .catch((error) => {
           console.error(error);

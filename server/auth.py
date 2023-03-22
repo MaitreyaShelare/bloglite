@@ -3,6 +3,7 @@ from flask import Blueprint,request,jsonify
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import jwt_required, create_access_token,create_refresh_token,get_jwt_identity
+import base64
 from __init__ import db
 auth = Blueprint('auth', __name__)
 
@@ -12,7 +13,9 @@ def signup():
     email = request.json["email"]
     password = request.json["password"]
     dp = open('bloglite/src/assets/person_circle_icon.png', 'rb').read()
-    # print(dp)
+    # dp_b64 = base64.b64encode(dp).decode('utf-8')
+    # dp_mimetype = dp.mimetype
+    # print(dp_mimetype)
     
     user = User.query.filter_by(email=email).first()
     if user:
