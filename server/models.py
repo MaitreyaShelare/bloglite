@@ -1,155 +1,155 @@
-# from datetime import datetime
+from datetime import datetime
 from __init__ import db
 from __init__ import ma
 
-from flask_login import UserMixin
-from sqlalchemy.sql import func
+# from flask_login import UserMixin
+# from sqlalchemy.sql import func
 
-class Follower(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    follower = db.relationship('User',foreign_keys=[follower_id])
-    following = db.relationship('User',foreign_keys=[user_id])
+# class Follower(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+#     follower_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+#     follower = db.relationship('User',foreign_keys=[follower_id])
+#     following = db.relationship('User',foreign_keys=[user_id])
 
-class User(db.Model,UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
-    # username = db.Column(db.Text, unique=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
-    # profile_pic = db.Column(db.Text)
-    # mimetype = db.Column(db.Text)
-    dp = db.Column(db.String, nullable=True)
-    dp_mimetype = db.Column(db.String, nullable=True)
-    timestamp = db.Column(db.DateTime(timezone=True),default=func.now())
-    blogs = db.relationship('Blog', cascade='all,delete', backref='user')
-    likes = db.relationship('Like', cascade='all,delete', backref='user')
-    comments = db.relationship('Comment',cascade='all,delete',backref='user')
-    followers = db.relationship('Follower',secondary='follower',primaryjoin=(id==Follower.user_id),secondaryjoin=(id==Follower.follower_id) , cascade='all,delete', backref='user',lazy='dynamic')
-    def is_following(self,user):
-        return (self.followers.filter(Follower.follower_id==user.id).count()>0) 
-
-class Blog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Text,nullable=False)
-    description = db.Column(db.Text)
-    img = db.Column(db.Text,nullable=False)
-    mimetype = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True),default=func.now())
-    comments = db.relationship('Comment',backref='post',cascade='all,delete')
-    likes = db.relationship('Like',backref='post',cascade='all,delete')
-
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(100),nullable=False)
-    post_id = db. Column(db.Integer, db.ForeignKey('post.id'),nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=func.now())
-
-class Like(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'),nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-
-
-# PREVIOUSLY:
-# # Define the association table for the many-to-many relationship between users for following
-# user_followers = db.Table('user_followers',
-#     db.Column('follower_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-#     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
-# )
-
-# # Define the association table for the many-to-many relationship between users and blogs for liking
-# user_likes = db.Table('user_likes',
-#     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-#     db.Column('blog_id', db.Integer, db.ForeignKey('blog.id'), primary_key=True)
-# )
-
-# class User(db.Model):
+# class User(db.Model,UserMixin):
 #     id = db.Column(db.Integer, primary_key=True)
 #     name = db.Column(db.String(20), nullable=False)
+#     # username = db.Column(db.Text, unique=True)
 #     email = db.Column(db.String(120), unique=True, nullable=False)
 #     password = db.Column(db.String(60), nullable=False)
+#     # profile_pic = db.Column(db.Text)
+#     # mimetype = db.Column(db.Text)
 #     dp = db.Column(db.String, nullable=True)
 #     dp_mimetype = db.Column(db.String, nullable=True)
-#     followers = db.Column(db.Integer, default=0)
-#     posts = db.Column(db.Integer, default=0)
-#     likes = db.relationship('Like', backref='user', lazy=True)
-#     comments = db.relationship('Comment', backref='user', lazy=True)
-    
-#     followed_users = db.relationship(
-#         'User', secondary=user_followers,
-#         primaryjoin=(user_followers.c.follower_id == id),
-#         secondaryjoin=(user_followers.c.followed_id == id),
-#         backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
-    
-#     def __repr__(self):
-#         return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}', '{self.dp_mimetype}')"
-
+#     timestamp = db.Column(db.DateTime(timezone=True),default=func.now())
+#     blogs = db.relationship('Blog', cascade='all,delete', backref='user')
+#     likes = db.relationship('Like', cascade='all,delete', backref='user')
+#     comments = db.relationship('Comment',cascade='all,delete',backref='user')
+#     followers = db.relationship('Follower',secondary='follower',primaryjoin=(id==Follower.user_id),secondaryjoin=(id==Follower.follower_id) , cascade='all,delete', backref='user',lazy='dynamic')
+#     def is_following(self,user):
+#         return (self.followers.filter(Follower.follower_id==user.id).count()>0) 
 
 # class Blog(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     text = db.Column(db.String(255), nullable=False)
-#     photo = db.Column(db.String, nullable=False)
-#     photo_mimetype = db.Column(db.String, nullable=False)
-#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     user = db.relationship('User', backref='blogs')
-#     likes = db.relationship('Like', backref='blog', lazy=True)
-#     comments = db.relationship('Comment', backref='blog', lazy=True)
-#     hidden = db.Column(db.Boolean, default=False)  
-
-#     def __repr__(self):
-#         return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}', '{self.photo_mimetype}')"
-
-# class Like(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
-
-#     def __repr__(self):
-#         return f"Like('{self.id}', '{self.user_id}', '{self.blog_id}')"
-
+#     title = db.Column(db.Text,nullable=False)
+#     description = db.Column(db.Text)
+#     img = db.Column(db.Text,nullable=False)
+#     mimetype = db.Column(db.Text, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+#     timestamp = db.Column(db.DateTime(timezone=True),default=func.now())
+#     comments = db.relationship('Comment',backref='post',cascade='all,delete')
+#     likes = db.relationship('Like',backref='post',cascade='all,delete')
 
 # class Comment(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     text = db.Column(db.String(255), nullable=False)
-#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
+#     text = db.Column(db.String(100),nullable=False)
+#     post_id = db. Column(db.Integer, db.ForeignKey('post.id'),nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+#     timestamp = db.Column(db.DateTime(timezone=True), default=func.now())
 
-#     def __repr__(self):
-#         return f"Comment('{self.text}', '{self.timestamp}', '{self.user_id}', '{self.blog_id}')"
-
-
-# class UserSchema(ma.SQLAlchemyAutoSchema):
-#     class Meta:
-#         model = User
-
-#     blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
-#     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
-#     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
+# class Like(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'),nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
 
 
-# class BlogSchema(ma.SQLAlchemyAutoSchema):
-#     class Meta:
-#         model = Blog
+# PREVIOUSLY:
+# Define the association table for the many-to-many relationship between users for following
+user_followers = db.Table('user_followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+)
 
-#     user = ma.Nested('UserSchema', only=('id', 'name', 'dp', 'dp_mimetype'))
-#     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
-#     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
+# Define the association table for the many-to-many relationship between users and blogs for liking
+user_likes = db.Table('user_likes',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('blog_id', db.Integer, db.ForeignKey('blog.id'), primary_key=True)
+)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    dp = db.Column(db.String, nullable=True)
+    dp_mimetype = db.Column(db.String, nullable=True)
+    followers = db.Column(db.Integer, default=0)
+    posts = db.Column(db.Integer, default=0)
+    likes = db.relationship('Like', backref='user', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
+    
+    followed_users = db.relationship(
+        'User', secondary=user_followers,
+        primaryjoin=(user_followers.c.follower_id == id),
+        secondaryjoin=(user_followers.c.followed_id == id),
+        backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
+    
+    def __repr__(self):
+        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}', '{self.dp_mimetype}')"
 
 
-# class LikeSchema(ma.SQLAlchemyAutoSchema):
-#     class Meta:
-#         model = Like
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(255), nullable=False)
+    photo = db.Column(db.String, nullable=False)
+    photo_mimetype = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='blogs')
+    likes = db.relationship('Like', backref='blog', lazy=True)
+    comments = db.relationship('Comment', backref='blog', lazy=True)
+    hidden = db.Column(db.Boolean, default=False)  
+
+    def __repr__(self):
+        return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}', '{self.photo_mimetype}')"
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Like('{self.id}', '{self.user_id}', '{self.blog_id}')"
 
 
-# class CommentSchema(ma.SQLAlchemyAutoSchema):
-#     class Meta:
-#         model = Comment
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(255), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Comment('{self.text}', '{self.timestamp}', '{self.user_id}', '{self.blog_id}')"
+
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+
+    blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
+    # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
+    # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
+
+
+class BlogSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Blog
+
+    user = ma.Nested('UserSchema', only=('id', 'name', 'dp', 'dp_mimetype'))
+    # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
+    # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
+
+
+class LikeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Like
+
+
+class CommentSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Comment
 
 
 # 4
