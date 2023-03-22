@@ -39,20 +39,27 @@
                   </ul>
                 </div>
               </div>
-              <p class="text-800">
-                Hello, it's really a pain to be followed. Those who praise,
+              <p class="text-800" id="blog-text">
+                <!-- Hello, it's really a pain to be followed. Those who praise,
                 however, are spurned by the necessities from which they are to
                 assume the comforts of forgiveness, because unless they flee
                 less from the consequences, they do not know which one will find
-                the pleasure of happiness.
+                the pleasure of happiness. -->
               </p>
               <div class="row g-1 mb-5">
                 <div class="mx-auto">
                   <img
+                    id="blog-image"
+                    class="rounded h-100 w-100"
+                    src=""
+                    alt="Blog Image"
+                  />
+
+                  <!-- <img
                     class="rounded h-100 w-100"
                     src="https://github.com/mdo.png"
                     alt="..."
-                  />
+                  /> -->
                 </div>
               </div>
             </div>
@@ -154,12 +161,60 @@ export default {
     };
   },
 
+  mounted() {
+    this.FetchData();
+  },
+
   methods: {
     toggleComments() {
       this.showComments = !this.showComments;
     },
     toggleLike() {
       this.liked = !this.liked;
+    },
+    FetchData() {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/1";
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          // do something with the blog data
+          console.log(data.text); // prints the text of the blog
+          // console.log(data.image_id); // prints the ID of the image for the blog
+          console.log(data.photo_mimetype); // prints the mimetype of the image
+
+          // update the src attribute of the img tag with the image URL
+          const img = document.getElementById("blog-image");
+          img.src = `data:${data.photo_mimetype};base64,${data.photo_b64}`;
+
+          // update the text content of the p tag with the blog text
+          const text = document.getElementById("blog-text");
+          text.textContent = data.text;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      // fetch(url, requestOptions)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     console.log(data);
+      //     this.$emit("BlogCreated");
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
   },
 };

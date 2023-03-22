@@ -39,7 +39,8 @@ class User(db.Model):
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255), nullable=False)
-    photo = db.Column(db.LargeBinary, nullable=False)
+    photo = db.Column(db.String, nullable=False)
+    photo_mimetype = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blogs')
@@ -48,7 +49,7 @@ class Blog(db.Model):
     hidden = db.Column(db.Boolean, default=False)  
 
     def __repr__(self):
-        return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}')"
+        return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}', '{self.photo_mimetype}')"
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,18 +75,18 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
 
-    blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
-    likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
-    comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
+    # blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
+    # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
+    # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 
 
 class BlogSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Blog
 
-    user = ma.Nested('UserSchema', only=('id', 'name'))
-    likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
-    comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
+    # user = ma.Nested('UserSchema', only=('id', 'name'))
+    # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
+    # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 
 
 class LikeSchema(ma.SQLAlchemyAutoSchema):
