@@ -1,6 +1,6 @@
 #IMPORTS
 from flask import Blueprint,request,jsonify
-from models import User
+from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import jwt_required, create_access_token,create_refresh_token,get_jwt_identity
 import base64
@@ -8,6 +8,16 @@ import os
 from __init__ import db
 profile = Blueprint('profile', __name__)
 
+@profile.route('/api/profile/<int:user_id>', methods=['GET'])
+def getUserProfile(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        user_schema = UserSchema()
+        result = user_schema.dump(user)
+        return jsonify(result)
+    else:
+        return jsonify(error="User not found"), 404
+    
 # @auth.route('api/signup', methods=['POST'])
 # def signup():
 #     name = request.json["name"]

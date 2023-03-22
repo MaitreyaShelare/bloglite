@@ -6,14 +6,15 @@
           <div class="card-body p-3 p-sm-4">
             <div class="d-flex justify-content-center">
               <img
-                src="https://github.com/mdo.png"
+                id="user-dp-image"
+                src=""
                 width="180"
                 height="180"
-                class="rounded-circle bg-white img-thumbnail shadow-sm"
+                class="rounded-circle bg-white shadow-sm"
               />
             </div>
             <div class="d-flex">
-              <h2 class="mx-auto py-2">Erza Bridgest</h2>
+              <h2 class="mx-auto py-2" id="user-name"></h2>
             </div>
             <div class="d-flex">
               <button
@@ -33,13 +34,22 @@
 
             <div class="d-flex pt-2 mx-auto text-center justify-content-center">
               <button class="btn btn-link text-decoration-none">
-                <i class="bi bi-people-fill"></i>&nbsp;50 Followers
+                <i class="bi bi-people-fill"></i>&nbsp;<span
+                  id="follower-count"
+                ></span
+                >&nbsp;Followers
               </button>
               <button class="btn btn-link text-decoration-none" type="button">
-                <i class="bi bi-person-check-fill"></i>&nbsp;50 Following
+                <i class="bi bi-person-check-fill"></i>&nbsp;<span
+                  id="following-count"
+                ></span
+                >&nbsp;Following
               </button>
               <button class="btn btn-link text-decoration-none" type="button">
-                <i class="bi bi-clipboard2-fill"></i>&nbsp;50 Posts
+                <i class="bi bi-clipboard2-fill"></i>&nbsp;<span
+                  id="user-posts"
+                ></span
+                >&nbsp;Posts
               </button>
               <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
             </div>
@@ -68,7 +78,7 @@ export default {
     },
     FetchProfile() {
       var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/blog/1";
+      var url = base + "/api/profile/1";
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
@@ -86,15 +96,21 @@ export default {
         .then((data) => {
           // var img = document.getElementById("blog-image");
           // img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
+          console.log(data);
+          var dp = document.getElementById("user-dp-image");
+          dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
 
-          // var dp = document.getElementById("dp-image-small");
-          // dp.src = `data:${data.user.dp_mimetype};charset=utf-8;base64,${data.user.dp}`;
+          var followers = document.getElementById("follower-count");
+          followers.textContent = data.followers;
 
-          // var text = document.getElementById("single-blog-text");
-          // text.textContent = data.text;
+          // var following = document.getElementById("following-count");
+          // following.textContent = data.blogs.count();
 
-          // var author = document.getElementById("blog-author");
-          // author.textContent = data.user.name;
+          var name = document.getElementById("user-name");
+          name.textContent = data.name;
+
+          var posts = document.getElementById("user-posts");
+          posts.textContent = data.posts;
         })
         .catch((error) => {
           console.error(error);
