@@ -92,7 +92,9 @@
                     'bi bi-hand-thumbs-up-fill': liked,
                   }"
                 ></i
-                >&nbsp;Like
+                >&nbsp;
+                <span v-if="!liked">Like</span>
+                <span v-else>Liked</span>
               </button>
               <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"

@@ -7,14 +7,18 @@
             <div class="d-flex justify-content-center">
               <img
                 id="user-dp-image"
-                src=""
+                v-if="profileDetails"
+                :src="profileDetails.dpImageSrc"
                 width="180"
                 height="180"
                 class="rounded-circle bg-white shadow-sm"
               />
             </div>
             <div class="d-flex">
-              <h2 class="mx-auto py-2" id="user-name"></h2>
+              <h2 class="mx-auto py-2" id="user-name" v-if="profileDetails">
+                {{ profileDetails.userName }}
+              </h2>
+              <!-- <h2 class="mx-auto py-2">User Profile: {{ this.user_id }}</h2> -->
             </div>
             <div class="d-flex">
               <button
@@ -33,23 +37,26 @@
             </div>
 
             <div class="d-flex pt-2 mx-auto text-center justify-content-center">
-              <button class="btn btn-link text-decoration-none">
-                <i class="bi bi-people-fill"></i>&nbsp;<span
-                  id="follower-count"
-                ></span
-                >&nbsp;Followers
+              <button
+                class="btn btn-link text-decoration-none"
+                v-if="profileDetails"
+              >
+                <i class="bi bi-people-fill"></i>&nbsp;
+                {{ profileDetails.userFollowers }}&nbsp;Followers
               </button>
-              <button class="btn btn-link text-decoration-none" type="button">
-                <i class="bi bi-person-check-fill"></i>&nbsp;<span
-                  id="following-count"
-                ></span
-                >&nbsp;Following
+              <button
+                class="btn btn-link text-decoration-none"
+                v-if="profileDetails"
+              >
+                <i class="bi bi-person-check-fill"></i>&nbsp;
+                {{ profileDetails.userFollowing }}&nbsp;Following
               </button>
-              <button class="btn btn-link text-decoration-none" type="button">
-                <i class="bi bi-clipboard2-fill"></i>&nbsp;<span
-                  id="user-posts"
-                ></span
-                >&nbsp;Posts
+              <button
+                class="btn btn-link text-decoration-none"
+                v-if="profileDetails"
+              >
+                <i class="bi bi-clipboard2-fill"></i>&nbsp;
+                {{ profileDetails.userPosts }}&nbsp;Posts
               </button>
               <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
             </div>
@@ -64,9 +71,12 @@
 export default {
   name: "ProfileComp",
 
-  // props: {
-  //   userID: Number,
-  // },
+  props: {
+    userID: {
+      type: Number,
+      required: true,
+    },
+  },
   mounted() {
     this.FetchProfile();
   },
@@ -83,8 +93,9 @@ export default {
       this.followed = !this.followed;
     },
     FetchProfile() {
+      var id = this.user_id;
       var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/profile/1";
+      var url = base + "/api/profile/" + id;
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
@@ -100,26 +111,52 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
+          this.profileData = data;
           console.log(data);
-          var dp = document.getElementById("user-dp-image");
-          dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
+          // console.log(this.profileData.name);
+          // var dp = document.getElementById("user-dp-image");
+          // dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
 
-          var followers = document.getElementById("follower-count");
-          followers.textContent = data.followers;
+          // var followers = document.getElementById("follower-count");
+          // followers.textContent = data.followers;
 
-          var following = document.getElementById("following-count");
-          following.textContent = data.followed_users.length;
+          // var following = document.getElementById("following-count");
+          // following.textContent = data.followed_users.length;
 
-          var name = document.getElementById("user-name");
-          name.textContent = data.name;
+          // var name = document.getElementById("user-name");
+          // name.textContent = data.name;
 
-          var posts = document.getElementById("user-posts");
-          posts.textContent = data.posts;
+          // var posts = document.getElementById("user-posts");
+          // posts.textContent = data.posts;
         })
         .catch((error) => {
           console.error(error);
         });
     },
+  },
+
+  computed: {
+    profileDetails() {
+      if (this.profileData) {
+        return {
+          userName: this.profileData.name,
+          dpImageSrc: `data:${this.profileData.dp_mimetype};charset=utf-8;base64,${this.profileData.dp}`,
+          userPosts: this.profileData.blog.length,
+          userFollowers: this.profileData.followers,
+          userFollowing: this.profileData.followed_users.length,
+          // authorName: this.blogData.user.name,
+          // blogUserID: this.blogData.user.id,
+        };
+      }
+      return null;
+    },
+
+    // isFollowing() {
+    //   if (this.blogData) {
+    //     return this.blogData.user.followed;
+    //   }
+    //   return false;
+    // },
   },
 };
 </script>

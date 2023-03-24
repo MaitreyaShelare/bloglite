@@ -4,8 +4,8 @@
       <FeedNav />
     </div>
     <div class="userprofile pt-5">
-      <ProfileComp />
-      <h2 class="mx-auto py-2">User Profile: {{ userId }}</h2>
+      <ProfileComp :userID="userId" />
+      <!-- <h2 class="mx-auto py-2">User Profile: {{ userId }}</h2> -->
     </div>
     <!-- <div class="userPosts pt-2">
       <BlogComp />
