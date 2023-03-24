@@ -63,12 +63,18 @@
 <script>
 export default {
   name: "ProfileComp",
+
+  // props: {
+  //   userID: Number,
+  // },
   mounted() {
     this.FetchProfile();
   },
   data: function () {
     return {
       followed: false,
+      profileData: null,
+      user_id: this.userID,
     };
   },
 
@@ -94,7 +100,7 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          // console.log(data);
+          console.log(data);
           var dp = document.getElementById("user-dp-image");
           dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
 

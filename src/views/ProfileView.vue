@@ -5,10 +5,11 @@
     </div>
     <div class="userprofile pt-5">
       <ProfileComp />
+      <h2 class="mx-auto py-2">User Profile: {{ userId }}</h2>
     </div>
-    <div class="userPosts pt-2">
+    <!-- <div class="userPosts pt-2">
       <BlogComp />
-    </div>
+    </div> -->
     <!-- <img alt="Vue logo" src="../assets/logo.png" />
       <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
@@ -18,15 +19,16 @@
 // @ is an alias to /src
 import FeedNav from "@/components/FeedNav.vue";
 import ProfileComp from "@/components/ProfileComp.vue";
-import BlogComp from "@/components/BlogComp.vue";
+// import BlogComp from "@/components/BlogComp.vue";
 
 export default {
   name: "ProfileView",
   components: {
     FeedNav,
     ProfileComp,
-    BlogComp,
+    // BlogComp,
   },
+  props: ["userId"],
   mounted() {
     if (!this.$store.getters.getAuthentication) {
       this.$router.push("/");

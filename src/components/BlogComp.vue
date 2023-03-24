@@ -6,7 +6,20 @@
           <div class="card-body p-3 p-sm-4">
             <div class="border-bottom mb-3">
               <div class="d-flex align-items-center mb-3">
-                <a href="/" class="d-block link-dark text-decoration-none">
+                <a
+                  class="d-block link-dark text-decoration-none"
+                  style="cursor: pointer"
+                  v-if="blogDetails"
+                  @click="
+                    $router.push({
+                      name: 'profile',
+                      params: { userId: blogDetails.blogUserID },
+                    })
+                  "
+                >
+                  <!-- @click="$router.push('/profile/' + blogDetails.blogUserID)"
+                  :href="'#/profile/' + Blogdata.user.id"
+                  @click="$router.push('/profile/1')" -->
                   <img
                     id="dp-image-small"
                     v-if="blogDetails"
@@ -21,8 +34,14 @@
                   <a
                     id="blog-author"
                     class="fw-bold fs-6 ms-2 mb-0 text-decoration-none text-black"
+                    style="cursor: pointer"
                     v-if="blogDetails"
-                    href="/"
+                    @click="
+                      $router.push({
+                        name: 'profile',
+                        params: { userId: blogDetails.blogUserID },
+                      })
+                    "
                     >{{ blogDetails.authorName }}</a
                   >
                 </div>
@@ -176,6 +195,13 @@ export default {
     toggleLike() {
       this.liked = !this.liked;
     },
+    // goToProfile() {
+    //   this.$router.push({
+    //     name: "profile",
+    //     params: { userId: this.Blogdata.id },
+    //   });
+    //   // this.$router.push({ name: "profile" });
+    // },
     FetchData() {
       var id = this.blog_id;
       var base = this.$store.getters.getBaseURL;
@@ -211,6 +237,7 @@ export default {
           blogImageSrc: `data:${this.blogData.photo_mimetype};charset=utf-8;base64,${this.blogData.photo}`,
           dpImageSrc: `data:${this.blogData.user.dp_mimetype};charset=utf-8;base64,${this.blogData.user.dp}`,
           authorName: this.blogData.user.name,
+          blogUserID: this.blogData.user.id,
         };
       }
       return null;
@@ -239,6 +266,10 @@ export default {
       if (minutesDifference < 60) {
         // less than an hour
         return `${minutesDifference} minutes ago`;
+      }
+      if (minutesDifference < 120) {
+        //  an hour ago
+        return `An hour ago`;
       }
       if (minutesDifference < 1440) {
         // less than a day

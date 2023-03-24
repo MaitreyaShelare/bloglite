@@ -28,8 +28,9 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/profile",
+    path: "/profile/:userId",
     name: "profile",
+    props: true,
     component: ProfileView,
   },
   {
