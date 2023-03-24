@@ -22,6 +22,7 @@ from datetime import datetime
 # ist_now = utc_now.astimezone(timezone('Asia/Kolkata'))
 # ist_now_str = ist_now.strftime('%Y-%m-%d %H:%M:%S %Z%z')
 # print(ist_now)
+
 # @list.route('api/lists', methods=['GET'])
 # @jwt_required()
 # def getAllLists():
@@ -40,6 +41,7 @@ from datetime import datetime
 #     # print(output)
 #     return jsonify(output), 201
 
+# For Each Blog Component
 @blog.route('/api/blog/<int:blog_id>', methods=['GET'])
 @jwt_required()
 def getBlog(blog_id):
@@ -51,7 +53,7 @@ def getBlog(blog_id):
     else:
         return jsonify(error="Blog not found"), 404
 
-# For Explore
+# For Explore, returns only blog IDs
 @blog.route('api/blogs', methods=['GET'])
 @jwt_required()
 # def getAllBlogs():
@@ -75,7 +77,15 @@ def get_blogs():
 #     }
 #     return jsonify(blog_data), 201
 
-
+# def getBlog(blog_id):
+#     blog = Blog.query.filter_by(id=blog_id).first()
+#     if blog is not None:
+#         blog_schema = BlogSchema()
+#         result = blog_schema.dump(blog)
+#         return jsonify(result)
+#     else:
+#         return jsonify(error="Blog not found"), 404
+    
 @blog.route('api/blog', methods=['POST'])
 @jwt_required()
 def createBlog():

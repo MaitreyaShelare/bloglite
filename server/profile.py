@@ -17,7 +17,15 @@ def getUserProfile(user_id):
         return jsonify(result)
     else:
         return jsonify(error="User not found"), 404
-    
+
+# For Profile, returns only a user's blog IDs
+@profile.route('api/profile/blogs/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_user_blogs(user_id):
+    blogs = Blog.query.filter_by(user_id=user_id).order_by(Blog.timestamp.desc()).all()
+    blog_ids = [blog.id for blog in blogs]
+    return jsonify(blog_ids)     
 # @auth.route('api/signup', methods=['POST'])
 # def signup():
 #     name = request.json["name"]

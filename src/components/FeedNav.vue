@@ -30,7 +30,7 @@
         </div>
         <div class="text-center">
           <ul class="nav nav-pills">
-            <li class="nav-item me-2 me-lg-5">
+            <li class="nav-item me-4 me-lg-5">
               <a class="nav-link btn-dark" href="#/feed">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@
                 </svg>
               </a>
             </li>
-            <li class="nav-item me-2 me-lg-5">
+            <li class="nav-item me-4 me-lg-5">
               <a class="nav-link btn-dark" href="#/explore">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@
                 </svg>
               </a>
             </li>
-            <li class="nav-item me-2 me-lg-5">
+            <li class="nav-item me-4 me-lg-5">
               <a class="nav-link btn-dark" href="#/search">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

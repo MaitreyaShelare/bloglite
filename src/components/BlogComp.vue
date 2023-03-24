@@ -46,13 +46,9 @@
                   >
                 </div>
                 <div class="ms-auto">
-                  <button
-                    type="button"
-                    class="btn btn-sm float-end"
-                    data-bs-toggle="dropdown"
-                  >
+                  <a class="btn btn-sm float-end" data-bs-toggle="dropdown">
                     <i class="bi bi-three-dots"></i>
-                  </button>
+                  </a>
                   <ul class="dropdown-menu">
                     <li><button class="dropdown-item">Edit</button></li>
                     <li>
@@ -223,7 +219,7 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           this.blogData = data;
         })
         .catch((error) => {

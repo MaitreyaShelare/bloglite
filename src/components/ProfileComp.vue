@@ -53,12 +53,14 @@
               </button>
               <button
                 class="btn btn-link text-decoration-none"
+                @click="$emit('user-posts')"
                 v-if="profileDetails"
               >
                 <i class="bi bi-clipboard2-fill"></i>&nbsp;
                 {{ profileDetails.userPosts }}&nbsp;Posts
               </button>
               <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
+              <!-- @click="this.$emit(viewPosts)" -->
             </div>
           </div>
         </div>
@@ -73,7 +75,7 @@ export default {
 
   props: {
     userID: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
