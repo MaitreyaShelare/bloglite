@@ -94,17 +94,15 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          // var img = document.getElementById("blog-image");
-          // img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
-          console.log(data);
+          // console.log(data);
           var dp = document.getElementById("user-dp-image");
           dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
 
           var followers = document.getElementById("follower-count");
           followers.textContent = data.followers;
 
-          // var following = document.getElementById("following-count");
-          // following.textContent = data.blogs.count();
+          var following = document.getElementById("following-count");
+          following.textContent = data.followed_users.length;
 
           var name = document.getElementById("user-name");
           name.textContent = data.name;

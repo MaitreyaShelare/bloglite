@@ -6,7 +6,22 @@ import base64
 from __init__ import db
 blog = Blueprint('blog', __name__)
 
+from datetime import datetime
+# from pytz import timezone
 
+# def get_server_time(self, obj):
+#     # Calculate the server time using datetime and pytz
+#     tz = pytz.timezone('Asia/Kolkata')  # Indian Standard Time
+#     server_time = datetime.datetime.now(tz)
+#     return server_time
+# # get the current datetime in UTC
+# utc_now = datetime.utcnow()
+# print(utc_now)
+
+# # convert UTC datetime to IST timezone
+# ist_now = utc_now.astimezone(timezone('Asia/Kolkata'))
+# ist_now_str = ist_now.strftime('%Y-%m-%d %H:%M:%S %Z%z')
+# print(ist_now)
 # @list.route('api/lists', methods=['GET'])
 # @jwt_required()
 # def getAllLists():
@@ -26,6 +41,7 @@ blog = Blueprint('blog', __name__)
 #     return jsonify(output), 201
 
 @blog.route('/api/blog/<int:blog_id>', methods=['GET'])
+@jwt_required()
 def getBlog(blog_id):
     blog = Blog.query.filter_by(id=blog_id).first()
     if blog is not None:
@@ -34,7 +50,19 @@ def getBlog(blog_id):
         return jsonify(result)
     else:
         return jsonify(error="Blog not found"), 404
-    
+
+# For Explore
+@blog.route('api/blogs', methods=['GET'])
+@jwt_required()
+# def getAllBlogs():
+#     blog_all = Blog.query.all()
+#     blog_schema = BlogSchema(many=True)
+#     output = blog_schema.dump(blog_all)
+#     return jsonify(output), 201
+def get_blogs():
+    blogs = Blog.query.order_by(Blog.timestamp.desc()).all()
+    blog_ids = [blog.id for blog in blogs]
+    return jsonify(blog_ids)    
 # @blog.route('api/blog/<int:blog_id>', methods=['GET'])
 # @jwt_required()
 # def getBlog(blog_id):

@@ -9,26 +9,22 @@
                 <a href="/" class="d-block link-dark text-decoration-none">
                   <img
                     id="dp-image-small"
-                    src=""
+                    v-if="blogDetails"
+                    :src="blogDetails.dpImageSrc"
                     alt="dp"
                     width="32"
                     height="32"
                     class="rounded-circle"
                   />
-                  <!-- <img
-                    src="https://github.com/mdo.png"
-                    alt="mdo"
-                    width="32"
-                    height="32"
-                    class="rounded-circle"
-                  /> -->
                 </a>
                 <div class="flex-1">
                   <a
                     id="blog-author"
                     class="fw-bold fs-6 ms-2 mb-0 text-decoration-none text-black"
+                    v-if="blogDetails"
                     href="/"
-                  ></a>
+                    >{{ blogDetails.authorName }}</a
+                  >
                 </div>
                 <div class="ms-auto">
                   <button
@@ -47,27 +43,21 @@
                   </ul>
                 </div>
               </div>
-              <p class="text-800" id="single-blog-text">
-                <!-- Hello, it's really a pain to be followed. Those who praise,
-                however, are spurned by the necessities from which they are to
-                assume the comforts of forgiveness, because unless they flee
-                less from the consequences, they do not know which one will find
-                the pleasure of happiness. -->
-              </p>
+              <p
+                class="text-800"
+                id="blog-text"
+                v-if="blogDetails"
+                v-html="text"
+              ></p>
               <div class="row g-1 mb-5">
                 <div class="mx-auto">
                   <img
                     id="blog-image"
                     class="rounded h-100 w-100"
-                    src=""
+                    v-if="blogDetails"
+                    :src="blogDetails.blogImageSrc"
                     alt="Blog Image"
                   />
-
-                  <!-- <img
-                    class="rounded h-100 w-100"
-                    src="https://github.com/mdo.png"
-                    alt="..."
-                  /> -->
                 </div>
               </div>
             </div>
@@ -84,7 +74,6 @@
                   }"
                 ></i
                 >&nbsp;Like
-                <!-- <i class="bi bi-hand-thumbs-up"></i>&nbsp;Like -->
               </button>
               <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
@@ -98,9 +87,10 @@
                   }"
                 ></i
                 >&nbsp;Comment
-                <!-- <i class="bi bi-chat"></i>&nbsp;Comment -->
               </button>
-              <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button>
+              <button class="btn ms-auto fs-6 fw-bolder" v-if="blogDetails">
+                {{ postDate }}
+              </button>
             </div>
           </div>
           <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
@@ -162,10 +152,16 @@
 <script>
 export default {
   name: "BlogComp",
+  props: {
+    blogID: Number,
+  },
+
   data: function () {
     return {
       showComments: false,
       liked: false,
+      blogData: null,
+      blog_id: this.blogID,
     };
   },
 
@@ -181,8 +177,9 @@ export default {
       this.liked = !this.liked;
     },
     FetchData() {
+      var id = this.blog_id;
       var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/blog/1";
+      var url = base + "/api/blog/" + id;
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
@@ -198,30 +195,63 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          var img = document.getElementById("blog-image");
-          img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
-
-          var dp = document.getElementById("dp-image-small");
-          dp.src = `data:${data.user.dp_mimetype};charset=utf-8;base64,${data.user.dp}`;
-
-          var text = document.getElementById("single-blog-text");
-          text.textContent = data.text;
-
-          var author = document.getElementById("blog-author");
-          author.textContent = data.user.name;
+          console.log(data);
+          this.blogData = data;
         })
         .catch((error) => {
           console.error(error);
         });
-      // fetch(url, requestOptions)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     console.log(data);
-      //     this.$emit("BlogCreated");
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+    },
+  },
+
+  computed: {
+    blogDetails() {
+      if (this.blogData) {
+        return {
+          blogImageSrc: `data:${this.blogData.photo_mimetype};charset=utf-8;base64,${this.blogData.photo}`,
+          dpImageSrc: `data:${this.blogData.user.dp_mimetype};charset=utf-8;base64,${this.blogData.user.dp}`,
+          authorName: this.blogData.user.name,
+        };
+      }
+      return null;
+    },
+
+    text() {
+      if (this.blogData) {
+        return this.blogData.text;
+      }
+      return null;
+    },
+
+    postDate() {
+      if (!this.blogData.timestamp) {
+        return null;
+      }
+      const postTimestamp = new Date(this.blogData.timestamp);
+      const currentTimestamp = new Date(this.blogData.server_time);
+      const timeDifference =
+        currentTimestamp.getTime() - postTimestamp.getTime();
+      const minutesDifference = Math.round(timeDifference / 60000);
+      const hoursDifference = Math.floor(minutesDifference / 60);
+      if (minutesDifference == 0) {
+        return `Just now`;
+      }
+      if (minutesDifference < 60) {
+        // less than an hour
+        return `${minutesDifference} minutes ago`;
+      }
+      if (minutesDifference < 1440) {
+        // less than a day
+        return `${hoursDifference} hours ago`;
+        // return `${currentTimestamp} current time,${postTimestamp} post time`;
+      } else {
+        const day = postTimestamp.getDate();
+        const month = postTimestamp.toLocaleString("default", {
+          month: "short",
+        });
+        const year = postTimestamp.getFullYear();
+        return `${day} ${month} ${year}`;
+      }
     },
   },
 };

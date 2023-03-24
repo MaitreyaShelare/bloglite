@@ -5,6 +5,7 @@
         <textarea
           class="form-control border-200 rounded border-0 flex-1 fs-0"
           rows="3"
+          contenteditable="true"
           placeholder="What's on your mind?"
           v-model="blogtext"
           id="blog-text"

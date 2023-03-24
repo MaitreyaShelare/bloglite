@@ -2,6 +2,10 @@ from datetime import datetime
 from __init__ import db
 from __init__ import ma
 
+# import datetime
+import pytz
+from marshmallow import fields
+
 # from flask_login import UserMixin
 # from sqlalchemy.sql import func
 
@@ -94,9 +98,9 @@ class Blog(db.Model):
     text = db.Column(db.String(255), nullable=False)
     photo = db.Column(db.String, nullable=False)
     photo_mimetype = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime(timezone=True),default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref='blogs')
+    user = db.relationship('User', backref='blog')
     likes = db.relationship('Like', backref='blog', lazy=True)
     comments = db.relationship('Comment', backref='blog', lazy=True)
     hidden = db.Column(db.Boolean, default=False)  
@@ -116,7 +120,7 @@ class Like(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime(timezone=True),default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
 
@@ -127,6 +131,8 @@ class Comment(db.Model):
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
+        include_relationships = True
+        load_instance = True
 
     blogs = ma.Nested('BlogSchema', many=True, only=('id', 'text', 'timestamp'))
     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
@@ -136,7 +142,24 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 class BlogSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Blog
+        include_relationships = True
+        load_instance = True
 
+    # Define a new field for server_time
+    server_time = fields.Method('get_server_time')
+
+    def get_server_time(self, obj):
+    # Calculate the server time using datetime and pytz
+        tz = pytz.timezone('UTC')
+        server_time = datetime.now(tz)
+        server_time_str = server_time.strftime('%Y-%m-%dT%H:%M:%S.%f')
+        return server_time_str
+    # def get_server_time(self, obj):
+    #     # Calculate the server time using datetime and pytz
+    #     tz = pytz.timezone('Asia/Kolkata')  # Indian Standard Time
+    #     server_time = datetime.datetime.now(tz)
+    #     return server_time
+    
     user = ma.Nested('UserSchema', only=('id', 'name', 'dp', 'dp_mimetype'))
     # likes = ma.Nested('LikeSchema', many=True, only=('id', 'user_id', 'blog_id'))
     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
@@ -145,11 +168,15 @@ class BlogSchema(ma.SQLAlchemyAutoSchema):
 class LikeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Like
+        include_relationships = True
+        load_instance = True
 
 
 class CommentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Comment
+        include_relationships = True
+        load_instance = True
 
 
 # 4

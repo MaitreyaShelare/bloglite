@@ -8,7 +8,6 @@
     </div>
     <div class="userPosts pt-2">
       <BlogComp />
-      <BlogComp />
     </div>
     <!-- <img alt="Vue logo" src="../assets/logo.png" />
       <HelloWorld msg="Welcome to Your Vue.js App" /> -->
