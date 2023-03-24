@@ -33,7 +33,10 @@ export default {
     ProfileComp,
     BlogComp,
   },
-  props: ["userId"],
+  // props: ["userId"],
+  props: {
+    userId: Number,
+  },
   data() {
     return {
       seePosts: true,
@@ -53,7 +56,7 @@ export default {
       // console.log("userPosts");
       this.FetchBlogs();
       this.seePosts = !this.seePosts;
-      console.log(this.seePosts);
+      // console.log(this.seePosts);
       // console.log(this.userId);
     },
     FetchBlogs() {

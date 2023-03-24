@@ -27,7 +27,7 @@ def signup():
             refresh_token = create_refresh_token(identity=email)
             db.session.add(new_user)
             db.session.commit()
-            return jsonify(access_token=access_token, refresh_token=refresh_token), 201
+            return jsonify(access_token=access_token, refresh_token=refresh_token, id=new_user.id), 201
 
 
 @auth.route('api/login', methods=['POST'])
@@ -40,7 +40,7 @@ def login():
         if check_password_hash(user.password, password): 
             access_token = create_access_token(identity=email)
             refresh_token = create_refresh_token(identity=email)
-            return jsonify(access_token=access_token, refresh_token=refresh_token), 201
+            return jsonify(access_token=access_token, refresh_token=refresh_token, id=user.id), 201
     return jsonify(message="Invalid Email or Password"), 403
 
 @auth.route("api/refresh", methods=["POST"])

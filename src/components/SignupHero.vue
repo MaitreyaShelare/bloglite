@@ -177,16 +177,25 @@ export default {
       fetch(url, requestOptions)
         .then((response) => {
           if (response.status == 201) {
-            this.$store.commit("loginUser"), this.$router.push("/feed");
+            this.$store.commit("loginUser");
           }
           return response.json();
         })
         .then((data) => {
+          // console.log(data),
           (this.data = data),
+            this.$store.commit("setCurrentUserID", data.id),
             this.$store.commit("setToken", data.access_token),
-            this.$store.commit("setRefreshToken", data.refresh_token);
-          // this.$store.commit("setToken", JSON.stringify(data.access_token));
+            this.$store.commit("setRefreshToken", data.refresh_token),
+            this.$router.push("/feed");
         });
+      // .then((data) => {
+      //   console.log(data),
+      //     this.data = data,
+      //     this.$store.commit("setToken", data.access_token),
+      //     this.$store.commit("setRefreshToken", data.refresh_token);
+
+      // this.$store.commit("setToken", JSON.stringify(data.access_token));
       // .then((v) => console.log(v));
       // fetch(url, requestOptions)
       //   .then((response) => JSON.parse(response))

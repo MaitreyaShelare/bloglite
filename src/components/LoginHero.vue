@@ -159,20 +159,31 @@ export default {
       fetch(url, requestOptions)
         .then((response) => {
           if (response.status == 201) {
-            this.$store.commit("loginUser"), this.$router.push("/feed");
+            this.$store.commit("loginUser");
           }
           return response.json();
         })
-        // .then((response) => response.json())
         .then((data) => {
-          (this.data = data),
-            this.$store.commit("setToken", data.access_token),
-            this.$store.commit("setRefreshToken", data.refresh_token);
           // console.log(data),
-          // console.log(this.$store.state.count),
-          // localStorage.setItem("token", JSON.stringify(data.access_token));
-          // this.$store.commit("setToken", JSON.stringify(data.access_token));
+          (this.data = data),
+            this.$store.commit("setCurrentUserID", data.id),
+            this.$store.commit("setToken", data.access_token),
+            this.$store.commit("setRefreshToken", data.refresh_token),
+            this.$router.push("/feed");
         });
+
+      // .then((data) => {
+      //   console.log(data),
+      //   this.data = data,
+      //     this.$store.commit("setToken", data.access_token),
+      //     this.$store.commit("setRefreshToken", data.refresh_token);
+      // });
+
+      // console.log(data),
+      // .then((response) => response.json())
+      // console.log(this.$store.state.count),
+      // localStorage.setItem("token", JSON.stringify(data.access_token));
+      // this.$store.commit("setToken", JSON.stringify(data.access_token));
       //WORKING ABOVE
       // const response = await fetch(url, requestOptions);
       // var data = response.json();

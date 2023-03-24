@@ -9,6 +9,7 @@ export default new Vuex.Store({
     Authenticated: false,
     token: null,
     refreshtoken: null,
+    currentUserID: null,
     baseURL: "http://127.0.0.1:5000",
   },
   getters: {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     getAuthentication(state) {
       return state.Authenticated;
     },
+    getCurrentUserID(state) {
+      return state.currentUserID;
+    },
     getBaseURL(state) {
       return state.baseURL;
     },
@@ -31,6 +35,9 @@ export default new Vuex.Store({
     },
     setRefreshToken(state, refreshtoken) {
       state.refreshtoken = refreshtoken;
+    },
+    setCurrentUserID(state, id) {
+      state.currentUserID = id;
     },
     loginUser(state) {
       state.Authenticated = true;

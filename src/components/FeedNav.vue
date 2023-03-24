@@ -82,7 +82,16 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link btn-dark" href="#/profile">
+              <a
+                class="nav-link btn-dark"
+                style="cursor: pointer"
+                @click="
+                  $router.push({
+                    name: 'profile',
+                    params: { userId: $store.getters.getCurrentUserID },
+                  })
+                "
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
