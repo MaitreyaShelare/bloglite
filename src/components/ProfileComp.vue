@@ -123,7 +123,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.profileData = data;
-          // console.log(data);
+          console.log(data);
           // console.log(this.profileData.name);
           // var dp = document.getElementById("user-dp-image");
           // dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
