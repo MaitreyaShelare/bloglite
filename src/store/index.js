@@ -46,6 +46,7 @@ export default new Vuex.Store({
       state.Authenticated = false;
       state.token = null;
       state.refreshtoken = null;
+      state.currentUserID = null;
     },
   },
   actions: {},

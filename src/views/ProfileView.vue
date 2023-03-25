@@ -4,7 +4,8 @@
       <FeedNav />
     </div>
     <div class="userprofile pt-5">
-      <ProfileComp :userID="userId" @user-posts="userPosts()" />
+      <ProfileComp :userID="userId" :key="userId" @user-posts="userPosts()" />
+      <!-- <h2 class="mx-auto py-2">User Profile: {{ this.userId }}</h2> -->
     </div>
     <div class="blogs" v-if="seePosts">
       <div class="userblogs pt-5" v-for="blog in blogs" :key="blog">
@@ -50,6 +51,14 @@ export default {
       this.$router.push("/");
     }
     this.FetchBlogs();
+  },
+  watch: {
+    userId: function () {
+      // this.update = !this.update;
+      this.FetchBlogs();
+      // this.$forceUpdate();
+      // this.$forceRefresh();
+    },
   },
   methods: {
     userPosts() {

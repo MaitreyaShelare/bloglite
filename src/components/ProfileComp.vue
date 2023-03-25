@@ -20,7 +20,7 @@
               </h2>
               <!-- <h2 class="mx-auto py-2">User Profile: {{ this.user_id }}</h2> -->
             </div>
-            <div class="d-flex">
+            <div class="d-flex" v-if="differentUser">
               <button
                 class="btn btn-primary mx-auto rounded-pill lh-1"
                 type="button"
@@ -80,11 +80,13 @@ export default {
     },
   },
   mounted() {
+    this.checkUser();
     this.FetchProfile();
   },
   data: function () {
     return {
       followed: false,
+      differentUser: false,
       profileData: null,
       user_id: this.userID,
     };
@@ -93,6 +95,13 @@ export default {
   methods: {
     toggleFollow() {
       this.followed = !this.followed;
+    },
+    checkUser() {
+      if (this.$store.getters.getCurrentUserID == this.user_id) {
+        this.differentUser = false;
+      } else {
+        this.differentUser = true;
+      }
     },
     FetchProfile() {
       var id = this.user_id;
