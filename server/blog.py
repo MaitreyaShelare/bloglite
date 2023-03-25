@@ -100,7 +100,38 @@ def get_feed(user_id):
     else:
         return jsonify(error="Invalid User"), 404   
 
+# Like a Blog
+@blog.route('api/blog/like/<int:user_id>/<int:blog_id>', methods=['POST'])
+@jwt_required()
 
+def like_blog(user_id,blog_id):
+    user = User.query.filter_by(id=user_id).first()
+    blog = Blog.query.filter_by(id=blog_id).first()
+
+    if user is not None:
+        if blog is not None:
+            user.like(blog)
+
+        return jsonify(message="Blog liked sucessfully"), 201
+    else:
+        return jsonify(error="Error in Blog Like"), 404
+    
+# Unlike a Blog
+@blog.route('api/blog/unlike/<int:user_id>/<int:blog_id>', methods=['POST'])
+@jwt_required()
+
+def unlike_blog(user_id,blog_id):
+    user = User.query.filter_by(id=user_id).first()
+    blog = Blog.query.filter_by(id=blog_id).first()
+
+    if user is not None:
+        if blog is not None:
+            user.unlike(blog)
+
+        return jsonify(message="Blog unliked sucessfully"), 201
+    else:
+        return jsonify(error="Error in Blog Unlike"), 404
+    
 @blog.route('api/blog', methods=['POST'])
 @jwt_required()
 def createBlog():

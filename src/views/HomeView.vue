@@ -12,13 +12,6 @@
           <div class="card mb-4 overflow-hidden">
             <div class="card-body p-3 p-sm-4">
               <h3 class="text-center">Follow some users to see their posts</h3>
-              <div class="py-1">
-                <SearchUsers />
-                <SearchUsers />
-                <SearchUsers />
-                <SearchUsers />
-                <SearchUsers />
-              </div>
               <!-- <div class="d-flex py-1">
                 <a
                   class="btn btn-primary mx-auto rounded-pill lh-1"
@@ -49,7 +42,7 @@
 import FeedNav from "@/components/FeedNav.vue";
 import BlogAdd from "@/components/BlogAdd.vue";
 import BlogComp from "@/components/BlogComp.vue";
-import SearchUsers from "@/components/SearchUsers.vue";
+// import SearchUsers from "@/components/SearchUsers.vue";
 
 export default {
   name: "HomeView",
@@ -57,7 +50,6 @@ export default {
     FeedNav,
     BlogAdd,
     BlogComp,
-    SearchUsers,
   },
   data: function () {
     return {

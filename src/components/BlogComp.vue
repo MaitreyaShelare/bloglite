@@ -88,9 +88,7 @@
                     'bi bi-hand-thumbs-up-fill': liked,
                   }"
                 ></i
-                >&nbsp;
-                <span v-if="!liked">Like</span>
-                <span v-else>Liked</span>
+                >&nbsp;{{ liked ? "Liked" : "Like" }}
               </button>
               <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
@@ -176,7 +174,7 @@ export default {
   data: function () {
     return {
       showComments: false,
-      liked: false,
+      liked: null,
       blogData: null,
       blog_id: this.blogID,
     };
@@ -191,15 +189,75 @@ export default {
       this.showComments = !this.showComments;
     },
     toggleLike() {
+      console.log(this.liked);
       this.liked = !this.liked;
+      this.liked ? this.LikeBlog() : this.UnlikeBlog();
+      console.log(this.liked);
     },
-    // goToProfile() {
-    //   this.$router.push({
-    //     name: "profile",
-    //     params: { userId: this.Blogdata.id },
-    //   });
-    //   // this.$router.push({ name: "profile" });
-    // },
+    isLiked() {
+      if (this.blogData) {
+        var id = this.$store.getters.getCurrentUserID;
+        if (this.blogData.likes.includes(id)) {
+          this.liked = true;
+        } else {
+          this.liked = false;
+        }
+      }
+    },
+    LikeBlog() {
+      var blogid = this.blog_id;
+      var userid = this.$store.getters.getCurrentUserID;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/like/" + userid + "/" + blogid;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.liked = true;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    UnlikeBlog() {
+      var blogid = this.blog_id;
+      var userid = this.$store.getters.getCurrentUserID;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/unlike/" + userid + "/" + blogid;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.liked = false;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
     FetchData() {
       var id = this.blog_id;
       var base = this.$store.getters.getBaseURL;
@@ -221,6 +279,8 @@ export default {
         .then((data) => {
           // console.log(data);
           this.blogData = data;
+          console.log(this.blogData);
+          this.isLiked();
         })
         .catch((error) => {
           console.error(error);

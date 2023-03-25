@@ -81,6 +81,8 @@ class User(db.Model):
     # followers = db.Column(db.Integer, default=0)
     posts = db.Column(db.Integer, default=0)
     likes = db.relationship('Like', backref='user', lazy=True)
+        # liked_by = db.relationship('User', secondary='like',
+        #                        backref=db.backref('liked_blogs', lazy=True))
     comments = db.relationship('Comment', backref='user', lazy=True)
     
     followed_users = db.relationship(
@@ -104,6 +106,26 @@ class User(db.Model):
     def is_following(self, user):
         return self.followed_users.filter(user_followers.c.followed_id == user.id).count()
     
+    def like(self, blog):
+        if not self.has_liked(blog):
+            like = Like(user_id=self.id, blog_id=blog.id)
+            db.session.add(like)
+            db.session.commit()
+
+    def unlike(self, blog):
+        if self.has_liked(blog):
+            Like.query.filter_by(
+                user_id=self.id,
+                blog_id=blog.id
+            ).delete()
+            db.session.commit()
+
+    def has_liked(self, blog):
+        return Like.query.filter(
+            Like.user_id == self.id,
+            Like.blog_id == blog.id
+        ).count() > 0        
+
     def __repr__(self):
         return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}', '{self.dp_mimetype}')"
 
@@ -117,9 +139,14 @@ class Blog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blog')
     likes = db.relationship('Like', backref='blog', lazy=True)
+    liked_by = db.relationship('User', secondary=user_likes, backref=db.backref('liked_blogs', lazy=True))
     comments = db.relationship('Comment', backref='blog', lazy=True)
     hidden = db.Column(db.Boolean, default=False)  
 
+    # @property
+    def liked_by_users(self):
+        return [like.user_id for like in self.likes]
+    
     def __repr__(self):
         return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}', '{self.photo_mimetype}')"
 
@@ -142,6 +169,18 @@ class Comment(db.Model):
     def __repr__(self):
         return f"Comment('{self.text}', '{self.timestamp}', '{self.user_id}', '{self.blog_id}')"
 
+class LikeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Like
+        include_relationships = True
+        load_instance = True
+
+
+class CommentSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Comment
+        include_relationships = True
+        load_instance = True
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -180,18 +219,6 @@ class BlogSchema(ma.SQLAlchemyAutoSchema):
     # comments = ma.Nested('CommentSchema', many=True, only=('id', 'text', 'timestamp', 'user_id', 'blog_id'))
 
 
-class LikeSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Like
-        include_relationships = True
-        load_instance = True
-
-
-class CommentSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Comment
-        include_relationships = True
-        load_instance = True
 
 
 # 4

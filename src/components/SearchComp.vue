@@ -19,12 +19,23 @@
             &nbsp;Search
           </button>
         </div>
-        <div class="card mb-4 mt-4 overflow-hidden">
-          <SearchUsers />
-          <SearchUsers />
-          <SearchUsers />
-          <SearchUsers />
+        <div class="card mt-4 mb-4 overflow-hidden">
+          <div class="card-body p-3 p-sm-4">
+            <div class="py-1">
+              <SearchUsers />
+              <SearchUsers />
+              <SearchUsers />
+              <SearchUsers />
+              <SearchUsers />
+            </div>
+          </div>
         </div>
+        <!-- <div class="card mb-4 mt-4 overflow-hidden">
+          <SearchUsers />
+          <SearchUsers />
+          <SearchUsers />
+          <SearchUsers />
+        </div> -->
       </div>
     </div>
   </div>
