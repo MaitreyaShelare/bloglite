@@ -90,7 +90,7 @@
                 ></i
                 >&nbsp;{{ liked ? "Liked" : "Like" }}
               </button>
-              <button
+              <!-- <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
                 type="button"
                 @click="toggleComments"
@@ -102,44 +102,47 @@
                   }"
                 ></i
                 >&nbsp;Comment
-              </button>
+              </button> -->
               <button class="btn ms-auto fs-6 fw-bolder" v-if="blogDetails">
                 {{ postDate }}
               </button>
             </div>
           </div>
-          <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
-            <div class="d-flex align-items-start">
-              <div class="me-2">
-                <img
-                  src="https://github.com/mdo.png"
-                  alt="mdo"
-                  width="32"
-                  height="32"
-                  class="rounded-circle"
-                />
-              </div>
-              <div class="flex-1">
-                <div class="d-flex align-items-center">
-                  <a
-                    class="fw-bold mb-0 text-decoration-none text-black"
-                    href="#!"
-                    >Mamur Fechetti</a
-                  ><span class="text-600 fw-semi-bold fs--2 ms-2"
-                    >35 mins ago</span
-                  >
+          <!-- <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
+            <div class="comments">
+              <div class="d-flex align-items-start">
+                <div class="me-2">
+                  <img
+                    src="https://github.com/mdo.png"
+                    alt="mdo"
+                    width="32"
+                    height="32"
+                    class="rounded-circle"
+                  />
                 </div>
-                <p class="mb-0">
-                  How long did it take to create this? It appears that you
-                  quickly produced the second one.
-                </p>
-                <button
-                  class="btn btn-link p-0 text-900 text-decoration-none fw-bolder mb-2"
-                  type="button"
-                ></button>
+                <div class="flex-1">
+                  <div class="d-flex align-items-center">
+                    <a
+                      class="fw-bold mb-0 text-decoration-none text-black"
+                      href="#!"
+                      >Mamur Fechetti</a
+                    ><span class="text-600 fw-semi-bold fs--2 ms-2"
+                      >35 mins ago</span
+                    >
+                  </div>
+                  <p class="mb-0">
+                    How long did it take to create this? It appears that you
+                    quickly produced the second one.
+                  </p>
+                  <button
+                    class="btn btn-link p-0 text-900 text-decoration-none fw-bolder mb-2"
+                    type="button"
+                  ></button>
+                </div>
               </div>
             </div>
-            <div class="d-flex align-items-center">
+
+            <div id="add-comment" class="d-flex align-items-center">
               <div class="me-2">
                 <img
                   src="https://github.com/mdo.png"
@@ -157,7 +160,7 @@
                 />
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -197,7 +200,7 @@ export default {
     isLiked() {
       if (this.blogData) {
         var id = this.$store.getters.getCurrentUserID;
-        if (this.blogData.likes.includes(id)) {
+        if (this.blogData.liked_by.includes(id)) {
           this.liked = true;
         } else {
           this.liked = false;

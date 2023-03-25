@@ -91,6 +91,10 @@ class User(db.Model):
         secondaryjoin=(user_followers.c.followed_id == id),
         backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
     
+    liked_blogs = db.relationship(
+        'Blog', secondary=user_likes,primaryjoin=(user_likes.c.user_id == id),lazy='dynamic')
+        # backref=db.backref('blogs_liked', lazy='dynamic'), lazy='dynamic')
+    
     def follow(self, user):
      if not self.is_following(user):
             self.followed_users.append(user)
@@ -108,16 +112,15 @@ class User(db.Model):
     
     def like(self, blog):
         if not self.has_liked(blog):
+            self.liked_blogs.append(blog)
             like = Like(user_id=self.id, blog_id=blog.id)
             db.session.add(like)
             db.session.commit()
 
     def unlike(self, blog):
         if self.has_liked(blog):
-            Like.query.filter_by(
-                user_id=self.id,
-                blog_id=blog.id
-            ).delete()
+            self.liked_blogs.remove(blog)
+            Like.query.filter_by(user_id=self.id,blog_id=blog.id).delete()
             db.session.commit()
 
     def has_liked(self, blog):
@@ -139,11 +142,11 @@ class Blog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blog')
     likes = db.relationship('Like', backref='blog', lazy=True)
-    liked_by = db.relationship('User', secondary=user_likes, backref=db.backref('liked_blogs', lazy=True))
+    liked_by = db.relationship('User', secondary=user_likes, lazy='dynamic')
     comments = db.relationship('Comment', backref='blog', lazy=True)
     hidden = db.Column(db.Boolean, default=False)  
 
-    # @property
+    @property
     def liked_by_users(self):
         return [like.user_id for like in self.likes]
     
