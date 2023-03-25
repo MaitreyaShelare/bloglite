@@ -18,14 +18,132 @@ def getUserProfile(user_id):
     else:
         return jsonify(error="User not found"), 404
 
-# For Profile, returns only a user's blog IDs
+# For Profile View, returns only a user's blog IDs
 @profile.route('api/profile/blogs/<int:user_id>', methods=['GET'])
 @jwt_required()
 
 def get_user_blogs(user_id):
     blogs = Blog.query.filter_by(user_id=user_id).order_by(Blog.timestamp.desc()).all()
     blog_ids = [blog.id for blog in blogs]
-    return jsonify(blog_ids)     
+    return jsonify(blog_ids) 
+
+# Follow a user
+@profile.route('api/profile/follow/<int:current_user_id>/<int:user_id>', methods=['POST'])
+@jwt_required()
+
+def follow_user(current_user_id,user_id):
+    current_user = User.query.filter_by(id=current_user_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    # print(user.id)
+    if user is not None:
+        current_user.follow(user)
+        return jsonify({'message': 'You are now following {}.'.format(user.name)}), 201
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Unfollow a user
+@profile.route('api/profile/unfollow/<int:current_user_id>/<int:user_id>', methods=['POST'])
+@jwt_required()
+
+def unfollow_user(current_user_id,user_id):
+    current_user = User.query.filter_by(id=current_user_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        current_user.unfollow(user)
+        return jsonify({'message': 'You are no longer following {}.'.format(user.name)}), 201
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's followers
+@profile.route('api/profile/followers/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_followers(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        followers = user.followers
+        followers_schema = UserSchema(many=True)
+        result = followers_schema.dump(followers)
+        return jsonify(result)
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's following
+@profile.route('api/profile/following/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_following(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        following = user.following
+        following_schema = UserSchema(many=True)
+        result = following_schema.dump(following)
+        return jsonify(result)
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's followers count
+@profile.route('api/profile/followers/count/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_followers_count(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        followers = user.followers
+        return jsonify(count=len(followers))
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's following count
+@profile.route('api/profile/following/count/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_following_count(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        following = user.following
+        return jsonify(count=len(following))
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's blogs count
+@profile.route('api/profile/blogs/count/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_blogs_count(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        blogs = user.blogs
+        return jsonify(count=len(blogs))
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's likes count
+@profile.route('api/profile/likes/count/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_likes_count(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        likes = user.likes
+        return jsonify(count=len(likes))
+    else:
+        return jsonify(error="User not found"), 404
+    
+# Get a user's comments count
+@profile.route('api/profile/comments/count/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_comments_count(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        comments = user.comments
+        return jsonify(count=len(comments))
+    else:
+        return jsonify(error="User not found"), 404
+    
+
+#######################################################################################################
 # @auth.route('api/signup', methods=['POST'])
 # def signup():
 #     name = request.json["name"]

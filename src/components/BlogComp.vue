@@ -263,7 +263,8 @@ export default {
       }
       if (minutesDifference < 60) {
         // less than an hour
-        return `${minutesDifference} minutes ago`;
+        // return `${minutesDifference} minutes ago`;
+        return `A while ago`;
       }
       if (minutesDifference < 120) {
         //  an hour ago

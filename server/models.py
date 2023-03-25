@@ -78,7 +78,7 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     dp = db.Column(db.String, nullable=True)
     dp_mimetype = db.Column(db.String, nullable=True)
-    followers = db.Column(db.Integer, default=0)
+    # followers = db.Column(db.Integer, default=0)
     posts = db.Column(db.Integer, default=0)
     likes = db.relationship('Like', backref='user', lazy=True)
     comments = db.relationship('Comment', backref='user', lazy=True)
@@ -88,6 +88,21 @@ class User(db.Model):
         primaryjoin=(user_followers.c.follower_id == id),
         secondaryjoin=(user_followers.c.followed_id == id),
         backref=db.backref('followers_users', lazy='dynamic'), lazy='dynamic')
+    
+    def follow(self, user):
+     if not self.is_following(user):
+            self.followed_users.append(user)
+            # self.followers += 1
+            db.session.commit()
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed_users.remove(user)
+            # self.followers -= 1
+            db.session.commit()
+
+    def is_following(self, user):
+        return self.followed_users.filter(user_followers.c.followed_id == user.id).count()
     
     def __repr__(self):
         return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}', '{self.dp_mimetype}')"

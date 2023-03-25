@@ -64,7 +64,7 @@ def getBlog(blog_id):
 def get_blogs():
     blogs = Blog.query.order_by(Blog.timestamp.desc()).all()
     blog_ids = [blog.id for blog in blogs]
-    return jsonify(blog_ids)    
+    return jsonify(blog_ids), 201    
 # @blog.route('api/blog/<int:blog_id>', methods=['GET'])
 # @jwt_required()
 # def getBlog(blog_id):
@@ -85,7 +85,22 @@ def get_blogs():
 #         return jsonify(result)
 #     else:
 #         return jsonify(error="Blog not found"), 404
-    
+
+# For Home View Feed, returns only blog IDs
+@blog.route('api/feed/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def get_feed(user_id):
+    current_user = User.query.filter_by(id=user_id).first()
+    if current_user is not None:
+        followed_user_ids = [user.id for user in current_user.followed_users]
+        followed_user_blogs = Blog.query.filter(Blog.user_id.in_(followed_user_ids)).order_by(Blog.timestamp.desc()).all()
+        blog_ids = [blog.id for blog in followed_user_blogs]
+        return jsonify(blog_ids), 201 
+    else:
+        return jsonify(error="Invalid User"), 404   
+
+
 @blog.route('api/blog', methods=['POST'])
 @jwt_required()
 def createBlog():

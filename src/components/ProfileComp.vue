@@ -23,7 +23,6 @@
             <div class="d-flex" v-if="differentUser">
               <button
                 class="btn btn-primary mx-auto rounded-pill lh-1"
-                type="button"
                 @click="toggleFollow"
               >
                 <i
@@ -42,7 +41,8 @@
                 v-if="profileDetails"
               >
                 <i class="bi bi-people-fill"></i>&nbsp;
-                {{ profileDetails.userFollowers }}&nbsp;Followers
+                <!-- {{ profileDetails.userFollowers }}&nbsp;Followers -->
+                {{ this.follower_count }}&nbsp;Followers
               </button>
               <button
                 class="btn btn-link text-decoration-none"
@@ -85,16 +85,29 @@ export default {
   },
   data: function () {
     return {
-      followed: false,
+      followed: null,
       differentUser: false,
       profileData: null,
+      follower_count: null,
       user_id: this.userID,
     };
   },
 
   methods: {
     toggleFollow() {
-      this.followed = !this.followed;
+      this.followed ? this.UnfollowUser() : this.FollowUser(),
+        (this.followed = !this.followed);
+    },
+    isFollowed() {
+      if (this.profileData) {
+        this.follower_count = this.profileData.followers_users.length;
+        var id = this.$store.getters.getCurrentUserID;
+        if (this.profileData.followers_users.includes(id)) {
+          this.followed = true;
+        } else {
+          this.followed = false;
+        }
+      }
     },
     checkUser() {
       if (this.$store.getters.getCurrentUserID == this.user_id) {
@@ -124,25 +137,67 @@ export default {
         .then((data) => {
           this.profileData = data;
           console.log(data);
-          // console.log(this.profileData.name);
-          // var dp = document.getElementById("user-dp-image");
-          // dp.src = `data:${data.dp_mimetype};charset=utf-8;base64,${data.dp}`;
-
-          // var followers = document.getElementById("follower-count");
-          // followers.textContent = data.followers;
-
-          // var following = document.getElementById("following-count");
-          // following.textContent = data.followed_users.length;
-
-          // var name = document.getElementById("user-name");
-          // name.textContent = data.name;
-
-          // var posts = document.getElementById("user-posts");
-          // posts.textContent = data.posts;
+          this.isFollowed();
         })
         .catch((error) => {
           console.error(error);
         });
+    },
+    FollowUser() {
+      var id = this.user_id;
+      var currentid = this.$store.getters.getCurrentUserID;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/profile/follow/" + currentid + "/" + id;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.follower_count += 1;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      // this.FetchProfile();
+    },
+    UnfollowUser() {
+      var id = this.user_id;
+      var currentid = this.$store.getters.getCurrentUserID;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/profile/unfollow/" + currentid + "/" + id;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.follower_count -= 1;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      // this.FetchProfile();
     },
   },
 
@@ -153,7 +208,7 @@ export default {
           userName: this.profileData.name,
           dpImageSrc: `data:${this.profileData.dp_mimetype};charset=utf-8;base64,${this.profileData.dp}`,
           userPosts: this.profileData.blog.length,
-          userFollowers: this.profileData.followers,
+          // userFollowers: this.profileData.followers_users.length,
           userFollowing: this.profileData.followed_users.length,
           // authorName: this.blogData.user.name,
           // blogUserID: this.blogData.user.id,
@@ -161,6 +216,11 @@ export default {
       }
       return null;
     },
+    // isFollowed() {
+    //   return this.blogdata.followers_users.includes(
+    //     this.$store.getters.getCurrentUserID
+    //   );
+    // },
 
     // isFollowing() {
     //   if (this.blogData) {
