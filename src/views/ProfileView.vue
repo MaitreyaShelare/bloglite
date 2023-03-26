@@ -18,22 +18,40 @@
         <BlogComp :blogID="blog" />
       </div>
     </div>
+
     <div class="followers" v-if="seeFollowers">
-      <div
-        class="userfollowers pt-5"
-        v-for="follower in followers"
-        :key="follower"
-      >
-        <SearchUsers :userID="follower" />
+      <div class="container">
+        <div class="col col-md-6 mx-auto mt-2">
+          <div class="card mb-4 overflow-hidden">
+            <div class="card-body p-3 p-sm-4">
+              <div
+                class="userfollowers"
+                v-for="follower in followers"
+                :key="follower"
+              >
+                <SearchUsers :userID="follower" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="following" v-if="seeFollowing">
-      <div
-        class="userfollowing pt-5"
-        v-for="following in following"
-        :key="following"
-      >
-        <SearchUsers :userID="following" />
+      <div class="container">
+        <div class="col col-md-6 mx-auto mt-2">
+          <div class="card mb-4 overflow-hidden">
+            <div class="card-body p-3 p-sm-4">
+              <div
+                class="userfollowing"
+                v-for="following in following"
+                :key="following"
+              >
+                <SearchUsers :userID="following" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -54,15 +72,17 @@ export default {
     BlogComp,
     SearchUsers,
   },
-  // props: ["userId"],
-  props: {
-    userId: Number,
-  },
+  props: ["userId"],
+  // props: {
+  //   userId: Number,
+  // },
   data() {
     return {
       seePosts: true,
       seeFollowers: false,
+      noFollowers: false,
       seeFollowing: false,
+      noFollowing: false,
       blogs: [],
       followers: [],
       following: [],
@@ -73,11 +93,16 @@ export default {
       this.$router.push("/");
     }
     this.FetchBlogs();
+    this.FetchFollowers();
+    this.FetchFollowing();
   },
   watch: {
     userId: function () {
       // this.update = !this.update;
+      this.resetData();
       this.FetchBlogs();
+      this.FetchFollowers();
+      this.FetchFollowing();
       // this.$forceUpdate();
       // this.$forceRefresh();
     },
@@ -93,16 +118,24 @@ export default {
       // console.log(this.userId);
     },
     userFollowers() {
-      this.FetchFollowers();
       this.seePosts = false;
       this.seeFollowing = false;
-      this.seeFollowers = !this.seeFollowers;
+      this.FetchFollowers();
+      if (this.nofollowers) {
+        this.seeFollowers = false;
+      } else {
+        this.seeFollowers = true;
+      }
     },
     userFollowing() {
-      this.FetchFollowing();
       this.seePosts = false;
       this.seeFollowers = false;
-      this.seeFollowing = !this.seeFollowing;
+      this.FetchFollowing();
+      if (this.nofollowing) {
+        this.seeFollowing = false;
+      } else {
+        this.seeFollowing = !this.seeFollowing;
+      }
     },
     FetchBlogs() {
       var id = this.userId;
@@ -147,6 +180,9 @@ export default {
         .then((data) => {
           this.followers = data;
           console.log(this.followers);
+          if (this.followers.length == 0) {
+            this.nofollowers = true;
+          }
         });
     },
     FetchFollowing() {
@@ -170,18 +206,38 @@ export default {
         .then((data) => {
           this.following = data;
           console.log(this.following);
+          if (this.following.length == 0) {
+            this.nofollowing = true;
+          }
         });
+    },
+    resetData() {
+      this.seePosts = true;
+      this.seeFollowers = false;
+      this.noFollowers = false;
+      this.seeFollowing = false;
+      this.noFollowing = false;
+      this.blogs = [];
+      this.followers = [];
+      this.following = [];
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .profile {
   height: 100vh;
   width: 100%;
   background-color: #eeeeee;
   /* background-color: #e9ebee; */
   overflow-y: auto;
+}
+
+.card {
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  min-height: fit-content;
 }
 </style>
