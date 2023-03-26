@@ -6,7 +6,7 @@
     <div class="userprofile pt-5">
       <ProfileComp
         :userID="userId"
-        :key="userId"
+        :key="profileKey"
         @user-posts="userPosts()"
         @user-followers="userFollowers()"
         @user-following="userFollowing()"
@@ -89,6 +89,7 @@ export default {
       noFollowers: false,
       seeFollowing: false,
       noFollowing: false,
+      profileKey: 0,
       blogs: [],
       followers: [],
       following: [],
@@ -115,10 +116,9 @@ export default {
   },
   methods: {
     UpdateProfile() {
-      console.log("changed");
-      // this.location.reload;
+      // console.log("changed");
+      this.profileKey += 1;
     },
-
     userPosts() {
       // console.log("userPosts");
       this.FetchBlogs();
@@ -232,6 +232,7 @@ export default {
       this.noFollowers = false;
       this.seeFollowing = false;
       this.noFollowing = false;
+      this.profileKey = 0;
       this.blogs = [];
       this.followers = [];
       this.following = [];

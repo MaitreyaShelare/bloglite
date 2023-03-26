@@ -6,34 +6,20 @@
     <div class="blogadd pt-5">
       <BlogAdd />
     </div>
+    <div class="feed pt-5" v-for="blog in blogs" :key="blog">
+      <BlogComp :blogID="blog" />
+    </div>
     <div class="follow pt-5" v-if="noBlogs">
       <div class="container">
         <div class="col col-md-6 mx-auto mt-2">
           <div class="card mb-4 overflow-hidden">
             <div class="card-body p-3 p-sm-4">
-              <h3 class="text-center">Follow some users to see their posts</h3>
-              <!-- <div class="d-flex py-1">
-                <a
-                  class="btn btn-primary mx-auto rounded-pill lh-1"
-                  href="#/search"
-                >
-                  <i class="bi bi-search"></i>
-                  &nbsp;Search
-                </a>
-              </div> -->
+              <h3 class="text-center">Discover users to see their posts</h3>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="feed pt-5" v-for="blog in blogs" :key="blog">
-      <BlogComp :blogID="blog" />
-    </div>
-    <!-- <div class="blog_feed">
-      <BlogComp />
-    </div> -->
-    <!-- <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
 </template>
 
@@ -85,7 +71,7 @@ export default {
         .then((data) => {
           if (data.msg === "Token has expired") {
             this.refreshToken();
-            console.log("Refreshing Token");
+            // console.log("Refreshing Token");
           } else {
             this.blogs = data;
             if (this.blogs.length > 0) {
