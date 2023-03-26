@@ -83,6 +83,7 @@ export default {
     toggleFollow() {
       this.followed ? this.UnfollowUser() : this.FollowUser(),
         (this.followed = !this.followed);
+      this.$emit("toggle-follow");
     },
     isFollowed() {
       if (this.profileData) {

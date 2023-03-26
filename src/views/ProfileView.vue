@@ -29,7 +29,10 @@
                 v-for="follower in followers"
                 :key="follower"
               >
-                <SearchUsers :userID="follower" />
+                <SearchUsers
+                  :userID="follower"
+                  @toggle-follow="UpdateProfile()"
+                />
               </div>
             </div>
           </div>
@@ -47,7 +50,10 @@
                 v-for="following in following"
                 :key="following"
               >
-                <SearchUsers :userID="following" />
+                <SearchUsers
+                  :userID="following"
+                  @toggle-follow="UpdateProfile()"
+                />
               </div>
             </div>
           </div>
@@ -108,6 +114,11 @@ export default {
     },
   },
   methods: {
+    UpdateProfile() {
+      console.log("changed");
+      // this.location.reload;
+    },
+
     userPosts() {
       // console.log("userPosts");
       this.FetchBlogs();
