@@ -38,6 +38,7 @@
             <div class="d-flex pt-2 mx-auto text-center justify-content-center">
               <button
                 class="btn btn-link text-decoration-none"
+                @click="$emit('user-followers')"
                 v-if="profileDetails"
               >
                 <i class="bi bi-people-fill"></i>&nbsp;
@@ -46,6 +47,7 @@
               </button>
               <button
                 class="btn btn-link text-decoration-none"
+                @click="$emit('user-following')"
                 v-if="profileDetails"
               >
                 <i class="bi bi-person-check-fill"></i>&nbsp;
@@ -75,7 +77,7 @@ export default {
 
   props: {
     userID: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

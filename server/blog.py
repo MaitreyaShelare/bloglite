@@ -112,7 +112,7 @@ def like_blog(user_id,blog_id):
         if blog is not None:
             user.like(blog)
 
-        return jsonify(message="Blog liked sucessfully"), 201
+        return jsonify(message="Blog Liked"), 201
     else:
         return jsonify(error="Error in Blog Like"), 404
     
@@ -128,7 +128,7 @@ def unlike_blog(user_id,blog_id):
         if blog is not None:
             user.unlike(blog)
 
-        return jsonify(message="Blog unliked sucessfully"), 201
+        return jsonify(message="Blog Unliked"), 201
     else:
         return jsonify(error="Error in Blog Unlike"), 404
     

@@ -125,7 +125,7 @@
                     <a
                       class="fw-bold mb-0 text-decoration-none text-black"
                       href="#!"
-                      >Mamur Fechetti</a
+                      >John Smith</a
                     ><span class="text-600 fw-semi-bold fs--2 ms-2"
                       >35 mins ago</span
                     >
@@ -192,10 +192,8 @@ export default {
       this.showComments = !this.showComments;
     },
     toggleLike() {
-      console.log(this.liked);
       this.liked = !this.liked;
       this.liked ? this.LikeBlog() : this.UnlikeBlog();
-      console.log(this.liked);
     },
     isLiked() {
       if (this.blogData) {

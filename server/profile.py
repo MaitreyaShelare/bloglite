@@ -8,6 +8,7 @@ import os
 from __init__ import db
 profile = Blueprint('profile', __name__)
 
+# For Profile Component
 @profile.route('/api/profile/<int:user_id>', methods=['GET'])
 def getUserProfile(user_id):
     user = User.query.filter_by(id=user_id).first()
@@ -26,6 +27,18 @@ def get_user_blogs(user_id):
     blogs = Blog.query.filter_by(user_id=user_id).order_by(Blog.timestamp.desc()).all()
     blog_ids = [blog.id for blog in blogs]
     return jsonify(blog_ids) 
+
+# For Search View, returns only a user IDs
+@profile.route('api/profile/search', methods=['POST'])
+@jwt_required()
+
+def get_user_ids():
+    name = request.json["name"]
+    print(name)
+    users = User.query.filter(User.name.ilike('%'+name+'%')).all()
+    user_ids = [user.id for user in users]
+    return jsonify(user_ids), 201
+    # return jsonify(message="serched"), 201
 
 # Follow a user
 @profile.route('api/profile/follow/<int:current_user_id>/<int:user_id>', methods=['POST'])
@@ -61,12 +74,11 @@ def unfollow_user(current_user_id,user_id):
 def get_followers(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
-        followers = user.followers
-        followers_schema = UserSchema(many=True)
-        result = followers_schema.dump(followers)
-        return jsonify(result)
+        followers_ids = [follower.id for follower in user.followers_users.all()]
+        return jsonify(followers_ids), 201
+    
     else:
-        return jsonify(error="User not found"), 404
+        return jsonify(error="Invalid User"), 404
     
 # Get a user's following
 @profile.route('api/profile/following/<int:user_id>', methods=['GET'])
@@ -75,10 +87,8 @@ def get_followers(user_id):
 def get_following(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
-        following = user.following
-        following_schema = UserSchema(many=True)
-        result = following_schema.dump(following)
-        return jsonify(result)
+        following_ids = [user.id for user in user.followed_users.all()]
+        return jsonify(following_ids), 201
     else:
         return jsonify(error="User not found"), 404
     
