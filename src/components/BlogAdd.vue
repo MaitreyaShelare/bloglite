@@ -103,15 +103,37 @@ export default {
       this.preview = null;
       this.blogtext = "";
     },
+    sanitizeHtml(html) {
+      const allowedTags = ["p", "a", "b", "i", "u", "ul", "ol", "li"];
+      const allowedAttrs = ["href"];
+
+      return html
+        .replace(/<(\/?)(\w+)[^>]*>/g, (match, endTag, tagName) => {
+          if (allowedTags.indexOf(tagName.toLowerCase()) !== -1) {
+            return `<${endTag}${tagName}>`;
+          } else {
+            return "";
+          }
+        })
+        .replace(/\b(\w+)="[^"]*"/g, (match, attrName) => {
+          if (allowedAttrs.indexOf(attrName.toLowerCase()) !== -1) {
+            return `${attrName}="${match.slice(attrName.length + 2, -1)}"`;
+          } else {
+            return "";
+          }
+        });
+    },
     PostBlog: function () {
       // console.log(this.image);
       // console.log(this.blogtext);
       var base = this.$store.getters.getBaseURL;
       var url = base + "/api/blog";
 
+      var cleanText = this.sanitizeHtml(this.blogtext);
+
       const formData = new FormData();
       formData.append("image", this.image);
-      formData.append("text", this.blogtext);
+      formData.append("text", cleanText);
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
