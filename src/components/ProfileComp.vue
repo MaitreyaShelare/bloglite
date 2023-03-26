@@ -4,15 +4,42 @@
       <div class="col col-md-6 mx-auto mt-2">
         <div class="card mb-4 overflow-hidden">
           <div class="card-body p-3 p-sm-4">
+            <!-- <div class="ms-auto">
+              <a class="btn btn-sm float-end" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <button class="dropdown-item" v-if="superUser">Edit</button>
+                </li>
+                <li>
+                  <button class="dropdown-item" v-if="superUser">Delete</button>
+                </li>
+                <li><button class="dropdown-item">Export</button></li>
+              </ul>
+            </div> -->
             <div class="d-flex justify-content-center">
-              <img
-                id="user-dp-image"
-                v-if="profileDetails"
-                :src="profileDetails.dpImageSrc"
-                width="180"
-                height="180"
-                class="rounded-circle bg-white shadow-sm"
-              />
+              <form>
+                <div class="form-group" id="dp">
+                  <span class="btn btn-file">
+                    <img
+                      id="user-dp-image"
+                      v-if="profileDetails"
+                      :src="profileDetails.dpImageSrc"
+                      width="180"
+                      height="180"
+                      class="rounded-circle bg-white shadow-sm"
+                    />
+                    <div class="div" v-if="!differentUser">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        @change="changeDp()"
+                      />
+                    </div>
+                  </span>
+                </div>
+              </form>
             </div>
             <div class="d-flex">
               <h2 class="mx-auto py-2" id="user-name" v-if="profileDetails">
@@ -95,6 +122,17 @@ export default {
   },
 
   methods: {
+    // changeDp() {
+    //   if (!this.differentUser) {
+    //     console.log("Change DP");
+    //     @change="editDp()"
+    //   }
+    // },
+    changeDp() {
+      if (!this.differentUser) {
+        console.log("Edit DP");
+      }
+    },
     toggleFollow() {
       this.followed ? this.UnfollowUser() : this.FollowUser(),
         (this.followed = !this.followed);
@@ -240,5 +278,24 @@ export default {
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   min-height: 300px;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  cursor: inherit;
+  display: block;
 }
 </style>

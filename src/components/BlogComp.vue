@@ -50,9 +50,15 @@
                     <i class="bi bi-three-dots"></i>
                   </a>
                   <ul class="dropdown-menu">
-                    <li><button class="dropdown-item">Edit</button></li>
                     <li>
-                      <button class="dropdown-item">Delete</button>
+                      <button class="dropdown-item" v-if="superUser">
+                        Edit
+                      </button>
+                    </li>
+                    <li>
+                      <button class="dropdown-item" v-if="superUser">
+                        Delete
+                      </button>
                     </li>
                     <li><button class="dropdown-item">Export</button></li>
                   </ul>
@@ -90,7 +96,7 @@
                 ></i
                 >&nbsp;{{ liked ? "Liked" : "Like" }}
               </button>
-              <button
+              <!-- <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
                 type="button"
                 @click="toggleComments"
@@ -102,13 +108,13 @@
                   }"
                 ></i
                 >&nbsp;Comment
-              </button>
+              </button> -->
               <button class="btn ms-auto fs-6 fw-bolder" v-if="blogDetails">
                 {{ postDate }}
               </button>
             </div>
           </div>
-          <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
+          <!-- <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
             <div class="comments">
               <div class="d-flex align-items-start">
                 <div class="me-2">
@@ -160,7 +166,7 @@
                 />
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -177,6 +183,7 @@ export default {
   data: function () {
     return {
       showComments: false,
+      superUser: false,
       liked: null,
       blogData: null,
       blog_id: this.blogID,
@@ -202,6 +209,18 @@ export default {
           this.liked = true;
         } else {
           this.liked = false;
+        }
+      }
+    },
+    isSuperUser() {
+      if (this.blogData) {
+        var id = this.$store.getters.getCurrentUserID;
+        if (this.blogData.user.id == id) {
+          this.superUser = true;
+          // console.log(this.superUser);
+        } else {
+          this.superUser = false;
+          // console.log(this.superUser);
         }
       }
     },
@@ -282,6 +301,7 @@ export default {
           this.blogData = data;
           console.log(this.blogData);
           this.isLiked();
+          this.isSuperUser();
         })
         .catch((error) => {
           console.error(error);

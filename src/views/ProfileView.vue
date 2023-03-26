@@ -194,7 +194,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.followers = data;
-          console.log(this.followers);
+          // console.log(this.followers);
           if (this.followers.length == 0) {
             this.nofollowers = true;
           }
@@ -220,7 +220,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.following = data;
-          console.log(this.following);
+          // console.log(this.following);
           if (this.following.length == 0) {
             this.nofollowing = true;
           }
