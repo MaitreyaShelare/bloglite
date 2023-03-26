@@ -6,7 +6,7 @@
     <div class="userprofile pt-5">
       <ProfileComp
         :userID="userId"
-        :key="profileKey"
+        :key="userId + profileKey"
         @user-posts="userPosts()"
         @user-followers="userFollowers()"
         @user-following="userFollowing()"
