@@ -106,14 +106,39 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.users = data;
-          console.log(this.users);
-          if (this.users.length == 0) {
-            this.noUsers = true;
-            this.showResults = false;
+          if (data.msg === "Token has expired") {
+            this.refreshToken();
           } else {
-            this.showResults = true;
+            this.users = data;
+            if (this.users.length == 0) {
+              this.noUsers = true;
+              this.showResults = false;
+            } else {
+              this.showResults = true;
+            }
           }
+        });
+    },
+    refreshToken() {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/refresh";
+
+      var refreshtoken = this.$store.getters.getRefreshToken;
+      var pureToken = refreshtoken.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.$store.commit("setToken", data.access_token);
+          this.userSearch();
         });
     },
   },

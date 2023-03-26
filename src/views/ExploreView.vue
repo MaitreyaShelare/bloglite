@@ -6,11 +6,6 @@
     <div class="blogs pt-5" v-for="blog in blogs" :key="blog">
       <BlogComp :blogID="blog" />
     </div>
-    <!-- <div class="blogs pt-5">
-      <BlogComp />
-    </div> -->
-    <!-- <img alt="Vue logo" src="../assets/logo.png" />
-        <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
 </template>
 
@@ -55,25 +50,33 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.blogs = data;
-          // console.log(this.blogs);
-          // console.log(data);
-          // console.log(data[1]);
-          // console.log(data[0].text);
-          //   var img = document.getElementById("blog-image");
-          //   img.src = `data:${data.photo_mimetype};charset=utf-8;base64,${data.photo}`;
+          if (data.msg === "Token has expired") {
+            this.refreshToken();
+          } else {
+            this.blogs = data;
+          }
+        });
+    },
+    refreshToken() {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/refresh";
 
-          //   var dp = document.getElementById("dp-image-small");
-          //   dp.src = `data:${data.user.dp_mimetype};charset=utf-8;base64,${data.user.dp}`;
+      var refreshtoken = this.$store.getters.getRefreshToken;
+      var pureToken = refreshtoken.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
 
-          //   var text = document.getElementById("blog-text");
-          //   text.innerHTML = data.text;
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
 
-          //   var author = document.getElementById("blog-author");
-          //   author.textContent = data.user.name;
-          // })
-          // .catch((error) => {
-          //   console.error(error);
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.$store.commit("setToken", data.access_token);
+          this.FetchBlogs();
         });
     },
   },

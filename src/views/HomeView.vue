@@ -83,10 +83,37 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.blogs = data;
-          if (this.blogs.length > 0) {
-            this.noBlogs = false;
+          if (data.msg === "Token has expired") {
+            this.refreshToken();
+            console.log("Refreshing Token");
+          } else {
+            this.blogs = data;
+            if (this.blogs.length > 0) {
+              this.noBlogs = false;
+            }
           }
+        });
+    },
+    refreshToken() {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/refresh";
+
+      var refreshtoken = this.$store.getters.getRefreshToken;
+      var pureToken = refreshtoken.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.$store.commit("setToken", data.access_token);
+          this.FetchBlogs();
         });
     },
   },

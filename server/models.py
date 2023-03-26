@@ -142,7 +142,7 @@ class Blog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blog')
     likes = db.relationship('Like', backref='blog', lazy=True)
-    liked_by = db.relationship('User', secondary=user_likes, lazy='dynamic')
+    liked_by = db.relationship('User', secondary=user_likes,overlaps="liked_blogs", lazy='dynamic')
     comments = db.relationship('Comment', backref='blog', lazy=True)
     hidden = db.Column(db.Boolean, default=False)  
 

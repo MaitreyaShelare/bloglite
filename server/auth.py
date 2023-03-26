@@ -43,9 +43,16 @@ def login():
             return jsonify(access_token=access_token, refresh_token=refresh_token, id=user.id), 201
     return jsonify(message="Invalid Email or Password"), 403
 
+# @auth.route("api/refresh", methods=["POST"])
+# @jwt_required(refresh=True)
+# def refresh():
+#     identity = get_jwt_identity()
+#     access_token = create_access_token(identity=identity)
+#     return jsonify(access_token=access_token),201    
+
 @auth.route("api/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
     identity = get_jwt_identity()
     access_token = create_access_token(identity=identity)
-    return jsonify(access_token=access_token),201    
+    return jsonify(access_token=access_token),201   
