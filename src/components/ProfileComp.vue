@@ -153,7 +153,7 @@ export default {
         fetch(url, requestOptions)
           .then((response) => response.json())
           .then((data) => {
-            console.log(data);
+            // console.log(data);
             if (data.msg === "Profile Picture Updated") {
               this.profileData.dp = data.dp;
               this.profileData.dp_mimetype = data.dp_mimetype;
@@ -170,9 +170,6 @@ export default {
           });
       }
     },
-    // updateDpImageSrc() {
-    //   this.dpImageSrc = `data:${this.profileData.dp_mimetype};charset=utf-8;base64,${this.profileData.dp}`;
-    // },
     toggleFollow() {
       this.followed ? this.UnfollowUser() : this.FollowUser(),
         (this.followed = !this.followed);
@@ -215,7 +212,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.profileData = data;
-          console.log(data);
+          // console.log(data);
           this.isFollowed();
         })
         .catch((error) => {

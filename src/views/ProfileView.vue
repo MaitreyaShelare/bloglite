@@ -119,6 +119,9 @@ export default {
     UpdateProfile() {
       // console.log("changed");
       this.profileKey += 1;
+      this.seePosts = false;
+      this.seeFollowers = false;
+      this.seeFollowing = false;
     },
     userPosts() {
       // console.log("userPosts");

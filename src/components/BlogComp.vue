@@ -25,8 +25,8 @@
                     v-if="blogDetails"
                     :src="blogDetails.dpImageSrc"
                     alt="dp"
-                    width="32"
-                    height="32"
+                    width="35"
+                    height="35"
                     class="rounded-circle"
                   />
                 </a>
@@ -56,8 +56,12 @@
                       </button>
                     </li>
                     <li>
-                      <button class="dropdown-item" v-if="superUser">
-                        Delete
+                      <button
+                        class="dropdown-item"
+                        v-if="superUser"
+                        @click="toggleHide"
+                      >
+                        {{ hidden ? "Show" : "Hide" }}
                       </button>
                     </li>
                     <li><button class="dropdown-item">Export</button></li>
@@ -184,6 +188,7 @@ export default {
     return {
       showComments: false,
       superUser: false,
+      hidden: false,
       liked: null,
       blogData: null,
       blog_id: this.blogID,
@@ -202,6 +207,35 @@ export default {
       this.liked = !this.liked;
       this.liked ? this.LikeBlog() : this.UnlikeBlog();
     },
+    toggleHide() {
+      this.hidden = !this.hidden;
+      // this.hidden ? this.HideBlog() : this.UnhideBlog();
+      // console.log(this.hidden);
+      var blogid = this.blog_id;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/toggleHide/" + blogid;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "PATCH",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // this.liked = true;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
     isLiked() {
       if (this.blogData) {
         var id = this.$store.getters.getCurrentUserID;
@@ -209,6 +243,15 @@ export default {
           this.liked = true;
         } else {
           this.liked = false;
+        }
+      }
+    },
+    isHidden() {
+      if (this.blogData) {
+        if (this.blogData.hidden) {
+          this.hidden = true;
+        } else {
+          this.hidden = false;
         }
       }
     },
@@ -302,6 +345,7 @@ export default {
           console.log(this.blogData);
           this.isLiked();
           this.isSuperUser();
+          this.isHidden();
         })
         .catch((error) => {
           console.error(error);

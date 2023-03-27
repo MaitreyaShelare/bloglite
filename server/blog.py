@@ -62,7 +62,7 @@ def getBlog(blog_id):
 #     output = blog_schema.dump(blog_all)
 #     return jsonify(output), 201
 def get_blogs():
-    blogs = Blog.query.order_by(Blog.timestamp.desc()).all()
+    blogs = Blog.query.filter_by(hidden=False).order_by(Blog.timestamp.desc()).all()
     blog_ids = [blog.id for blog in blogs]
     return jsonify(blog_ids), 201    
 # @blog.route('api/blog/<int:blog_id>', methods=['GET'])
@@ -94,7 +94,7 @@ def get_feed(user_id):
     current_user = User.query.filter_by(id=user_id).first()
     if current_user is not None:
         followed_user_ids = [user.id for user in current_user.followed_users]
-        followed_user_blogs = Blog.query.filter(Blog.user_id.in_(followed_user_ids)).order_by(Blog.timestamp.desc()).all()
+        followed_user_blogs = Blog.query.filter(Blog.user_id.in_(followed_user_ids)).filter_by(hidden=False).order_by(Blog.timestamp.desc()).all()
         blog_ids = [blog.id for blog in followed_user_blogs]
         return jsonify(blog_ids), 201 
     else:
@@ -132,6 +132,20 @@ def unlike_blog(user_id,blog_id):
     else:
         return jsonify(error="Error in Blog Unlike"), 404
     
+# Toggle Blog Hide
+@blog.route('api/blog/toggleHide/<int:blog_id>', methods=['PATCH'])
+@jwt_required() 
+
+def toggle_hide(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if blog is not None:
+        blog.hidden = not blog.hidden
+        db.session.commit()
+        return jsonify(message="Blog Hide Toggled", status=blog.hidden), 201
+    else:
+        return jsonify(error="Error in Blog Hide Toggle"), 404
+
+
 @blog.route('api/blog', methods=['POST'])
 @jwt_required()
 def createBlog():
