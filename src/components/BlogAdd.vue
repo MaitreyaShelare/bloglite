@@ -52,11 +52,11 @@
         <div pt-2 mt-3 v-if="preview">
           <!-- <div v-for="(item, index) in preview_list" :key="index"> -->
           <!-- <p class="text-center">{{ image_list[index].name }}</p> -->
-          <div class="text-center col-lg-10 mx-auto">
+          <div class="text-center col-lg-10 mx-3 mx-lg-auto">
             <div class="text-end mt-2">
               <button class="btn-close" @click="clearImage"></button>
             </div>
-            <img :src="preview" class="img-fluid my-4" />
+            <img :src="preview" class="img-thumbnail my-4" />
             <!-- <img :src="item" class="img-fluid mt-4" /> -->
           </div>
           <!-- <p>size: {{ image_list[index].size / 1024 }}KB</p> -->

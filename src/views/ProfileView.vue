@@ -62,7 +62,11 @@
       </div>
     </div>
     <div v-if="showModal">
-      <BlogModal @close="closeEditModal" />
+      <BlogModal
+        :blogID="modalBlogID"
+        @close="closeEditModal"
+        @updated="closeEditModal"
+      />
     </div>
   </div>
 </template>
@@ -90,7 +94,7 @@ export default {
   // },
   data() {
     return {
-      seePosts: false,
+      seePosts: true,
       seeFollowers: false,
       noFollowers: false,
       seeFollowing: false,
@@ -111,28 +115,18 @@ export default {
     this.FetchFollowers();
     this.FetchFollowing();
   },
-  watch: {
-    userId: function () {
-      // this.update = !this.update;
-      this.resetData();
-      this.FetchBlogs();
-      this.FetchFollowers();
-      this.FetchFollowing();
-      // this.$forceUpdate();
-      // this.$forceRefresh();
-    },
-  },
   methods: {
     showEditModal(blogID) {
-      console.log(blogID);
       this.modalBlogID = blogID;
+      console.log(this.modalBlogID);
       this.showModal = true;
     },
     closeEditModal() {
       this.showModal = false;
       this.modalBlogID = null;
-      this.seePosts = false;
-      // this.UpdateProfile(); DO THISSSSSSSSSSSSSSSSSSSSSSSSSSs
+      // this.seePosts = false;
+      this.blogs = [];
+      // this.profileKey += 1;
     },
     UpdateProfile() {
       // console.log("changed");
@@ -280,6 +274,20 @@ export default {
           this.$store.commit("setToken", data.access_token);
           this.FetchBlogs();
         });
+    },
+  },
+  watch: {
+    userId: function () {
+      // this.update = !this.update;
+      this.resetData();
+      this.FetchBlogs();
+      this.FetchFollowers();
+      this.FetchFollowing();
+      // this.$forceUpdate();
+      // this.$forceRefresh();
+    },
+    blogs: function () {
+      this.FetchBlogs();
     },
   },
 };

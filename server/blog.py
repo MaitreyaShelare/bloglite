@@ -159,6 +159,39 @@ def createBlog():
         db.session.commit()
     return jsonify(message="Blog added sucessfully"), 201
 
+# Update a Blog
+@blog.route('api/blog/<int:blog_id>', methods=['PATCH'])
+@jwt_required()
+def updateBlog(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if blog is not None:
+        if 'text' in request.form:
+            blog.text = request.form['text']
+
+        if 'image' in request.files:
+            photo = request.files["image"].read()
+            photo_b64 = base64.b64encode(photo).decode('utf-8')
+            photo_mimetype = request.files["image"].mimetype
+            blog.photo = photo_b64
+            blog.photo_mimetype = photo_mimetype
+
+        db.session.commit()
+        return jsonify(message="Blog updated sucessfully"), 201
+    else:
+        return jsonify(error="Error in Blog Update"), 404
+    
+# Delete a Blog
+@blog.route('api/blog/<int:blog_id>', methods=['DELETE'])
+@jwt_required()
+def deleteBlog(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if blog is not None:
+        db.session.delete(blog)
+        db.session.commit()
+        return jsonify(message="Blog deleted sucessfully"), 201
+    else:
+        return jsonify(error="Error in Blog Delete"), 404
+    
 # @list.route('api/list/<int:id>', methods=['DELETE'])
 # @jwt_required()
 # def deleteList(id):

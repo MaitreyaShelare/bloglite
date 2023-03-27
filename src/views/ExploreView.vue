@@ -10,6 +10,13 @@
         @editBlog="showEditModal"
       />
     </div>
+    <div v-if="showModal">
+      <BlogModal
+        :blogID="modalBlogID"
+        @close="closeEditModal"
+        @updated="closeEditModal"
+      />
+    </div>
   </div>
 </template>
 
@@ -17,16 +24,20 @@
 // @ is an alias to /src
 import FeedNav from "@/components/FeedNav.vue";
 import BlogComp from "@/components/BlogComp.vue";
+import BlogModal from "@/components/BlogModal.vue";
 
 export default {
   name: "ExploreView",
   components: {
     FeedNav,
     BlogComp,
+    BlogModal,
   },
   data: function () {
     return {
       blogs: [],
+      modalBlogID: null,
+      showModal: false,
     };
   },
   mounted() {
@@ -58,6 +69,7 @@ export default {
             this.refreshToken();
           } else {
             this.blogs = data;
+            this.blogKey = 0;
           }
         });
     },
@@ -84,7 +96,19 @@ export default {
         });
     },
     showEditModal(blogID) {
-      console.log(blogID);
+      this.modalBlogID = blogID;
+      console.log(this.modalBlogID);
+      this.showModal = true;
+    },
+    closeEditModal() {
+      this.showModal = false;
+      this.modalBlogID = null;
+      this.blogs = [];
+    },
+  },
+  watch: {
+    blogs: function () {
+      this.FetchBlogs();
     },
   },
 };
