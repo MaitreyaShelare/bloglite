@@ -7,6 +7,7 @@
       <ProfileComp
         :userID="userId"
         :key="userId + profileKey"
+        @profile-updated="UpdateProfile()"
         @user-posts="userPosts()"
         @user-followers="userFollowers()"
         @user-following="userFollowing()"
@@ -84,7 +85,7 @@ export default {
   // },
   data() {
     return {
-      seePosts: true,
+      seePosts: false,
       seeFollowers: false,
       noFollowers: false,
       seeFollowing: false,

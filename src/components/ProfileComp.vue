@@ -33,8 +33,9 @@
                     <div class="div" v-if="!differentUser">
                       <input
                         type="file"
+                        name="dp-image"
                         accept="image/*"
-                        @change="changeDp()"
+                        @change="changeDp"
                       />
                     </div>
                   </span>
@@ -117,22 +118,61 @@ export default {
       differentUser: false,
       profileData: null,
       follower_count: null,
+      dpimage: null,
       user_id: this.userID,
     };
   },
 
   methods: {
-    // changeDp() {
-    //   if (!this.differentUser) {
-    //     console.log("Change DP");
-    //     @change="editDp()"
-    //   }
-    // },
-    changeDp() {
+    changeDp(event) {
+      var input = event.target;
+      if (input.files) {
+        this.image = input.files[0];
+      }
+
       if (!this.differentUser) {
-        console.log("Edit DP");
+        var id = this.user_id;
+        var base = this.$store.getters.getBaseURL;
+        var url = base + "/api/profile/dp/" + id;
+        const formData = new FormData();
+
+        formData.append("image", this.image);
+
+        var token = this.$store.getters.getToken;
+        var pureToken = token.replace(/["]+/g, "");
+        var auth = `Bearer ${pureToken}`;
+
+        var requestOptions = {
+          method: "POST",
+          headers: {
+            Authorization: auth,
+          },
+          body: formData,
+        };
+
+        fetch(url, requestOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            if (data.msg === "Profile Picture Updated") {
+              this.profileData.dp = data.dp;
+              this.profileData.dp_mimetype = data.dp_mimetype;
+              // $emit('user-following')
+              // this.reloadComponent();
+              // this.$forceUpdate;
+              // this.window.location.reload;
+              // this.$forceUpdate;
+            }
+            this.$emit("profile-updated");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     },
+    // updateDpImageSrc() {
+    //   this.dpImageSrc = `data:${this.profileData.dp_mimetype};charset=utf-8;base64,${this.profileData.dp}`;
+    // },
     toggleFollow() {
       this.followed ? this.UnfollowUser() : this.FollowUser(),
         (this.followed = !this.followed);
@@ -268,6 +308,17 @@ export default {
     //   return false;
     // },
   },
+  // watch: {
+  //   "profileData.dp": function () {
+  //     this.updateDpImageSrc();
+  //     this.$forceUpdate;
+  //   },
+  //   profileData: function (newVal) {
+  //     if (newVal && newVal.dp && newVal.dp_mimetype) {
+  //       this.dpImageSrc = `data:${newVal.dp_mimetype};charset=utf-8;base64,${newVal.dp}`;
+  //     }
+  //   },
+  // },
 };
 </script>
 

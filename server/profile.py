@@ -18,6 +18,24 @@ def getUserProfile(user_id):
         return jsonify(result)
     else:
         return jsonify(error="User not found"), 404
+    
+# For Change Profile Picture
+@profile.route('/api/profile/dp/<int:user_id>', methods=['POST'])
+def getUserDp(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        photo = request.files["image"].read()
+        photo_b64 = base64.b64encode(photo).decode('utf-8')
+        photo_mimetype = request.files["image"].mimetype
+
+        user.dp = photo_b64
+        user.dp_mimetype = photo_mimetype
+        db.session.commit()
+    
+        return jsonify(message="Profile Picture Updated",dp=photo_b64,dp_mimetype=photo_mimetype), 201
+    # return jsonify(message="Profile Picture Updated"), 201
+    else:
+        return jsonify(error="Error in Updating Profile Picture"), 404    
 
 # For Profile View, returns only a user's blog IDs
 @profile.route('api/profile/blogs/<int:user_id>', methods=['GET'])
