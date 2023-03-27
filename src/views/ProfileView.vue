@@ -64,7 +64,7 @@
     <div v-if="showModal">
       <BlogModal
         :blogID="modalBlogID"
-        @close="closeEditModal"
+        @close="closeModal"
         @updated="closeEditModal"
       />
     </div>
@@ -124,9 +124,11 @@ export default {
     closeEditModal() {
       this.showModal = false;
       this.modalBlogID = null;
-      // this.seePosts = false;
       this.blogs = [];
-      // this.profileKey += 1;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.modalBlogID = null;
     },
     UpdateProfile() {
       // console.log("changed");

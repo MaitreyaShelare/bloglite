@@ -13,7 +13,7 @@
     <div v-if="showModal">
       <BlogModal
         :blogID="modalBlogID"
-        @close="closeEditModal"
+        @close="closeModal"
         @updated="closeEditModal"
       />
     </div>
@@ -104,6 +104,10 @@ export default {
       this.showModal = false;
       this.modalBlogID = null;
       this.blogs = [];
+    },
+    closeModal() {
+      this.showModal = false;
+      this.modalBlogID = null;
     },
   },
   watch: {

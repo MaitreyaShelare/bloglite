@@ -98,6 +98,13 @@
               Update Blog
             </button>
             <button
+              class="btn btn-danger w-100 mx-0 mb-2"
+              :disabled="isDisabled"
+              @click="handleDeleteClick"
+            >
+              {{ deleteButtonText }}
+            </button>
+            <button
               class="btn btn-outline-dark bg border-light w-100 mx-0"
               @click="closeModal"
             >
@@ -121,6 +128,8 @@ export default {
       preview: null,
       image: null,
       blogtext: "",
+      isDisabled: false,
+      deleteCounter: 0,
     };
   },
   mounted() {
@@ -180,6 +189,8 @@ export default {
       this.image = null;
       this.preview = null;
       this.blogtext = "";
+      this.deleteCounter = 0;
+      this.isDisabled = false;
     },
     sanitizeHtml(html) {
       const allowedTags = ["p", "a", "b", "i", "u", "ul", "ol", "li"];
@@ -236,6 +247,58 @@ export default {
           console.log(error);
         });
       this.reset();
+    },
+    handleDeleteClick() {
+      if (this.deleteCounter === 0) {
+        this.deleteWarning();
+      } else if (this.deleteCounter === 1) {
+        this.deleteBlog();
+      }
+      this.deleteCounter++;
+    },
+    deleteWarning() {
+      // Disable button for 5 seconds
+      this.isDisabled = true;
+      setTimeout(() => {
+        this.isDisabled = false;
+      }, 5000);
+    },
+    deleteBlog: function () {
+      var id = this.blog_id;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/" + id;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "DELETE",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.$emit("updated");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.reset();
+    },
+  },
+  computed: {
+    deleteDisabled() {
+      return this.deleteCounter > 0;
+    },
+    deleteButtonText() {
+      return this.deleteCounter > 0
+        ? "This action cannot be undone"
+        : "Delete Blog";
     },
   },
 };
