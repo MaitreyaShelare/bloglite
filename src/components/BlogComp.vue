@@ -52,7 +52,7 @@
                   <ul class="dropdown-menu">
                     <li>
                       <button class="dropdown-item" v-if="superUser">
-                        Edit
+                        <i class="bi bi-pen-fill"></i>&nbsp; Edit
                       </button>
                     </li>
                     <li>
@@ -61,10 +61,21 @@
                         v-if="superUser"
                         @click="toggleHide"
                       >
+                        <i
+                          :class="{
+                            'bi bi-caret-down-square-fill': !hidden,
+                            'bi bi-caret-up-square-fill': hidden,
+                          }"
+                        ></i
+                        >&nbsp;
                         {{ hidden ? "Unarchive" : "Archive" }}
                       </button>
                     </li>
-                    <li><button class="dropdown-item">Share</button></li>
+                    <li>
+                      <button class="dropdown-item">
+                        <i class="bi bi-share-fill"></i>&nbsp; Share
+                      </button>
+                    </li>
                   </ul>
                 </div>
               </div>
