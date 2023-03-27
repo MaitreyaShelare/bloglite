@@ -4,7 +4,11 @@
       <FeedNav />
     </div>
     <div class="blogs pt-5" v-for="blog in blogs" :key="blog">
-      <BlogComp :blogID="blog" @toggleHide="FetchBlogs" />
+      <BlogComp
+        :blogID="blog"
+        @toggleHide="FetchBlogs"
+        @editBlog="showEditModal"
+      />
     </div>
   </div>
 </template>
@@ -78,6 +82,9 @@ export default {
           this.$store.commit("setToken", data.access_token);
           this.FetchBlogs();
         });
+    },
+    showEditModal(blogID) {
+      console.log(blogID);
     },
   },
 };

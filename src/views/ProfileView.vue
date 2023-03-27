@@ -16,7 +16,7 @@
     </div>
     <div class="blogs" v-if="seePosts">
       <div class="userblogs pt-5" v-for="blog in blogs" :key="blog">
-        <BlogComp :blogID="blog" />
+        <BlogComp :blogID="blog" @editBlog="showEditModal" />
       </div>
     </div>
 
@@ -116,6 +116,9 @@ export default {
     },
   },
   methods: {
+    showEditModal(blogID) {
+      console.log(blogID);
+    },
     UpdateProfile() {
       // console.log("changed");
       this.profileKey += 1;

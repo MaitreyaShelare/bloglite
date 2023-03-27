@@ -51,7 +51,11 @@
                   </a>
                   <ul class="dropdown-menu">
                     <li>
-                      <button class="dropdown-item" v-if="superUser">
+                      <button
+                        class="dropdown-item"
+                        v-if="superUser"
+                        @click="editBlog"
+                      >
                         <i class="bi bi-pen-fill"></i>&nbsp; Edit
                       </button>
                     </li>
@@ -213,6 +217,10 @@ export default {
   methods: {
     toggleComments() {
       this.showComments = !this.showComments;
+    },
+    editBlog() {
+      // console.log("edit blog");
+      this.$emit("editBlog", this.blog_id);
     },
     toggleLike() {
       this.liked = !this.liked;
