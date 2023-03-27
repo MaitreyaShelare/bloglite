@@ -129,7 +129,7 @@
             </svg>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li>
+            <!-- <li>
               <a class="dropdown-item" href="/">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +145,7 @@
                 >&nbsp; Settings</a
               >
             </li>
-            <li><hr class="dropdown-divider" /></li>
+            <li><hr class="dropdown-divider" /></li> -->
             <li>
               <a class="dropdown-item" href="/" @click="logout">
                 <svg

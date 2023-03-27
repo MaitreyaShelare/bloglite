@@ -56,7 +56,7 @@
                         v-if="superUser"
                         @click="editBlog"
                       >
-                        <i class="bi bi-pen-fill"></i>&nbsp; Edit
+                        <i class="bi bi-pen-fill"></i>&nbsp;&nbsp; Edit
                       </button>
                     </li>
                     <li>
@@ -71,13 +71,13 @@
                             'bi bi-caret-up-square-fill': hidden,
                           }"
                         ></i
-                        >&nbsp;
+                        >&nbsp;&nbsp;
                         {{ hidden ? "Unarchive" : "Archive" }}
                       </button>
                     </li>
                     <li>
                       <button class="dropdown-item">
-                        <i class="bi bi-share-fill"></i>&nbsp; Share
+                        <i class="bi bi-share-fill"></i>&nbsp;&nbsp; Share
                       </button>
                     </li>
                   </ul>

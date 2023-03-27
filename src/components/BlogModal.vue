@@ -51,16 +51,6 @@
                       </span>
                     </div>
                   </form>
-                  <!-- <div class="d-grid col-2 align-items-center">
-                    <button
-                      class="btn btn-primary btn-sm rounded-pill mx-2"
-                      :disabled="blogtext.length < 2 || !image"
-                      type="submit"
-                      @click="PostBlog"
-                    >
-                      Post
-                    </button>
-                  </div> -->
                 </div>
               </div>
               <div pt-2 mt-3 v-if="preview">
@@ -72,21 +62,6 @@
                 </div>
               </div>
             </div>
-            <!-- <form novalidate="true">
-              <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control rounded-3"
-                  id="floatingInput"
-                  placeholder="List Name"
-                  v-model="name"
-                  :class="{ 'is-invalid': invalidname }"
-                  @click="invalidname = null"
-                />
-                <label for="floatingInput">List Name</label>
-                <div class="invalid-feedback">Please enter a valid name</div>
-              </div>
-            </form> -->
           </div>
           <div class="modal-footer flex-column border-top-0">
             <button
@@ -297,7 +272,7 @@ export default {
     },
     deleteButtonText() {
       return this.deleteCounter > 0
-        ? "This action cannot be undone"
+        ? "This action cannot be undone. Confirm ?"
         : "Delete Blog";
     },
   },
