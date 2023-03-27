@@ -61,6 +61,9 @@
         </div>
       </div>
     </div>
+    <div v-if="showModal">
+      <BlogModal @close="closeEditModal" />
+    </div>
   </div>
 </template>
 
@@ -70,6 +73,7 @@ import FeedNav from "@/components/FeedNav.vue";
 import ProfileComp from "@/components/ProfileComp.vue";
 import BlogComp from "@/components/BlogComp.vue";
 import SearchUsers from "@/components/SearchUsers.vue";
+import BlogModal from "@/components/BlogModal.vue";
 
 export default {
   name: "ProfileView",
@@ -78,6 +82,7 @@ export default {
     ProfileComp,
     BlogComp,
     SearchUsers,
+    BlogModal,
   },
   props: ["userId"],
   // props: {
@@ -90,6 +95,8 @@ export default {
       noFollowers: false,
       seeFollowing: false,
       noFollowing: false,
+      showModal: false,
+      modalBlogID: null,
       profileKey: 0,
       blogs: [],
       followers: [],
@@ -118,6 +125,14 @@ export default {
   methods: {
     showEditModal(blogID) {
       console.log(blogID);
+      this.modalBlogID = blogID;
+      this.showModal = true;
+    },
+    closeEditModal() {
+      this.showModal = false;
+      this.modalBlogID = null;
+      this.seePosts = false;
+      // this.UpdateProfile(); DO THISSSSSSSSSSSSSSSSSSSSSSSSSSs
     },
     UpdateProfile() {
       // console.log("changed");
