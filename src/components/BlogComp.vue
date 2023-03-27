@@ -61,10 +61,10 @@
                         v-if="superUser"
                         @click="toggleHide"
                       >
-                        {{ hidden ? "Show" : "Hide" }}
+                        {{ hidden ? "Unarchive" : "Archive" }}
                       </button>
                     </li>
-                    <li><button class="dropdown-item">Export</button></li>
+                    <li><button class="dropdown-item">Share</button></li>
                   </ul>
                 </div>
               </div>
@@ -100,7 +100,7 @@
                 ></i
                 >&nbsp;{{ liked ? "Liked" : "Like" }}
               </button>
-              <!-- <button
+              <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
                 type="button"
                 @click="toggleComments"
@@ -112,13 +112,13 @@
                   }"
                 ></i
                 >&nbsp;Comment
-              </button> -->
+              </button>
               <button class="btn ms-auto fs-6 fw-bolder" v-if="blogDetails">
                 {{ postDate }}
               </button>
             </div>
           </div>
-          <!-- <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
+          <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
             <div class="comments">
               <div class="d-flex align-items-start">
                 <div class="me-2">
@@ -170,7 +170,7 @@
                 />
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
@@ -231,6 +231,7 @@ export default {
         .then((data) => {
           console.log(data);
           // this.liked = true;
+          this.$emit("toggleHide");
         })
         .catch((error) => {
           console.error(error);

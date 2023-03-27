@@ -4,7 +4,7 @@
       <FeedNav />
     </div>
     <div class="blogs pt-5" v-for="blog in blogs" :key="blog">
-      <BlogComp :blogID="blog" />
+      <BlogComp :blogID="blog" @toggleHide="FetchBlogs" />
     </div>
   </div>
 </template>
