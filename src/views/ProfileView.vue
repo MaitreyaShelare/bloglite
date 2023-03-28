@@ -96,9 +96,7 @@ export default {
     return {
       seePosts: true,
       seeFollowers: false,
-      noFollowers: false,
       seeFollowing: false,
-      noFollowing: false,
       showModal: false,
       modalBlogID: null,
       profileKey: 0,
@@ -134,9 +132,9 @@ export default {
     UpdateProfile() {
       // console.log("changed");
       this.profileKey += 1;
-      this.seePosts = false;
-      this.seeFollowers = false;
-      this.seeFollowing = false;
+      // this.seePosts = false;
+      // this.seeFollowers = false;
+      // this.seeFollowing = false;
     },
     userPosts() {
       // console.log("userPosts");
@@ -150,22 +148,24 @@ export default {
     userFollowers() {
       this.seePosts = false;
       this.seeFollowing = false;
+      this.seeFollowers = !this.seeFollowers;
       this.FetchFollowers();
-      if (this.nofollowers) {
-        this.seeFollowers = false;
-      } else {
-        this.seeFollowers = true;
-      }
+      // if (this.nofollowers) {
+      //   this.seeFollowers = false;
+      // } else {
+      //   this.seeFollowers = true;
+      // }
     },
     userFollowing() {
       this.seePosts = false;
       this.seeFollowers = false;
+      this.seeFollowing = !this.seeFollowing;
       this.FetchFollowing();
-      if (this.nofollowing) {
-        this.seeFollowing = false;
-      } else {
-        this.seeFollowing = !this.seeFollowing;
-      }
+      // if (this.nofollowing) {
+      //   this.seeFollowing = false;
+      // } else {
+      //   this.seeFollowing = !this.seeFollowing;
+      // }
     },
     FetchBlogs() {
       var id = this.userId;
@@ -214,9 +214,9 @@ export default {
         .then((data) => {
           this.followers = data;
           // console.log(this.followers);
-          if (this.followers.length == 0) {
-            this.nofollowers = true;
-          }
+          // if (this.followers.length == 0) {
+          //   this.nofollowers = true;
+          // }
         });
     },
     FetchFollowing() {
@@ -240,17 +240,17 @@ export default {
         .then((data) => {
           this.following = data;
           // console.log(this.following);
-          if (this.following.length == 0) {
-            this.nofollowing = true;
-          }
+          // if (this.following.length == 0) {
+          //   this.nofollowing = true;
+          // }
         });
     },
     resetData() {
       this.seePosts = true;
       this.seeFollowers = false;
-      this.noFollowers = false;
+      // this.noFollowers = false;
       this.seeFollowing = false;
-      this.noFollowing = false;
+      // this.noFollowing = false;
       this.profileKey = 0;
       this.blogs = [];
       this.followers = [];
@@ -289,9 +289,6 @@ export default {
       // this.$forceUpdate();
       // this.$forceRefresh();
     },
-    // blogs: function () {
-    //   this.FetchBlogs();
-    // },
   },
 };
 </script>
