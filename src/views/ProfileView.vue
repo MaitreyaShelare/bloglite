@@ -125,6 +125,7 @@ export default {
       this.showModal = false;
       this.modalBlogID = null;
       this.blogs = [];
+      this.FetchBlogs();
     },
     closeModal() {
       this.showModal = false;
@@ -288,9 +289,9 @@ export default {
       // this.$forceUpdate();
       // this.$forceRefresh();
     },
-    blogs: function () {
-      this.FetchBlogs();
-    },
+    // blogs: function () {
+    //   this.FetchBlogs();
+    // },
   },
 };
 </script>

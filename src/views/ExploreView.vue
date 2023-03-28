@@ -103,18 +103,21 @@ export default {
     closeEditModal() {
       this.showModal = false;
       this.modalBlogID = null;
+      // this.FetchBlogs();
+      // this.$forceUpdate();
       this.blogs = [];
+      this.FetchBlogs();
     },
     closeModal() {
       this.showModal = false;
       this.modalBlogID = null;
     },
   },
-  watch: {
-    blogs: function () {
-      this.FetchBlogs();
-    },
-  },
+  // watch: {
+  //   blogs: function () {
+  //     this.FetchBlogs();
+  //   },
+  // },
 };
 </script>
 

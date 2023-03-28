@@ -192,6 +192,23 @@ def deleteBlog(blog_id):
     else:
         return jsonify(error="Error in Blog Delete"), 404
     
+
+# Add Comment
+@blog.route('api/blog/comment/<int:user_id>/<int:blog_id>', methods=['POST']) 
+@jwt_required()
+
+def addComment(user_id,blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if blog is not None:
+        text = request.form["comment"]
+        new_comment = Comment(text=text, blog_id=blog_id, user_id=user_id)
+        db.session.add(new_comment)
+        db.session.commit()
+        return jsonify(message="Comment added sucessfully"), 201
+    else:
+        return jsonify(error="Error in Comment Add"), 404
+
+    
 # @list.route('api/list/<int:id>', methods=['DELETE'])
 # @jwt_required()
 # def deleteList(id):

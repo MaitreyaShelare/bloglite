@@ -115,7 +115,7 @@
                 ></i
                 >&nbsp;{{ liked ? "Liked" : "Like" }}
               </button>
-              <!-- <button
+              <button
                 class="btn btn-link link-dark p-0 me-3 fs-6 fw-bolder text-decoration-none"
                 type="button"
                 @click="toggleComments"
@@ -127,65 +127,25 @@
                   }"
                 ></i
                 >&nbsp;Comment
-              </button> -->
+              </button>
               <button class="btn ms-auto fs-6 fw-bolder" v-if="blogDetails">
                 {{ postDate }}
               </button>
             </div>
           </div>
-          <!-- <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
-            <div class="comments">
-              <div class="d-flex align-items-start">
-                <div class="me-2">
-                  <img
-                    src="https://github.com/mdo.png"
-                    alt="mdo"
-                    width="32"
-                    height="32"
-                    class="rounded-circle"
-                  />
-                </div>
-                <div class="flex-1">
-                  <div class="d-flex align-items-center">
-                    <a
-                      class="fw-bold mb-0 text-decoration-none text-black"
-                      href="#!"
-                      >John Smith</a
-                    ><span class="text-600 fw-semi-bold fs--2 ms-2"
-                      >35 mins ago</span
-                    >
-                  </div>
-                  <p class="mb-0">
-                    How long did it take to create this? It appears that you
-                    quickly produced the second one.
-                  </p>
-                  <button
-                    class="btn btn-link p-0 text-900 text-decoration-none fw-bolder mb-2"
-                    type="button"
-                  ></button>
-                </div>
-              </div>
-            </div>
-
-            <div id="add-comment" class="d-flex align-items-center">
-              <div class="me-2">
-                <img
-                  src="https://github.com/mdo.png"
-                  alt="mdo"
-                  width="32"
-                  height="32"
-                  class="rounded-circle"
-                />
-              </div>
-              <div class="flex-1 w-100">
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Add comment"
-                />
-              </div>
-            </div>
-          </div> -->
+          <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
+            <CommentComp :blogID="blog_id" :superUser="superUser" />
+            <!-- <CommentComp
+              v-for="comment in blogDetails.comments"
+              :key="comment.id"
+              :commentID="comment.id"
+              :commentText="comment.text"
+              :commentDate="comment.date"
+              :commentUserID="comment.user.id"
+              :commentUserName="comment.user.name"
+              :commentUserDp="comment.user.dp"
+              :deleteComment="deleteComment"/> -->
+          </div>
         </div>
       </div>
     </div>
@@ -193,12 +153,15 @@
 </template>
 
 <script>
+import CommentComp from "@/components/CommentComp.vue";
 export default {
   name: "BlogComp",
   props: {
     blogID: Number,
   },
-
+  components: {
+    CommentComp,
+  },
   data: function () {
     return {
       showComments: false,
