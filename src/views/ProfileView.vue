@@ -20,20 +20,22 @@
       </div>
     </div>
 
-    <div class="followers" v-if="seeFollowers">
-      <div class="container">
-        <div class="col col-md-6 mx-auto mt-2">
-          <div class="card mb-4 overflow-hidden">
-            <div class="card-body p-3 p-sm-4">
-              <div
-                class="userfollowers"
-                v-for="follower in followers"
-                :key="follower"
-              >
-                <SearchUsers
-                  :userID="follower"
-                  @toggle-follow="UpdateProfile()"
-                />
+    <div class="followers" v-if="!nofollowers">
+      <div v-if="seeFollowers">
+        <div class="container">
+          <div class="col col-md-6 mx-auto mt-2">
+            <div class="card mb-4 overflow-hidden">
+              <div class="card-body p-3 p-sm-4">
+                <div
+                  class="userfollowers"
+                  v-for="follower in followers"
+                  :key="follower"
+                >
+                  <SearchUsers
+                    :userID="follower"
+                    @toggle-follow="UpdateProfile()"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -41,26 +43,29 @@
       </div>
     </div>
 
-    <div class="following" v-if="seeFollowing">
-      <div class="container">
-        <div class="col col-md-6 mx-auto mt-2">
-          <div class="card mb-4 overflow-hidden">
-            <div class="card-body p-3 p-sm-4">
-              <div
-                class="userfollowing"
-                v-for="following in following"
-                :key="following"
-              >
-                <SearchUsers
-                  :userID="following"
-                  @toggle-follow="UpdateProfile()"
-                />
+    <div class="following" v-if="!nofollowing">
+      <div v-if="seeFollowing">
+        <div class="container">
+          <div class="col col-md-6 mx-auto mt-2">
+            <div class="card mb-4 overflow-hidden">
+              <div class="card-body p-3 p-sm-4">
+                <div
+                  class="userfollowing"
+                  v-for="following in following"
+                  :key="following"
+                >
+                  <SearchUsers
+                    :userID="following"
+                    @toggle-follow="UpdateProfile()"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div v-if="showModal">
       <BlogModal
         :blogID="modalBlogID"
@@ -89,14 +94,14 @@ export default {
     BlogModal,
   },
   props: ["userId"],
-  // props: {
-  //   userId: Number,
-  // },
+
   data() {
     return {
       seePosts: true,
       seeFollowers: false,
       seeFollowing: false,
+      nofollowers: false,
+      nofollowing: false,
       showModal: false,
       modalBlogID: null,
       profileKey: 0,
@@ -148,24 +153,24 @@ export default {
     userFollowers() {
       this.seePosts = false;
       this.seeFollowing = false;
-      this.seeFollowers = !this.seeFollowers;
+      // this.seeFollowers = !this.seeFollowers;
       this.FetchFollowers();
-      // if (this.nofollowers) {
-      //   this.seeFollowers = false;
-      // } else {
-      //   this.seeFollowers = true;
-      // }
+      if (this.nofollowers) {
+        this.seeFollowers = false;
+      } else {
+        this.seeFollowers = !this.seeFollowers;
+      }
     },
     userFollowing() {
       this.seePosts = false;
       this.seeFollowers = false;
-      this.seeFollowing = !this.seeFollowing;
+      // this.seeFollowing = !this.seeFollowing;
       this.FetchFollowing();
-      // if (this.nofollowing) {
-      //   this.seeFollowing = false;
-      // } else {
-      //   this.seeFollowing = !this.seeFollowing;
-      // }
+      if (this.nofollowing) {
+        this.seeFollowing = false;
+      } else {
+        this.seeFollowing = !this.seeFollowing;
+      }
     },
     FetchBlogs() {
       var id = this.userId;
@@ -214,9 +219,10 @@ export default {
         .then((data) => {
           this.followers = data;
           // console.log(this.followers);
-          // if (this.followers.length == 0) {
-          //   this.nofollowers = true;
-          // }
+          if (this.followers.length == 0) {
+            this.nofollowers = true;
+            // console.log(this.nofollowers);
+          }
         });
     },
     FetchFollowing() {
@@ -240,9 +246,9 @@ export default {
         .then((data) => {
           this.following = data;
           // console.log(this.following);
-          // if (this.following.length == 0) {
-          //   this.nofollowing = true;
-          // }
+          if (this.following.length == 0) {
+            this.nofollowing = true;
+          }
         });
     },
     resetData() {
