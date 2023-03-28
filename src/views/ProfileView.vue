@@ -137,6 +137,8 @@ export default {
     UpdateProfile() {
       // console.log("changed");
       this.profileKey += 1;
+      this.blogs = [];
+      this.FetchBlogs();
       // this.seePosts = false;
       // this.seeFollowers = false;
       // this.seeFollowing = false;
