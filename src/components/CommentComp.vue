@@ -1,44 +1,7 @@
 <template>
   <div class="comments">
-    <div class="d-flex align-items-start">
-      <div class="me-2">
-        <img
-          src="https://github.com/mdo.png"
-          alt="mdo"
-          width="32"
-          height="32"
-          class="rounded-circle"
-        />
-      </div>
-      <div class="flex-1">
-        <div class="d-flex">
-          <a class="fw-bold mb-0 text-decoration-none text-black" href="#!"
-            >John Smith</a
-          ><span class="text-600 fw-semi-bold fs--2 ms-2">{{ blog_id }}</span>
-          <a
-            class="btn btn-sm ms-auto"
-            data-bs-toggle="dropdown"
-            v-if="superUser"
-          >
-            <i class="bi bi-three-dots"></i>
-          </a>
-          <ul class="dropdown-menu">
-            <li>
-              <button class="dropdown-item" @click="deleteComment">
-                <i class="bi bi-trash-fill"></i>&nbsp;&nbsp; Delete
-              </button>
-            </li>
-          </ul>
-        </div>
-        <p class="mb-0">
-          How long did it take to create this? It appears that you quickly
-          produced the second one.
-        </p>
-        <button
-          class="btn btn-link p-0 text-900 text-decoration-none fw-bolder mb-2"
-          type="button"
-        ></button>
-      </div>
+    <div v-for="comment in comments" :key="comment">
+      <SingleComment :commentID="comment" @comment-updated="updateComments" />
     </div>
     <div id="add-comment" class="d-flex align-items-center">
       <div class="flex-1 w-100">
@@ -52,6 +15,7 @@
       &nbsp;&nbsp;&nbsp;<i
         class="bi bi-send-fill"
         style="cursor: pointer"
+        :disabled="disabled"
         @click="checkComment"
       ></i>
     </div>
@@ -59,14 +23,14 @@
 </template>
 
 <script>
+import SingleComment from "@/components/SingleComment.vue";
+
 export default {
   name: "CommentComp",
-  //   props: ["blogId", "superUser"],
+  components: {
+    SingleComment,
+  },
   props: {
-    superUser: {
-      type: Boolean,
-      required: true,
-    },
     blogID: {
       type: Number,
       required: true,
@@ -78,15 +42,18 @@ export default {
       blog_id: this.blogID,
       comments: [],
       comment: "",
+      disabled: true,
     };
   },
-  mounted() {},
+  mounted() {
+    this.FetchComments();
+  },
 
   methods: {
     FetchComments() {
-      var id = this.blog_id;
+      var blogid = this.blog_id;
       var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/blog/comments" + id;
+      var url = base + "/api/blog/comments/" + blogid;
 
       var token = this.$store.getters.getToken;
       var pureToken = token.replace(/["]+/g, "");
@@ -103,19 +70,16 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.comments = data;
+          console.log(data);
         });
-    },
-    deleteComment() {
-      console.log("delete comment");
     },
     checkComment() {
       if (this.comment.length < 1) {
-        console.log("comment is empty");
+        this.disabled = true;
       } else {
-        console.log(this.blog_id);
+        // console.log(this.blog_id);
         this.addComment();
-        // console.log("comment is not empty");
-        // this.comment = "";
+        this.comment = "";
       }
     },
     addComment() {
@@ -142,9 +106,13 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          //   this.comments = data;
           console.log(data);
+          this.updateComments();
         });
+    },
+    updateComments() {
+      this.comments = [];
+      this.FetchComments();
     },
   },
 };

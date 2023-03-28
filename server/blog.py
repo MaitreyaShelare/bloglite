@@ -1,5 +1,5 @@
 #IMPORTS
-from flask import Blueprint,request,jsonify,json
+from flask import Blueprint,request,jsonify
 from models import *
 from flask_jwt_extended import jwt_required, current_user
 import base64
@@ -7,39 +7,7 @@ from __init__ import db
 blog = Blueprint('blog', __name__)
 
 from datetime import datetime
-# from pytz import timezone
 
-# def get_server_time(self, obj):
-#     # Calculate the server time using datetime and pytz
-#     tz = pytz.timezone('Asia/Kolkata')  # Indian Standard Time
-#     server_time = datetime.datetime.now(tz)
-#     return server_time
-# # get the current datetime in UTC
-# utc_now = datetime.utcnow()
-# print(utc_now)
-
-# # convert UTC datetime to IST timezone
-# ist_now = utc_now.astimezone(timezone('Asia/Kolkata'))
-# ist_now_str = ist_now.strftime('%Y-%m-%d %H:%M:%S %Z%z')
-# print(ist_now)
-
-# @list.route('api/lists', methods=['GET'])
-# @jwt_required()
-# def getAllLists():
-#     list_all = List.query.filter_by(user_id=current_user.id).all()
-#     list_schema = ListSchema(many=True)
-#     output = list_schema.dump(list_all)
-#     # print(output)
-#     return jsonify(output), 201
-
-# @blog.route('api/blog/<int:id>', methods=['GET'])
-# @jwt_required()
-# def getBlog(id):
-#     blog = Blog.query.get(id)
-#     blog_schema = BlogSchema(many=True)
-#     output = blog_schema.dump(blog)
-#     # print(output)
-#     return jsonify(output), 201
 
 # For Each Blog Component
 @blog.route('/api/blog/<int:blog_id>', methods=['GET'])
@@ -52,41 +20,20 @@ def getBlog(blog_id):
         return jsonify(result)
     else:
         return jsonify(error="Blog not found"), 404
-
-# For Explore, returns only blog IDs
-@blog.route('api/blogs', methods=['GET'])
+    
+# For Each Comment Component
+@blog.route('/api/blog/comment/<int:comment_id>', methods=['GET'])
 @jwt_required()
-# def getAllBlogs():
-#     blog_all = Blog.query.all()
-#     blog_schema = BlogSchema(many=True)
-#     output = blog_schema.dump(blog_all)
-#     return jsonify(output), 201
-def get_blogs():
-    blogs = Blog.query.filter_by(hidden=False).order_by(Blog.timestamp.desc()).all()
-    blog_ids = [blog.id for blog in blogs]
-    return jsonify(blog_ids), 201    
-# @blog.route('api/blog/<int:blog_id>', methods=['GET'])
-# @jwt_required()
-# def getBlog(blog_id):
-#     blog = Blog.query.get(blog_id)
-#     if not blog:
-#         return jsonify(message="Blog not found"), 404
-#     blog_data = {
-#         "text": blog.text,
-#         "image": blog.photo.decode('utf-8') # decode the binary image data
-#     }
-#     return jsonify(blog_data), 201
+def getComment(comment_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+    if comment is not None:
+        comment_schema = CommentSchema()
+        result = comment_schema.dump(comment)
+        return jsonify(result)
+    else:
+        return jsonify(error="Comment not found"), 404
 
-# def getBlog(blog_id):
-#     blog = Blog.query.filter_by(id=blog_id).first()
-#     if blog is not None:
-#         blog_schema = BlogSchema()
-#         result = blog_schema.dump(blog)
-#         return jsonify(result)
-#     else:
-#         return jsonify(error="Blog not found"), 404
-
-# For Home View Feed, returns only blog IDs
+# For Home, returns only blog IDs
 @blog.route('api/feed/<int:user_id>', methods=['GET'])
 @jwt_required()
 
@@ -99,53 +46,25 @@ def get_feed(user_id):
         return jsonify(blog_ids), 201 
     else:
         return jsonify(error="Invalid User"), 404   
-
-# Like a Blog
-@blog.route('api/blog/like/<int:user_id>/<int:blog_id>', methods=['POST'])
-@jwt_required()
-
-def like_blog(user_id,blog_id):
-    user = User.query.filter_by(id=user_id).first()
-    blog = Blog.query.filter_by(id=blog_id).first()
-
-    if user is not None:
-        if blog is not None:
-            user.like(blog)
-
-        return jsonify(message="Blog Liked"), 201
-    else:
-        return jsonify(error="Error in Blog Like"), 404
     
-# Unlike a Blog
-@blog.route('api/blog/unlike/<int:user_id>/<int:blog_id>', methods=['POST'])
+# For Explore, returns only blog IDs
+@blog.route('api/blogs', methods=['GET'])
 @jwt_required()
+def get_blogs():
+    blogs = Blog.query.filter_by(hidden=False).order_by(Blog.timestamp.desc()).all()
+    blog_ids = [blog.id for blog in blogs]
+    return jsonify(blog_ids), 201    
 
-def unlike_blog(user_id,blog_id):
-    user = User.query.filter_by(id=user_id).first()
-    blog = Blog.query.filter_by(id=blog_id).first()
-
-    if user is not None:
-        if blog is not None:
-            user.unlike(blog)
-
-        return jsonify(message="Blog Unliked"), 201
-    else:
-        return jsonify(error="Error in Blog Unlike"), 404
-    
-# Toggle Blog Hide
-@blog.route('api/blog/toggleHide/<int:blog_id>', methods=['PATCH'])
-@jwt_required() 
-
-def toggle_hide(blog_id):
-    blog = Blog.query.filter_by(id=blog_id).first()
-    if blog is not None:
-        blog.hidden = not blog.hidden
-        db.session.commit()
-        return jsonify(message="Blog Hide Toggled", status=blog.hidden), 201
-    else:
-        return jsonify(error="Error in Blog Hide Toggle"), 404
+# For Comments, returns only comment IDs
+@blog.route('api/blog/comments/<int:blog_id>', methods=['GET'])
+@jwt_required()
+def get_comments(blog_id):
+    comments = Comment.query.filter_by(blog_id=blog_id).order_by(Comment.timestamp.desc()).all()
+    comment_ids = [comment.id for comment in comments]
+    return jsonify(comment_ids), 201
 
 
+# Create a Blog
 @blog.route('api/blog', methods=['POST'])
 @jwt_required()
 def createBlog():
@@ -192,6 +111,46 @@ def deleteBlog(blog_id):
     else:
         return jsonify(error="Error in Blog Delete"), 404
     
+# Like a Blog
+@blog.route('api/blog/like/<int:user_id>/<int:blog_id>', methods=['POST'])
+@jwt_required()
+
+def like_blog(user_id,blog_id):
+    user = User.query.filter_by(id=user_id).first()
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if user is not None:
+        if blog is not None:
+            user.like(blog)
+        return jsonify(message="Blog Liked"), 201
+    else:
+        return jsonify(error="Error in Blog Like"), 404
+    
+# Unlike a Blog
+@blog.route('api/blog/unlike/<int:user_id>/<int:blog_id>', methods=['POST'])
+@jwt_required()
+
+def unlike_blog(user_id,blog_id):
+    user = User.query.filter_by(id=user_id).first()
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if user is not None:
+        if blog is not None:
+            user.unlike(blog)
+        return jsonify(message="Blog Unliked"), 201
+    else:
+        return jsonify(error="Error in Blog Unlike"), 404
+    
+# Toggle Blog Hide
+@blog.route('api/blog/toggleHide/<int:blog_id>', methods=['PATCH'])
+@jwt_required() 
+
+def toggle_hide(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if blog is not None:
+        blog.hidden = not blog.hidden
+        db.session.commit()
+        return jsonify(message="Blog Hide Toggled", status=blog.hidden), 201
+    else:
+        return jsonify(error="Error in Blog Hide Toggle"), 404
 
 # Add Comment
 @blog.route('api/blog/comment/<int:user_id>/<int:blog_id>', methods=['POST']) 
@@ -209,12 +168,15 @@ def addComment(user_id,blog_id):
         return jsonify(error="Error in Comment Add"), 404
 
     
-# @list.route('api/list/<int:id>', methods=['DELETE'])
-# @jwt_required()
-# def deleteList(id):
-#     list = List.query.filter_by(id=id).first() 
-#     if list: 
-#         if list.user_id == current_user.id:
-#             db.session.delete(list)
-#             db.session.commit()
-#     return jsonify(message="List deleted sucessfully"), 201
+# Delete Comment
+@blog.route('api/blog/comment/<int:comment_id>', methods=['DELETE'])
+@jwt_required()
+
+def deleteComment(comment_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+    if comment is not None:
+        db.session.delete(comment)
+        db.session.commit()
+        return jsonify(message="Comment deleted sucessfully"), 201
+    else:
+        return jsonify(error="Error in Comment Delete"), 404

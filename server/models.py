@@ -185,6 +185,18 @@ class CommentSchema(ma.SQLAlchemyAutoSchema):
         include_relationships = True
         load_instance = True
 
+        # Define a new field for server_time
+    server_time = fields.Method('get_server_time')
+
+    def get_server_time(self, obj):
+    # Calculate the server time using datetime and pytz
+        tz = pytz.timezone('UTC')
+        server_time = datetime.now(tz)
+        server_time_str = server_time.strftime('%Y-%m-%dT%H:%M:%S.%f')
+        return server_time_str
+    
+    user = ma.Nested('UserSchema', only=('id', 'name', 'dp', 'dp_mimetype'))    
+
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
