@@ -37,6 +37,20 @@ def getUserDp(user_id):
     else:
         return jsonify(error="Error in Updating Profile Picture"), 404    
     
+# To get DP
+@profile.route('/api/profile/dp/<int:user_id>', methods=['GET']) 
+@jwt_required()
+
+def getDp(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        dp = user.dp
+        dp_mimetype = user.dp_mimetype
+        return jsonify(dp=dp, dp_mimetype=dp_mimetype), 201
+    else:
+        return jsonify(error="Error"), 404   
+    
+        
 # To change Name
 @profile.route('/api/profile/name/<int:user_id>', methods=['POST'])
 @jwt_required()

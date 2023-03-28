@@ -135,16 +135,6 @@
           </div>
           <div class="bg-light border-top p-3 p-sm-4" v-if="showComments">
             <CommentComp :blogID="blog_id" :superUser="superUser" />
-            <!-- <CommentComp
-              v-for="comment in blogDetails.comments"
-              :key="comment.id"
-              :commentID="comment.id"
-              :commentText="comment.text"
-              :commentDate="comment.date"
-              :commentUserID="comment.user.id"
-              :commentUserName="comment.user.name"
-              :commentUserDp="comment.user.dp"
-              :deleteComment="deleteComment"/> -->
           </div>
         </div>
       </div>

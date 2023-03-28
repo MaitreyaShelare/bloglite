@@ -4,6 +4,15 @@
       <SingleComment :commentID="comment" @comment-updated="updateComments" />
     </div>
     <div id="add-comment" class="d-flex align-items-center">
+      <div class="me-2">
+        <img
+          :src="commentDP"
+          alt="dp"
+          width="35"
+          height="35"
+          class="rounded-circle"
+        />
+      </div>
       <div class="flex-1 w-100">
         <input
           class="form-control"
@@ -43,10 +52,12 @@ export default {
       comments: [],
       comment: "",
       disabled: true,
+      dp: null,
     };
   },
   mounted() {
     this.FetchComments();
+    this.FetchDp();
   },
 
   methods: {
@@ -113,6 +124,37 @@ export default {
     updateComments() {
       this.comments = [];
       this.FetchComments();
+    },
+    FetchDp() {
+      var userid = this.$store.getters.getCurrentUserID;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/profile/dp/" + userid;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.dp = data;
+          console.log(data);
+        });
+    },
+  },
+  computed: {
+    commentDP() {
+      if (this.dp) {
+        return `data:${this.dp.dp_mimetype};charset=utf-8;base64,${this.dp.dp}`;
+      }
+      return null;
     },
   },
 };
