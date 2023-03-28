@@ -222,6 +222,8 @@ export default {
           if (this.followers.length == 0) {
             this.nofollowers = true;
             // console.log(this.nofollowers);
+          } else {
+            this.nofollowers = false;
           }
         });
     },
@@ -248,6 +250,8 @@ export default {
           // console.log(this.following);
           if (this.following.length == 0) {
             this.nofollowing = true;
+          } else {
+            this.nofollowing = false;
           }
         });
     },
