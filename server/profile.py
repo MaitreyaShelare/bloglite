@@ -36,6 +36,20 @@ def getUserDp(user_id):
     # return jsonify(message="Profile Picture Updated"), 201
     else:
         return jsonify(error="Error in Updating Profile Picture"), 404    
+    
+# To change Name
+@profile.route('/api/profile/name/<int:user_id>', methods=['POST'])
+@jwt_required()
+def changeName(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        # name = request.json["name"]
+        name = request.form["name"]
+        user.name = name
+        db.session.commit()
+        return jsonify(message="Name Updated"), 201
+    else:
+        return jsonify(error="Error in Updating Name"), 404    
 
 # For Profile View, returns only a user's blog IDs
 @profile.route('api/profile/blogs/<int:user_id>', methods=['GET'])

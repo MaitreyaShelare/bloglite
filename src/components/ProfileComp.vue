@@ -18,13 +18,12 @@
                 <li><button class="dropdown-item">Export</button></li>
               </ul>
             </div> -->
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center" v-if="profileDetails">
               <form>
                 <div class="form-group" id="dp">
                   <span class="btn btn-file">
                     <img
                       id="user-dp-image"
-                      v-if="profileDetails"
                       :src="profileDetails.dpImageSrc"
                       width="180"
                       height="180"
@@ -42,11 +41,50 @@
                 </div>
               </form>
             </div>
-            <div class="d-flex">
-              <h2 class="mx-auto py-2" id="user-name" v-if="profileDetails">
-                {{ profileDetails.userName }}
-              </h2>
-              <!-- <h2 class="mx-auto py-2">User Profile: {{ this.user_id }}</h2> -->
+            <!-- <div class="d-flex" ref="editable" v-if="profileDetails">
+              <div
+                class="d-flex mx-auto"
+                v-if="!isEditing"
+                @click="startEditing"
+              >
+                <h2 class="mx-auto py-2" id="user-name">
+                  {{ userName }}
+                </h2>
+              </div>
+              <div class="d-flex mx-auto" v-else>
+                <input
+                  type="text"
+                  v-model="userName"
+                  @keyup.enter="endEditing"
+                  @blur="endEditing"
+                />
+              </div>
+            </div> -->
+            <div
+              class="d-flex mx-auto text-center justify-content-center"
+              ref="editable"
+              v-if="profileDetails"
+              @click="startEditing"
+            >
+              <div v-if="!isEditing">
+                <h2 class="py-2" style="cursor: pointer">
+                  {{ userName }}
+                </h2>
+              </div>
+              <div v-else>
+                <input
+                  type="text"
+                  class="h2 py-2 editable"
+                  id="editable"
+                  v-model="userName"
+                  @keyup.enter="endEditing"
+                  :style="{
+                    textAlign: 'center',
+                    fontStyle: isEditing ? 'italic' : 'normal',
+                    cursor: isEditing ? 'text' : 'pointer',
+                  }"
+                />
+              </div>
             </div>
             <div class="d-flex" v-if="differentUser">
               <button
@@ -112,6 +150,7 @@ export default {
     this.checkUser();
     this.FetchProfile();
   },
+
   data: function () {
     return {
       followed: null,
@@ -120,10 +159,25 @@ export default {
       follower_count: null,
       dpimage: null,
       user_id: this.userID,
+      isEditing: false,
+      userName: "",
     };
   },
 
   methods: {
+    startEditing() {
+      if (!this.differentUser) {
+        this.isEditing = true;
+      }
+    },
+    endEditing() {
+      if (!this.differentUser) {
+        this.isEditing = false;
+        console.log(this.userName);
+        this.changeName();
+        // this.$emit("edit", this.editText);
+      }
+    },
     changeDp(event) {
       var input = event.target;
       if (input.files) {
@@ -157,11 +211,6 @@ export default {
             if (data.msg === "Profile Picture Updated") {
               this.profileData.dp = data.dp;
               this.profileData.dp_mimetype = data.dp_mimetype;
-              // $emit('user-following')
-              // this.reloadComponent();
-              // this.$forceUpdate;
-              // this.window.location.reload;
-              // this.$forceUpdate;
             }
             this.$emit("profile-updated");
           })
@@ -169,6 +218,50 @@ export default {
             console.log(error);
           });
       }
+    },
+    changeName() {
+      if (!this.validName(this.userName)) {
+        this.userName = this.profileDetails.userName;
+      } else {
+        var id = this.user_id;
+        var base = this.$store.getters.getBaseURL;
+        var url = base + "/api/profile/name/" + id;
+        const formData = new FormData();
+
+        formData.append("name", this.userName);
+
+        var token = this.$store.getters.getToken;
+        var pureToken = token.replace(/["]+/g, "");
+        var auth = `Bearer ${pureToken}`;
+
+        var requestOptions = {
+          method: "POST",
+          headers: {
+            Authorization: auth,
+          },
+          body: formData,
+        };
+
+        fetch(url, requestOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            this.$emit("profile-updated");
+            // if (data.msg === "Name Updated") {
+
+            //   // this.profileData.dp = data.dp;
+            //   // this.profileData.dp_mimetype = data.dp_mimetype;
+            // }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    validName: function (name) {
+      var reg = /^[a-zA-Z ]{2,40}$/;
+      // console.log(reg.test(name));
+      return reg.test(name);
     },
     toggleFollow() {
       this.followed ? this.UnfollowUser() : this.FollowUser(),
@@ -211,6 +304,8 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
+          this.userName = data.name;
+          console.log(this.userName);
           this.profileData = data;
           // console.log(data);
           this.isFollowed();
@@ -292,30 +387,7 @@ export default {
       }
       return null;
     },
-    // isFollowed() {
-    //   return this.blogdata.followers_users.includes(
-    //     this.$store.getters.getCurrentUserID
-    //   );
-    // },
-
-    // isFollowing() {
-    //   if (this.blogData) {
-    //     return this.blogData.user.followed;
-    //   }
-    //   return false;
-    // },
   },
-  // watch: {
-  //   "profileData.dp": function () {
-  //     this.updateDpImageSrc();
-  //     this.$forceUpdate;
-  //   },
-  //   profileData: function (newVal) {
-  //     if (newVal && newVal.dp && newVal.dp_mimetype) {
-  //       this.dpImageSrc = `data:${newVal.dp_mimetype};charset=utf-8;base64,${newVal.dp}`;
-  //     }
-  //   },
-  // },
 };
 </script>
 
@@ -346,4 +418,27 @@ export default {
   cursor: inherit;
   display: block;
 }
+
+.editable {
+  border: none;
+  outline: none;
+}
+/* .editable :focus {
+  outline: none;
+  border: none;
+} */
+/* .editable {
+  font-size: 2em;
+  border: none;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em; 
+
+} */
+
+/* .h2-input :focus {
+  outline: none;
+  border: none;
+} */
 </style>

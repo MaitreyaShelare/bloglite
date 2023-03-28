@@ -10,6 +10,7 @@
             v-model="name"
             :class="{ 'is-invalid': invalidname }"
             @click="invalidname = null"
+            @keyup.enter="checkName"
           />
           <div class="invalid-feedback">Please enter a valid name</div>
         </div>
@@ -73,7 +74,9 @@ export default {
       this.noUsers = null;
       if (!this.validName(this.name)) {
         this.invalidname = true;
+        this.showResults = false;
       } else {
+        this.invalidname = null;
         this.userSearch();
       }
     },
