@@ -123,7 +123,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.profileData = data;
-          console.log(this.profileData);
+          // console.log(this.profileData);
           this.isFollowed();
         })
         .catch((error) => {

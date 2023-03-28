@@ -16,9 +16,16 @@
       </div>
       <div class="flex-1 w-100" v-if="comment">
         <div class="d-flex">
-          <a class="fw-bold mb-0 text-decoration-none text-black" href="#!">{{
-            comment.user.name
-          }}</a
+          <a
+            class="fw-bold mb-0 text-decoration-none text-black"
+            style="cursor: pointer"
+            @click="
+              $router.push({
+                name: 'profile',
+                params: { userId: comment.user.id },
+              })
+            "
+            >{{ comment.user.name }}</a
           ><span class="text-600 fw-semi-bold fs--2 ms-2">{{
             commentDate
           }}</span>
