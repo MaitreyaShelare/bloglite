@@ -91,7 +91,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.comment = data;
-          console.log(this.comment);
+          // console.log(this.comment);
           this.checkDelete();
         });
     },

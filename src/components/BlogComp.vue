@@ -315,7 +315,7 @@ export default {
         .then((data) => {
           // console.log(data);
           this.blogData = data;
-          console.log(this.blogData);
+          // console.log(this.blogData);
           this.isLiked();
           this.isSuperUser();
           this.isHidden();

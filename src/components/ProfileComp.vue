@@ -173,7 +173,7 @@ export default {
     endEditing() {
       if (!this.differentUser) {
         this.isEditing = false;
-        console.log(this.userName);
+        // console.log(this.userName);
         this.changeName();
         // this.$emit("edit", this.editText);
       }
@@ -305,7 +305,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.userName = data.name;
-          console.log(this.userName);
+          // console.log(this.userName);
           this.profileData = data;
           // console.log(data);
           this.isFollowed();

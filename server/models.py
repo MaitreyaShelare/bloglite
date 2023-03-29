@@ -155,8 +155,8 @@ class Blog(db.Model):
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
 
     def __repr__(self):
         return f"Like('{self.id}', '{self.user_id}', '{self.blog_id}')"
@@ -166,8 +166,8 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True),default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
 
     def __repr__(self):
         return f"Comment('{self.text}', '{self.timestamp}', '{self.user_id}', '{self.blog_id}')"

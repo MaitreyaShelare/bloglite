@@ -97,7 +97,7 @@ export default {
     },
     showEditModal(blogID) {
       this.modalBlogID = blogID;
-      console.log(this.modalBlogID);
+      // console.log(this.modalBlogID);
       this.showModal = true;
     },
     closeEditModal() {
@@ -113,11 +113,6 @@ export default {
       this.modalBlogID = null;
     },
   },
-  // watch: {
-  //   blogs: function () {
-  //     this.FetchBlogs();
-  //   },
-  // },
 };
 </script>
 
