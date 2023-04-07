@@ -1,5 +1,5 @@
 #IMPORTS
-from flask import Blueprint,request,jsonify, make_response
+from flask import Blueprint,request,jsonify
 import json
 import redis
 from models import *
@@ -12,39 +12,28 @@ from datetime import datetime
 
 # Set up Redis connection
 redis_conn = redis.Redis(host='localhost', port=6379, db=0)
-
-# Set up cache expiration policy (e.g. expire cached data after 1 hour)
-CACHE_EXPIRATION_TIME = 3600
+CACHE_EXPIRATION_TIME = 3000
+# redis_conn.flushdb()
 
 # # For Each Blog Component
 @blog.route('/api/blog/<int:blog_id>', methods=['GET'])
 @jwt_required()
 def getBlog(blog_id):
-    # Generate a Redis key for the request
     redis_key = f"blog:{blog_id}".encode('utf-8')
 
-    # Check if the request is already cached in Redis
     cached_data = redis_conn.get(redis_key)
-
     if cached_data:
-        # If the request is cached, return the cached data as a response
         return jsonify(json.loads(cached_data))
 
     # If the request is not cached, retrieve the data from the database
     blog = Blog.query.filter_by(id=blog_id).first()
 
     if blog is not None:
-        # Serialize the data using the schema
         blog_schema = BlogSchema()
         result = blog_schema.dump(blog)
-
-        # Cache the serialized data in Redis
         redis_conn.setex(redis_key, CACHE_EXPIRATION_TIME, json.dumps(result))
-
-        # Return the serialized data as a response
         return jsonify(result)
     else:
-        # Return an error message as a response
         return jsonify(error="Blog not found"), 404
     
     
@@ -143,7 +132,7 @@ def deleteBlog(blog_id):
         # Delete cached data for this blog
         redis_key = f"blog:{blog_id}".encode('utf-8')
         redis_conn.delete(redis_key)
-        
+
         return jsonify(message="Blog deleted sucessfully"), 201
     else:
         return jsonify(error="Error in Blog Delete"), 404
@@ -158,6 +147,9 @@ def like_blog(user_id,blog_id):
     if user is not None:
         if blog is not None:
             user.like(blog)
+        # Delete cached data for this blog
+        redis_key = f"blog:{blog_id}".encode('utf-8')
+        redis_conn.delete(redis_key)
         return jsonify(message="Blog Liked"), 201
     else:
         return jsonify(error="Error in Blog Like"), 404
@@ -172,6 +164,9 @@ def unlike_blog(user_id,blog_id):
     if user is not None:
         if blog is not None:
             user.unlike(blog)
+        # Delete cached data for this blog
+        redis_key = f"blog:{blog_id}".encode('utf-8')
+        redis_conn.delete(redis_key)   
         return jsonify(message="Blog Unliked"), 201
     else:
         return jsonify(error="Error in Blog Unlike"), 404
@@ -185,6 +180,9 @@ def toggle_hide(blog_id):
     if blog is not None:
         blog.hidden = not blog.hidden
         db.session.commit()
+        # Delete cached data for this blog
+        redis_key = f"blog:{blog_id}".encode('utf-8')
+        redis_conn.delete(redis_key)
         return jsonify(message="Blog Hide Toggled", status=blog.hidden), 201
     else:
         return jsonify(error="Error in Blog Hide Toggle"), 404
