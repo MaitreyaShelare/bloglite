@@ -12,7 +12,7 @@ from datetime import datetime
 
 # Set up Redis connection
 redis_conn = redis.Redis(host='localhost', port=6379, db=0)
-CACHE_EXPIRATION_TIME = 3000
+CACHE_EXPIRATION_TIME = 6000
 # redis_conn.flushdb()
 
 # # For Each Blog Component
