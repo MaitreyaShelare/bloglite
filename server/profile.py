@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, create_access_token,create_refresh_
 import base64
 import os
 from __init__ import db
+from blog import redis_conn
 profile = Blueprint('profile', __name__)
 
 # For Profile Component
@@ -31,7 +32,9 @@ def getUserDp(user_id):
         user.dp = photo_b64
         user.dp_mimetype = photo_mimetype
         db.session.commit()
-    
+        redis_conn.flushdb()
+        # redis_key = "blog:*".encode('utf-8')
+        # redis_conn.delete(redis_key)
         return jsonify(message="Profile Picture Updated",dp=photo_b64,dp_mimetype=photo_mimetype), 201
     # return jsonify(message="Profile Picture Updated"), 201
     else:
@@ -61,6 +64,9 @@ def changeName(user_id):
         name = request.form["name"]
         user.name = name
         db.session.commit()
+        redis_conn.flushdb()
+        # redis_key = "blog:*".encode('utf-8')
+        # redis_conn.delete(redis_key)
         return jsonify(message="Name Updated"), 201
     else:
         return jsonify(error="Error in Updating Name"), 404    

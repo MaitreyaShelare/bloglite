@@ -46,7 +46,11 @@
                   >
                 </div>
                 <div class="ms-auto">
-                  <a class="btn btn-sm float-end" data-bs-toggle="dropdown">
+                  <a
+                    class="btn btn-sm float-end"
+                    data-bs-toggle="dropdown"
+                    v-if="superUser"
+                  >
                     <i class="bi bi-three-dots"></i>
                   </a>
                   <ul class="dropdown-menu">
@@ -75,11 +79,11 @@
                         {{ hidden ? "Unarchive" : "Archive" }}
                       </button>
                     </li>
-                    <li>
+                    <!-- <li>
                       <button class="dropdown-item">
                         <i class="bi bi-share-fill"></i>&nbsp;&nbsp; Share
                       </button>
-                    </li>
+                    </li> -->
                   </ul>
                 </div>
               </div>
