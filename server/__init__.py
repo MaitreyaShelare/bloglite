@@ -14,7 +14,7 @@ DB_NAME = "bloglite.db"
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='/dist', static_folder='dist')
     app.config['SECRET_KEY'] = '18102001'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
