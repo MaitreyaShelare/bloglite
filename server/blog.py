@@ -1,5 +1,6 @@
 #IMPORTS
-from flask import Blueprint,request,jsonify
+from flask import Blueprint,request,jsonify,Response
+import pandas as pd
 import json
 import redis
 from models import *
@@ -9,6 +10,8 @@ from __init__ import db
 blog = Blueprint('blog', __name__)
 
 from datetime import datetime
+
+now = datetime.utcnow()
 
 # Set up Redis connection
 redis_conn = redis.Redis(host='localhost', port=6379, db=0)
@@ -171,6 +174,32 @@ def unlike_blog(user_id,blog_id):
     else:
         return jsonify(error="Error in Blog Unlike"), 404
     
+# Export Blog as CSV
+@blog.route('api/blog/export/<int:blog_id>', methods=['GET'])
+@jwt_required()
+def export_blog(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    if blog:
+        blog_dict = {
+            'id': blog.id,
+            'user_id': blog.user_id,
+            'text': blog.text,
+            'photo': blog.photo,
+            'mimetype': blog.photo_mimetype,
+            'timestamp': blog.timestamp,
+            'hidden': blog.hidden
+        }
+        df = pd.DataFrame([blog_dict])
+        csv = df.to_csv(index=False, header=True)
+        return Response(
+            csv,
+            mimetype="text/csv",
+            headers={"Content-disposition":
+                     "attachment; filename=blog.csv"})
+    else:
+        return jsonify(error="Error in Blog Export"), 404
+
+
 # Toggle Blog Hide
 @blog.route('api/blog/toggleHide/<int:blog_id>', methods=['PATCH'])
 @jwt_required() 

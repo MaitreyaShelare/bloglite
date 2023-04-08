@@ -76,7 +76,7 @@
                       </button>
                     </li>
                     <li>
-                      <button class="dropdown-item">
+                      <button class="dropdown-item" @click="exportBlog">
                         <i class="bi bi-share-fill"></i>&nbsp;&nbsp; Share
                       </button>
                     </li>
@@ -293,6 +293,46 @@ export default {
         .catch((error) => {
           console.error(error);
         });
+    },
+    exportBlog() {
+      var blogid = this.blog_id;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/blog/export/" + blogid;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          const a = document.createElement("a");
+          a.href = url;
+          const date = new Date().toISOString().split("T")[0];
+          const filename = `blog_${blogid}_${date}.csv`;
+          a.setAttribute("download", filename);
+          a.click();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      // fetch(url, requestOptions)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     console.log(data);
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
     },
     FetchData() {
       var id = this.blog_id;
