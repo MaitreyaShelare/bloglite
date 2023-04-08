@@ -127,13 +127,6 @@
                 <i class="bi bi-clipboard2-fill"></i>&nbsp;
                 {{ profileDetails.userPosts }}&nbsp;Posts
               </button>
-              <button
-                class="btn btn-link text-decoration-none"
-                @click="exportPosts()"
-                v-if="!differentUser"
-              >
-                <i class="bi bi-box-arrow-up-right"></i>&nbsp;&nbsp; Export
-              </button>
               <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
               <!-- @click="this.$emit(viewPosts)" -->
             </div>
@@ -172,31 +165,6 @@ export default {
   },
 
   methods: {
-    exportPosts() {
-      var id = this.user_id;
-      var base = this.$store.getters.getBaseURL;
-      var url = base + "/api/profile/export/" + id;
-
-      var token = this.$store.getters.getToken;
-      var pureToken = token.replace(/["]+/g, "");
-      var auth = `Bearer ${pureToken}`;
-
-      var requestOptions = {
-        method: "GET",
-        headers: {
-          Authorization: auth,
-        },
-      };
-
-      fetch(url, requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
     startEditing() {
       if (!this.differentUser) {
         this.isEditing = true;

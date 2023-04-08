@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required
 import base64
 from __init__ import db
 from blog import redis_conn
-# from celeryTasks import exportBlogs
 profile = Blueprint('profile', __name__)
 
 # For Profile Component
@@ -32,10 +31,8 @@ def getUserDp(user_id):
         user.dp_mimetype = photo_mimetype
         db.session.commit()
         redis_conn.flushdb()
-        # redis_key = "blog:*".encode('utf-8')
-        # redis_conn.delete(redis_key)
+
         return jsonify(message="Profile Picture Updated",dp=photo_b64,dp_mimetype=photo_mimetype), 201
-    # return jsonify(message="Profile Picture Updated"), 201
     else:
         return jsonify(error="Error in Updating Profile Picture"), 404    
     
@@ -59,13 +56,11 @@ def getDp(user_id):
 def changeName(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
-        # name = request.json["name"]
         name = request.form["name"]
         user.name = name
         db.session.commit()
         redis_conn.flushdb()
-        # redis_key = "blog:*".encode('utf-8')
-        # redis_conn.delete(redis_key)
+
         return jsonify(message="Name Updated"), 201
     else:
         return jsonify(error="Error in Updating Name"), 404    
@@ -79,26 +74,6 @@ def get_user_blogs(user_id):
     blog_ids = [blog.id for blog in blogs]
     return jsonify(blog_ids) 
 
-# # For Exporting Blogs
-# @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
-# @jwt_required()
-
-# def export_blogs(user_id):
-#     user = User.query.filter_by(id=user_id).first()
-#     if user is not None:
-#         task = exportBlogs.delay(user_id)
-#         result = task.get()
-#         return jsonify(message=result), 200
-#     else:
-#         return jsonify(error="Error in Exporting Blogs"), 404
-    
-# def export_blogs(user_id):
-#     user = User.query.filter_by(id=user_id).first()
-#     if user is not None:
-#         exportBlogs.delay(user_id)
-#         return jsonify(message="Exporting Blogs"), 201
-#     else:
-#         return jsonify(error="Error in Exporting Blogs"), 404
     
 # For Search View, returns only a user IDs
 @profile.route('api/profile/search', methods=['POST'])
@@ -110,7 +85,7 @@ def get_user_ids():
     users = User.query.filter(User.name.ilike('%'+name+'%')).all()
     user_ids = [user.id for user in users]
     return jsonify(user_ids), 201
-    # return jsonify(message="serched"), 201
+
 
 # Follow a user
 @profile.route('api/profile/follow/<int:current_user_id>/<int:user_id>', methods=['POST'])
@@ -119,7 +94,6 @@ def get_user_ids():
 def follow_user(current_user_id,user_id):
     current_user = User.query.filter_by(id=current_user_id).first()
     user = User.query.filter_by(id=user_id).first()
-    # print(user.id)
     if user is not None:
         current_user.follow(user)
         return jsonify({'message': 'You are now following {}.'.format(user.name)}), 201
@@ -224,46 +198,3 @@ def get_comments_count(user_id):
     else:
         return jsonify(error="User not found"), 404
     
-
-#######################################################################################################
-# @auth.route('api/signup', methods=['POST'])
-# def signup():
-#     name = request.json["name"]
-#     email = request.json["email"]
-#     password = request.json["password"]
-#     dp = open('bloglite/src/assets/user.png', 'rb').read()
-#     ext = os.path.splitext('bloglite/src/assets/user.png')[1][1:]
-#     dp_b64 = base64.b64encode(dp).decode('utf-8')
-#     dp_mimetype = f'image/{ext}'
-    
-#     user = User.query.filter_by(email=email).first()
-#     if user:
-#         return jsonify(message="User Already Exists"), 409
-#     else:
-#             new_user = User(email=email, name=name, dp=dp_b64, dp_mimetype=dp_mimetype, password=generate_password_hash(password, method='sha256'))
-#             access_token = create_access_token(identity=email)
-#             refresh_token = create_refresh_token(identity=email)
-#             db.session.add(new_user)
-#             db.session.commit()
-#             return jsonify(access_token=access_token, refresh_token=refresh_token), 201
-
-
-# @auth.route('api/login', methods=['POST'])
-# def login():
-#     email = request.json["email"]
-#     password = request.json["password"]
-    
-#     user = User.query.filter_by(email=email).first()
-#     if user:
-#         if check_password_hash(user.password, password): 
-#             access_token = create_access_token(identity=email)
-#             refresh_token = create_refresh_token(identity=email)
-#             return jsonify(access_token=access_token, refresh_token=refresh_token), 201
-#     return jsonify(message="Invalid Email or Password"), 403
-
-# @auth.route("api/refresh", methods=["POST"])
-# @jwt_required(refresh=True)
-# def refresh():
-#     identity = get_jwt_identity()
-#     access_token = create_access_token(identity=identity)
-#     return jsonify(access_token=access_token),201    
