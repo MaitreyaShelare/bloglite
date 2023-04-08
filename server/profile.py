@@ -1,12 +1,11 @@
 #IMPORTS
 from flask import Blueprint,request,jsonify
 from models import *
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import jwt_required, create_access_token,create_refresh_token,get_jwt_identity
+from flask_jwt_extended import jwt_required
 import base64
-import os
 from __init__ import db
 from blog import redis_conn
+# from celeryTasks import exportBlogs
 profile = Blueprint('profile', __name__)
 
 # For Profile Component
@@ -80,6 +79,27 @@ def get_user_blogs(user_id):
     blog_ids = [blog.id for blog in blogs]
     return jsonify(blog_ids) 
 
+# # For Exporting Blogs
+# @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
+# @jwt_required()
+
+# def export_blogs(user_id):
+#     user = User.query.filter_by(id=user_id).first()
+#     if user is not None:
+#         task = exportBlogs.delay(user_id)
+#         result = task.get()
+#         return jsonify(message=result), 200
+#     else:
+#         return jsonify(error="Error in Exporting Blogs"), 404
+    
+# def export_blogs(user_id):
+#     user = User.query.filter_by(id=user_id).first()
+#     if user is not None:
+#         exportBlogs.delay(user_id)
+#         return jsonify(message="Exporting Blogs"), 201
+#     else:
+#         return jsonify(error="Error in Exporting Blogs"), 404
+    
 # For Search View, returns only a user IDs
 @profile.route('api/profile/search', methods=['POST'])
 @jwt_required()

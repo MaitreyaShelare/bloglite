@@ -1,11 +1,13 @@
 #IMPORTS
 from flask import Flask
+from celery import Celery
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from os import path
+# from celeryTasks import celery
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -21,6 +23,8 @@ def create_app():
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
     app.config["JWT_SECRET_KEY"] = "jwtkey"
+    app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+    app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     
     db.init_app(app)
     ma.init_app(app)
@@ -33,7 +37,22 @@ def create_app():
     def user_lookup_callback(_jwt_header, jwt_data):
         identity = jwt_data["sub"]
         return User.query.filter_by(email=identity).one_or_none()
+    
+    # app.app_context().push()
 
+    # celery = Celery(
+    #     app.name,
+    #     broker=app.config['CELERY_BROKER_URL'],
+    #     backend=app.config['CELERY_RESULT_BACKEND']
+    # )
+
+    # celery.conf.task_routes = {
+    #     'app.celeryTasks.*': {'queue': 'default'}
+    # }
+
+    # app.celery = celery
+    # celery.conf.update(app.config)
+    
     from auth import auth
     from blog import blog
     from profile import profile

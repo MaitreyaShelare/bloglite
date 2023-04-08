@@ -128,7 +128,7 @@ export default {
       this.showModal = false;
       this.modalBlogID = null;
       this.blogs = [];
-      this.FetchBlogs();
+      this.UpdateProfile();
     },
     closeModal() {
       this.showModal = false;

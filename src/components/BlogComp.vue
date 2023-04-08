@@ -77,7 +77,7 @@
                     </li>
                     <li>
                       <button class="dropdown-item" @click="exportBlog">
-                        <i class="bi bi-share-fill"></i>&nbsp;&nbsp; Share
+                        <i class="bi bi-save-fill"></i>&nbsp;&nbsp; Save
                       </button>
                     </li>
                   </ul>
