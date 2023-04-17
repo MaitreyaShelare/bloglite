@@ -104,24 +104,44 @@ export default {
       this.blogtext = "";
     },
     sanitizeHtml(html) {
-      const allowedTags = ["p", "b", "i", "u", "ul", "ol", "li"];
-      const regex = /<([^>]+)>/gi;
+      const allowedTags = ["p", "a", "b", "i", "u", "ul", "ol", "li"];
+      const allowedAttrs = ["href"];
 
       return html
-        .replace(regex, (tag, name) => {
-          if (allowedTags.includes(name)) {
-            return tag;
+        .replace(/<(\/?)(\w+)[^>]*>/g, (match, endTag, tagName) => {
+          if (allowedTags.indexOf(tagName.toLowerCase()) !== -1) {
+            return `<${endTag}${tagName}>`;
           } else {
             return "";
           }
         })
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#x27;")
-        .replace(/\//g, "&#x2F;");
+        .replace(/\b(\w+)="[^"]*"/g, (match, attrName) => {
+          if (allowedAttrs.indexOf(attrName.toLowerCase()) !== -1) {
+            return `${attrName}="${match.slice(attrName.length + 2, -1)}"`;
+          } else {
+            return "";
+          }
+        });
     },
+    // sanitizeHtml(html) {
+    //   const allowedTags = ["p", "b", "i", "u", "ul", "ol", "li"];
+    //   const regex = /<([^>]+)>/gi;
+
+    //   return html
+    //     .replace(regex, (tag, name) => {
+    //       if (allowedTags.includes(name)) {
+    //         return tag;
+    //       } else {
+    //         return "";
+    //       }
+    //     })
+    //     .replace(/&/g, "&amp;")
+    //     .replace(/</g, "&lt;")
+    //     .replace(/>/g, "&gt;")
+    //     .replace(/"/g, "&quot;")
+    //     .replace(/'/g, "&#x27;")
+    //     .replace(/\//g, "&#x2F;");
+    // },
 
     // sanitizeHtml(html) {
     //   const allowedTags = ["p", "b", "i", "u", "ul", "ol", "li"];
