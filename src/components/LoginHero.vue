@@ -28,6 +28,7 @@
                 class="form-control"
                 id="floatingInput"
                 placeholder="name@example.com"
+                autocomplete="off"
                 v-model="email"
                 :class="{ 'is-invalid': invalidemail }"
                 @click="invalidemail = null"
@@ -41,6 +42,7 @@
                 class="form-control"
                 id="floatingPassword"
                 placeholder="Password"
+                autocomplete="off"
                 v-model="password"
                 :class="{ 'is-invalid': invalidpassword }"
                 @click="invalidpassword = null"
@@ -158,19 +160,40 @@ export default {
       };
       fetch(url, requestOptions)
         .then((response) => {
-          if (response.status == 201) {
-            this.$store.commit("loginUser");
+          if (response.status !== 201) {
+            return response.json().then((data) => {
+              this.data = data;
+            });
+          } else {
+            return response.json().then((data) => {
+              this.data = data;
+              this.$store.commit("loginUser");
+              this.$store.commit("setCurrentUserID", data.id);
+              this.$store.commit("setToken", data.access_token);
+              this.$store.commit("setRefreshToken", data.refresh_token);
+              this.$router.push("/feed");
+            });
           }
-          return response.json();
         })
-        .then((data) => {
-          // console.log(data),
-          (this.data = data),
-            this.$store.commit("setCurrentUserID", data.id),
-            this.$store.commit("setToken", data.access_token),
-            this.$store.commit("setRefreshToken", data.refresh_token),
-            this.$router.push("/feed");
+        .catch((error) => {
+          console.error(error);
         });
+
+      // fetch(url, requestOptions)
+      //   .then((response) => {
+      //     if (response.status == 201) {
+      //       this.$store.commit("loginUser");
+      //     }
+      //     return response.json();
+      //   })
+      //   .then((data) => {
+      //     (this.data = data),
+      //       // console.log(this.data.message),
+      //       this.$store.commit("setCurrentUserID", data.id),
+      //       this.$store.commit("setToken", data.access_token),
+      //       this.$store.commit("setRefreshToken", data.refresh_token),
+      //       this.$router.push("/feed");
+      //   });
 
       // .then((data) => {
       //   console.log(data),
