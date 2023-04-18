@@ -1,6 +1,7 @@
 from __init__ import create_app
 from flask import send_from_directory
-app = create_app()
+app, celery = create_app()
+app.app_context().push()
 
 @app.route('/')
 def index():
@@ -16,3 +17,4 @@ def index():
 
 if __name__ == '__main__':
     app.run()
+    # celery.worker_main(argv=['worker', '-l', 'info', '-E'])

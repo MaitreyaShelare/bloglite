@@ -8,8 +8,9 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from os import path
-from celery import Celery
-from tasks import celery_app
+from utils import make_celery
+# from celery import Celery
+# from tasks import celery
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -25,11 +26,15 @@ def create_app():
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
     app.config["JWT_SECRET_KEY"] = "jwtkey"
-    app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-    app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+    app.config["CELERY_CONFIG"] = {"broker_url": "redis://localhost:6379/0", "result_backend": "redis://localhost:6379/0"}
+    # app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+    # app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     
     db.init_app(app)
     ma.init_app(app)
+
+    celery = make_celery(app)
+    celery.set_default()
     
     CORS(app)
     
@@ -53,23 +58,23 @@ def create_app():
     register_resources(app)
     create_database(app)
 
-    app.app_context().push()
+    # app.app_context().push()
 
-    # Configure Celery
-    celery = Celery(
-        app.import_name,
-        broker=app.config['CELERY_BROKER_URL'],
-        backend=app.config['CELERY_RESULT_BACKEND']
-    )
-    celery.conf.update(app.config)
+    # # Configure Celery
+    # celery = Celery(
+    #     app.import_name,
+    #     broker=app.config['CELERY_BROKER_URL'],
+    #     backend=app.config['CELERY_RESULT_BACKEND']
+    # )
+    # celery.conf.update(app.config)
 
-    # Start the Celery worker
-    celery.worker_main(argv=['worker', '-l', 'info', '-E'])
+    # # Start the Celery worker
+    # celery.worker_main(argv=['worker', '-l', 'info', '-E'])
 
-    return app
+    return app, celery
 
 # if __name__ == '__main__':
-#     celery.worker_main()
+#     celery.worker_main(argv=['worker', '-l', 'info', '-E'])
 
 def create_database(app):
     if not path.exists('backend/instance' + DB_NAME):
