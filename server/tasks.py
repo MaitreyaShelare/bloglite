@@ -22,52 +22,51 @@ def long_task(duration):
     print('Task complete!')
     return 'Task complete!'
 
-# @celery.task
-# def exportBlogs(user_id):
-#     from models import User, Blog
-#     print("WOO")
-#     user = User.query.filter_by(id=user_id).first()
-#     blogs = Blog.query.filter_by(user_id=user_id).all()
+@shared_task
+def exportBlogs(user_id):
+    from models import User, Blog
+    user = User.query.filter_by(id=user_id).first()
+    blogs = Blog.query.filter_by(user_id=user_id).all()
 
-#     # Create list of dictionaries containing blog data
-#     blogs_dict = []
-#     for blog in blogs:
-#         blog_dict = {
-#             'id': blog.id,
-#             'user_id': blog.user_id,
-#             'text': blog.text,
-#             'photo': blog.photo,
-#             'mimetype': blog.photo_mimetype,
-#             'timestamp': blog.timestamp,
-#             'hidden': blog.hidden
-#         }
-#         blogs_dict.append(blog_dict)
+    # Create list of dictionaries containing blog data
+    blogs_dict = []
+    for blog in blogs:
+        blog_dict = {
+            'id': blog.id,
+            'user_id': blog.user_id,
+            'text': blog.text,
+            'photo': blog.photo,
+            'mimetype': blog.photo_mimetype,
+            'timestamp': blog.timestamp,
+            'hidden': blog.hidden
+        }
+        blogs_dict.append(blog_dict)
 
-#     # Create DataFrame from blogs_dict
-#     df = pd.DataFrame.from_dict(blogs_dict)
+    # Create DataFrame from blogs_dict
+    df = pd.DataFrame.from_dict(blogs_dict)
 
-#     csv_data = df.to_csv(index=False, header=True)
-#     csv_name = f"{user.name}_blogs.csv"
+    csv_data = df.to_csv(index=False, header=True)
+    csv_name = f"{user.name}_blogs.csv"
 
-#     # Create email message
-#     message = MIMEMultipart()
-#     message['From'] = 'noreply.bloglite@gmail.com'
-#     message['To'] = user.email
-#     message['Subject'] = f'Exported blogs for {user.name}'
-#     message.attach(MIMEText(f'Hi {user.name},\n\nPlease find attached your exported blogs file.\n\nBest regards,\nBloglite Team'))
+    # Create email message
+    message = MIMEMultipart()
+    message['From'] = 'noreply.bloglite@gmail.com'
+    message['To'] = user.email
+    message['Subject'] = f'Exported blogs for {user.name}'
+    message.attach(MIMEText(f'Hi {user.name},\n\nPlease find attached your exported blogs file.\n\nBest regards,\nBloglite Team'))
 
-#     # Attach CSV file
-#     csv_attachment = MIMEApplication(csv_data.encode('utf-8'), Name=csv_name)
-#     csv_attachment['Content-Disposition'] = f'attachment; filename="{csv_name}"'
-#     message.attach(csv_attachment)
+    # Attach CSV file
+    csv_attachment = MIMEApplication(csv_data.encode('utf-8'), Name=csv_name)
+    csv_attachment['Content-Disposition'] = f'attachment; filename="{csv_name}"'
+    message.attach(csv_attachment)
 
-#     # Send email
-#     with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-#         smtp.starttls()
-#         smtp.login('noreply.bloglite@gmail.com', 'bloglite1234')
-#         smtp.sendmail('noreply.bloglite@gmail.com', user.email, message.as_string())
+    # Send email
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.starttls()
+        smtp.login('noreply.bloglite@gmail.com', 'bloglite1234')
+        smtp.sendmail('noreply.bloglite@gmail.com', user.email, message.as_string())
 
-#     return f"Exported {len(blogs)} blogs for user {user.name} to email {user.email}"
+    return f"Exported {len(blogs)} blogs for user {user.name} to email {user.email}"
 
 
 # @celery.task

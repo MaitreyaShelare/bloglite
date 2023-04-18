@@ -7,30 +7,30 @@ from __init__ import db
 from blog import redis_conn
 profile = Blueprint('profile', __name__)
 
-# from tasks import celery, long_task, exportBlogs
-from tasks import long_task
+from tasks import exportBlogs
+# from tasks import long_task
 # if __name__ == '__main__':
 #     celery_app.worker_main()
 
-@profile.route('api/profile/export/<int:user_id>', methods=['GET'])
-@jwt_required()
-def run_task(user_id):
-    # print(user_id)
-    # task = long_task.apply_async(args=[10])
-    task = long_task.delay(10)
-    return jsonify({'task_id': task.id})
-
-# # For Exporting Blogs
 # @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
 # @jwt_required()
+# def run_task(user_id):
+#     # print(user_id)
+#     # task = long_task.apply_async(args=[10])
+#     task = long_task.delay(10)
+#     return jsonify({'task_id': task.id})
 
-# def export_blogs(user_id):
-#     user = User.query.filter_by(id=user_id).first()
-#     if user is not None:
-#     #     task = exportBlogs.apply_async(args=[user_id])
-#     # return jsonify({'task_id': task.id})
-#         task = exportBlogs.delay(user_id)
-#         return jsonify({'task_id': task.id})
+# For Exporting Blogs
+@profile.route('api/profile/export/<int:user_id>', methods=['GET'])
+@jwt_required()
+
+def export_blogs(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+    #     task = exportBlogs.apply_async(args=[user_id])
+    # return jsonify({'task_id': task.id})
+        task = exportBlogs.delay(user_id)
+        return jsonify({'task_id': task.id})
 #         # result = task.get()
 #         # return jsonify(message=result), 200
 #     else:
