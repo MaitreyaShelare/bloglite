@@ -1,5 +1,7 @@
 #IMPORTS
 from flask import Flask
+from flask_restful import Api, Resource
+# from resources import register_resources
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
@@ -45,7 +47,10 @@ def create_app():
 
     from models import User, Blog, Like, Comment
 
+    register_resources(app)
     create_database(app)
+
+
     return app
 
 
@@ -54,3 +59,12 @@ def create_database(app):
         with app.app_context():
             db.create_all()
             # print('Created Database!')
+
+
+def register_resources(app):
+    from auth import Signup, Login, Refresh
+    
+    api = Api(app)
+    api.add_resource(Signup, "/api/signup")
+    api.add_resource(Login, "/api/login")
+    api.add_resource(Refresh, "/api/refresh")
