@@ -9,6 +9,7 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from os import path
 
+from tasks import celery
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -53,6 +54,8 @@ def create_app():
 
     return app
 
+if __name__ == '__main__':
+    celery.worker_main()
 
 def create_database(app):
     if not path.exists('backend/instance' + DB_NAME):

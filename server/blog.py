@@ -15,7 +15,7 @@ now = datetime.utcnow()
 
 # Set up Redis connection
 redis_conn = redis.Redis(host='localhost', port=6379, db=0)
-CACHE_EXPIRATION_TIME = 6000
+CACHE_EXPIRATION_TIME = 600
 # redis_conn.flushdb()
 
 # # For Each Blog Component

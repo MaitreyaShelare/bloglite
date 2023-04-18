@@ -7,6 +7,27 @@ from __init__ import db
 from blog import redis_conn
 profile = Blueprint('profile', __name__)
 
+# from tasks import long_task, exportBlogs
+# @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
+# @jwt_required()
+# def run_task(user_id):
+#     # print(user_id)
+#     task = long_task.apply_async(args=[10])
+#     return jsonify({'task_id': task.id})
+
+# For Exporting Blogs
+# @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
+# @jwt_required()
+
+# def export_blogs(user_id):
+#     user = User.query.filter_by(id=user_id).first()
+#     if user is not None:
+#         task = exportBlogs.delay(user_id)
+#         result = task.get()
+#         return jsonify(message=result), 200
+#     else:
+#         return jsonify(error="Error in Exporting Blogs"), 404
+    
 # For Profile Component
 @profile.route('/api/profile/<int:user_id>', methods=['GET'])
 def getUserProfile(user_id):
