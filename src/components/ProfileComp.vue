@@ -127,15 +127,26 @@
                 <i class="bi bi-clipboard2-fill"></i>&nbsp;
                 {{ profileDetails.userPosts }}&nbsp;Posts
               </button>
+              <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
+              <!-- @click="this.$emit(viewPosts)" -->
+            </div>
+            <div class="d-flex mx-auto text-center justify-content-center">
+              <button
+                class="btn btn-link text-decoration-none"
+                @click="importPosts()"
+                v-if="!differentUser"
+              >
+                <i class="bi bi-box-arrow-down-left"></i>&nbsp;&nbsp; Import
+                Blogs
+              </button>
               <button
                 class="btn btn-link text-decoration-none"
                 @click="exportPosts()"
                 v-if="!differentUser"
               >
                 <i class="bi bi-box-arrow-up-right"></i>&nbsp;&nbsp; Export
+                Blogs
               </button>
-              <!-- <button class="btn ms-auto fs-6 fw-bolder">25 Jan 2023</button> -->
-              <!-- @click="this.$emit(viewPosts)" -->
             </div>
           </div>
         </div>
@@ -196,6 +207,9 @@ export default {
         .catch((error) => {
           console.error(error);
         });
+    },
+    importPosts() {
+      console.log("import");
     },
     startEditing() {
       if (!this.differentUser) {
