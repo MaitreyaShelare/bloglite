@@ -10,8 +10,7 @@ profile = Blueprint('profile', __name__)
 
 from tasks import exportBlogs
 # from tasks import long_task
-# if __name__ == '__main__':
-#     celery_app.worker_main()
+
 
 # @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
 # @jwt_required()
@@ -35,7 +34,7 @@ def import_blogs(user_id):
                 user_id=row['user_id'],
                 text=row['text'],
                 photo=row['photo'],
-                photo_mimetype=row['mimetype'],
+                photo_mimetype=row['photo_mimetype'],
             )
             db.session.add(blog)
             db.session.commit()

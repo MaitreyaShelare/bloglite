@@ -69,8 +69,7 @@ class User(db.Model):
             Like.blog_id == blog.id
         ).count() > 0        
 
-    def __repr__(self):
-        return f"User('{self.name}', '{self.email}', '{self.followers}', '{self.posts}', '{self.dp}', '{self.dp_mimetype}')"
+   
 
 
 class Blog(db.Model):
@@ -89,9 +88,8 @@ class Blog(db.Model):
     @property
     def liked_by_users(self):
         return [like.user_id for like in self.likes]
+        
     
-    def __repr__(self):
-        return f"Blog('{self.text}', '{self.timestamp}', '{self.hidden}', '{self.photo}', '{self.photo_mimetype}')"
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)

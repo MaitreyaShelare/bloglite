@@ -101,6 +101,7 @@
               <div class="btn-file">
                 <input
                   type="file"
+                  style="cursor: pointer"
                   accept=".csv"
                   ref="fileInput"
                   @change="importPosts()"
@@ -108,6 +109,7 @@
                 <button
                   class="btn btn-link text-decoration-none"
                   v-if="!differentUser"
+                  style="cursor: pointer"
                 >
                   <i class="bi bi-box-arrow-down-left"></i>&nbsp;&nbsp; Import
                   Blogs

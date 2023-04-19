@@ -1,90 +1,57 @@
-from celery import Celery, shared_task
-import pandas as pd
-import time
-from flask import current_app, Response, jsonify
-
+from celery import shared_task
+# import pandas as pd
+# import time
+# from flask import current_app, Response, jsonify
+from datetime import date
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
 
-# celery = Celery(__name__, broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
-
-# if __name__ == '__main__':
-#     celery.worker_main(argv=['worker', '-l', 'info', '-E'])
-
-# SMTP_SERVER_HOST = "localhost"
-# SMTP_SERVER_PORT = 1025
-# SENDER_ADDRESS = "noreply@bloglite.com"
-# SENDER_PASSWORD = ""
-@shared_task
-def long_task():
-    
-    print('Task complete!')
-    return 'Task complete!'
-
 # @shared_task
-# def exportBlogs(user_id):
-#     from models import User, Blog
-#     user = User.query.filter_by(id=user_id).first()
-#     blogs = Blog.query.filter_by(user_id=user_id).all()
+# def long_task():
+#     print('Task complete!')
+#     return 'Task complete!'
 
-#     # Create list of dictionaries containing blog data
-#     blogs_dict = []
-#     for blog in blogs:
-#         blog_dict = {
-#             'id': blog.id,
-#             'user_id': blog.user_id,
-#             'text': blog.text,
-#             'photo': blog.photo,
-#             'mimetype': blog.photo_mimetype,
-#             'timestamp': blog.timestamp,
-#             'hidden': blog.hidden
-#         }
-#         blogs_dict.append(blog_dict)
+@shared_task
+def daily_reminder():
+    from __init__ import db
+    from models import User, Blog
 
-#     # Create DataFrame from blogs_dict
-#     df = pd.DataFrame.from_dict(blogs_dict)
+    users_with_blog_today = (
+        db.session.query(Blog.user_id)
+        .filter(Blog.timestamp >= date.today())
+        .distinct()
+        .subquery()
+    )
 
-#     csv_data = df.to_csv(index=False, header=True)
-#     csv_name = f"{user.name}_blogs.csv"
+    # Query for all users who are not in the above result
+    users_without_blog_today = (
+        db.session.query(User)
+        .filter(~User.id.in_(users_with_blog_today))
+        .all()
+    )
 
-#     # Create email message
-#     sender_email = 'noreply@bloglite.com'
-#     sender_password = ''
-#     receiver_email = user.email
-#     subject = f'Exported blogs for {user.name}'
+    for user in users_without_blog_today:
+        sender_email = 'noreply@bloglite.com'
+        sender_password = ''
+        receiver_email = user.email
+        subject = 'Reminder to post a blog today, {}'.format(user.name)
 
-#     message = MIMEMultipart()
-#     message['From'] = sender_email
-#     message['To'] = receiver_email
-#     message['Subject'] = subject
-#     message.attach(MIMEText(f'Hi {user.name},\n\nPlease find attached your exported blogs file.\n\nBest regards,\nBloglite Team'))
+        message = MIMEMultipart()
+        message['From'] = sender_email
+        message['To'] = receiver_email
+        message['Subject'] = subject
+        message.attach(MIMEText('Hello {}, it\'s time to post a blog!'.format(user.name), 'plain'))
 
-#     # Attach CSV file
-#     # csv_attachment = MIMEApplication(csv_data.encode('utf-8'), Name=csv_name)
-#     csv_attachment = MIMEApplication(csv_data, Name=csv_name)
-#     csv_attachment['Content-Disposition'] = f'attachment; filename="{csv_name}"'
-#     message.attach(csv_attachment)
+        # Connect to SMTP server and send email
+        with smtplib.SMTP('localhost', 1025) as smtp:
+            smtp.login(sender_email, sender_password)
+            smtp.send_message(message)
+            smtp.quit()
 
-#     # Connect to SMTP server and send email
-#     with smtplib.SMTP('localhost', 1025) as smtp:
-#         # smtp.starttls()
-#         # smtp.login(sender_email, sender_password)
-#         smtp.login(sender_email, sender_password)
-#         smtp.send_message(message)
-#         smtp.quit(message)
-#         ################################################################################
-#         # smtp.sendmail(sender_email, receiver_email, message.as_string())
-#         # smtp.quit()
-#     # # Send email
-#     # with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-#     #     smtp.starttls()
-#     #     smtp.login('noreply.bloglite@gmail.com', 'bloglite1234')
-#     #     smtp.sendmail('noreply.bloglite@gmail.com', user.email, message.as_string())
-
-#     return f"Exported {len(blogs)} blogs for user {user.name} to email {user.email}"
+    return 'Daily Reminder Emails sent!'
 
 @shared_task(bind=True)
 def exportBlogs(self, user_id):
@@ -107,6 +74,7 @@ def exportBlogs(self, user_id):
         blogs_dict.append(blog_dict)
 
     return blogs_dict
+
     # df = pd.DataFrame.from_dict(blogs_dict)
 
     # csv_data = df.to_csv(index=False, header=True)

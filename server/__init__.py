@@ -1,7 +1,6 @@
 #IMPORTS
 from flask import Flask
-from flask_restful import Api, Resource
-# from resources import register_resources
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
@@ -9,8 +8,6 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from os import path
 from utils import make_celery
-# from celery import Celery
-# from tasks import celery
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -27,8 +24,6 @@ def create_app():
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
     app.config["JWT_SECRET_KEY"] = "jwtkey"
     app.config["CELERY_CONFIG"] = {"broker_url": "redis://localhost:6379/0", "result_backend": "redis://localhost:6379/0"}
-    # app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-    # app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     
     db.init_app(app)
     ma.init_app(app)
@@ -57,19 +52,6 @@ def create_app():
 
     register_resources(app)
     create_database(app)
-
-    # app.app_context().push()
-
-    # # Configure Celery
-    # celery = Celery(
-    #     app.import_name,
-    #     broker=app.config['CELERY_BROKER_URL'],
-    #     backend=app.config['CELERY_RESULT_BACKEND']
-    # )
-    # celery.conf.update(app.config)
-
-    # # Start the Celery worker
-    # celery.worker_main(argv=['worker', '-l', 'info', '-E'])
 
     return app, celery
 
