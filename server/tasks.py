@@ -37,13 +37,15 @@ def daily_reminder():
         sender_email = 'noreply@bloglite.com'
         sender_password = ''
         receiver_email = user.email
-        subject = 'Reminder to post a blog today, {}'.format(user.name)
+        subject = 'Your daily blogging reminder'
 
         message = MIMEMultipart()
         message['From'] = sender_email
         message['To'] = receiver_email
         message['Subject'] = subject
-        message.attach(MIMEText('Hello {}, it\'s time to post a blog!'.format(user.name), 'plain'))
+        message_text = "Hello {}, we hope you're doing well.\n\n Just a friendly reminder that it's been a while since you posted a blog.\n Please take a few minutes today to share your thoughts with our community.\n Your contributions are always valuable and appreciated.\n\nRegards,\nTeam Bloglite".format(user.name)
+        message.attach(MIMEText(message_text))
+        # message.attach(MIMEText('Hello {}, it\'s time to post a blog!'.format(user.name), 'plain'))
 
         # Connect to SMTP server and send email
         with smtplib.SMTP('localhost', 1025) as smtp:
