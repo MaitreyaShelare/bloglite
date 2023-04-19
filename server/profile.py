@@ -1,7 +1,8 @@
 #IMPORTS
-from flask import Blueprint,request,jsonify
+from flask import Blueprint,request,jsonify, Response
 from models import *
 from flask_jwt_extended import jwt_required
+import pandas as pd
 import base64
 from __init__ import db
 from blog import redis_conn
@@ -20,6 +21,29 @@ from tasks import exportBlogs
 #     task = long_task.delay(10)
 #     return jsonify({'task_id': task.id})
 
+# For Importing Blogs
+@profile.route('api/profile/import/<int:user_id>', methods=['POST'])
+@jwt_required()
+
+def import_blogs(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        file = request.files["file"]
+        df = pd.read_csv(file)                 
+        for index, row in df.iterrows():
+            blog = Blog(
+                user_id=row['user_id'],
+                text=row['text'],
+                photo=row['photo'],
+                photo_mimetype=row['mimetype'],
+            )
+            db.session.add(blog)
+            db.session.commit()
+        return jsonify(success="Blogs imported successfully"), 200
+    else:
+        return jsonify(error="User not found"), 404
+
+
 # For Exporting Blogs
 @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -27,14 +51,25 @@ from tasks import exportBlogs
 def export_blogs(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
-    #     task = exportBlogs.apply_async(args=[user_id])
-    # return jsonify({'task_id': task.id})
         task = exportBlogs.delay(user_id)
         return jsonify({'task_id': task.id})
-#         # result = task.get()
-#         # return jsonify(message=result), 200
-#     else:
-#         return jsonify(error="Error in Exporting Blogs"), 404
+
+@profile.route('api/tasks/<string:task_id>')
+@jwt_required()
+def task_status(task_id):
+    task = exportBlogs.AsyncResult(task_id)
+    if task.state == 'SUCCESS':
+        result = task.get()
+        df = pd.DataFrame.from_dict(result)
+
+        csv = df.to_csv(index=False, header=True)
+        return Response(
+            csv,
+            mimetype="text/csv",
+            headers={"Content-disposition":
+                     "attachment; filename=blogs.csv"})
+    else:
+        return jsonify({'status': task.state})
     
 # For Profile Component
 @profile.route('/api/profile/<int:user_id>', methods=['GET'])

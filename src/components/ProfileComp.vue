@@ -4,20 +4,6 @@
       <div class="col col-md-6 mx-auto mt-2">
         <div class="card mb-4 overflow-hidden">
           <div class="card-body p-3 p-sm-4">
-            <!-- <div class="ms-auto">
-              <a class="btn btn-sm float-end" data-bs-toggle="dropdown">
-                <i class="bi bi-three-dots"></i>
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <button class="dropdown-item" v-if="superUser">Edit</button>
-                </li>
-                <li>
-                  <button class="dropdown-item" v-if="superUser">Delete</button>
-                </li>
-                <li><button class="dropdown-item">Export</button></li>
-              </ul>
-            </div> -->
             <div class="d-flex justify-content-center" v-if="profileDetails">
               <form>
                 <div class="form-group" id="dp">
@@ -41,25 +27,6 @@
                 </div>
               </form>
             </div>
-            <!-- <div class="d-flex" ref="editable" v-if="profileDetails">
-              <div
-                class="d-flex mx-auto"
-                v-if="!isEditing"
-                @click="startEditing"
-              >
-                <h2 class="mx-auto py-2" id="user-name">
-                  {{ userName }}
-                </h2>
-              </div>
-              <div class="d-flex mx-auto" v-else>
-                <input
-                  type="text"
-                  v-model="userName"
-                  @keyup.enter="endEditing"
-                  @blur="endEditing"
-                />
-              </div>
-            </div> -->
             <div
               class="d-flex mx-auto text-center justify-content-center"
               ref="editable"
@@ -131,14 +98,21 @@
               <!-- @click="this.$emit(viewPosts)" -->
             </div>
             <div class="d-flex mx-auto text-center justify-content-center">
-              <button
-                class="btn btn-link text-decoration-none"
-                @click="importPosts()"
-                v-if="!differentUser"
-              >
-                <i class="bi bi-box-arrow-down-left"></i>&nbsp;&nbsp; Import
-                Blogs
-              </button>
+              <div class="btn-file">
+                <input
+                  type="file"
+                  accept=".csv"
+                  ref="fileInput"
+                  @change="importPosts()"
+                />
+                <button
+                  class="btn btn-link text-decoration-none"
+                  v-if="!differentUser"
+                >
+                  <i class="bi bi-box-arrow-down-left"></i>&nbsp;&nbsp; Import
+                  Blogs
+                </button>
+              </div>
               <button
                 class="btn btn-link text-decoration-none"
                 @click="exportPosts()"
@@ -203,13 +177,77 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
+          var taskID = data.task_id;
+          this.checkTaskStatus(taskID);
         })
         .catch((error) => {
           console.error(error);
         });
     },
+    checkTaskStatus(taskID) {
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/tasks/" + taskID;
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: auth,
+        },
+      };
+
+      var pollingInterval = setInterval(() => {
+        fetch(url, requestOptions)
+          .then((response) => response.blob())
+          .then((blob) => {
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const a = document.createElement("a");
+            const timestamp = Date.now();
+            const filename = `blogs_${timestamp}.csv`;
+            a.href = url;
+            a.setAttribute("download", filename);
+            a.click();
+            clearInterval(pollingInterval);
+          });
+      }, 1000);
+    },
+
     importPosts() {
-      console.log("import");
+      var id = this.user_id;
+      var base = this.$store.getters.getBaseURL;
+      var url = base + "/api/profile/import/" + id;
+      // api/profile/import/<int:user_id>
+      var file = this.$refs.fileInput.files[0];
+      const formData = new FormData();
+
+      formData.append("file", file);
+
+      var token = this.$store.getters.getToken;
+      var pureToken = token.replace(/["]+/g, "");
+      var auth = `Bearer ${pureToken}`;
+
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: auth,
+        },
+        body: formData,
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.msg === "Blogs imported successfully") {
+            console.log(data);
+          }
+          this.$emit("profile-updated");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     startEditing() {
       if (!this.differentUser) {

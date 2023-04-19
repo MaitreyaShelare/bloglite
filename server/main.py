@@ -16,5 +16,5 @@ def index():
 #     return send_from_directory(app.static_folder, path)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
     # celery.worker_main(argv=['worker', '-l', 'info', '-E'])

@@ -65,7 +65,8 @@ def long_task(duration):
 #     message.attach(MIMEText(f'Hi {user.name},\n\nPlease find attached your exported blogs file.\n\nBest regards,\nBloglite Team'))
 
 #     # Attach CSV file
-#     csv_attachment = MIMEApplication(csv_data.encode('utf-8'), Name=csv_name)
+#     # csv_attachment = MIMEApplication(csv_data.encode('utf-8'), Name=csv_name)
+#     csv_attachment = MIMEApplication(csv_data, Name=csv_name)
 #     csv_attachment['Content-Disposition'] = f'attachment; filename="{csv_name}"'
 #     message.attach(csv_attachment)
 
@@ -73,8 +74,12 @@ def long_task(duration):
 #     with smtplib.SMTP('localhost', 1025) as smtp:
 #         # smtp.starttls()
 #         # smtp.login(sender_email, sender_password)
-#         smtp.sendmail(sender_email, receiver_email, message.as_string())
-#         smtp.quit()
+#         smtp.login(sender_email, sender_password)
+#         smtp.send_message(message)
+#         smtp.quit(message)
+#         ################################################################################
+#         # smtp.sendmail(sender_email, receiver_email, message.as_string())
+#         # smtp.quit()
 #     # # Send email
 #     # with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
 #     #     smtp.starttls()
@@ -83,37 +88,88 @@ def long_task(duration):
 
 #     return f"Exported {len(blogs)} blogs for user {user.name} to email {user.email}"
 
-@shared_task
-def exportBlogs(user_id):
-    # Create email message
-    sender_email = 'noreply@example.com'
-    sender_password = ''
-    receiver_email = 'example@example.com'
-    subject = 'Exported blogs'
+@shared_task(bind=True)
+def exportBlogs(self, user_id):
+    from models import User, Blog
+    user = User.query.filter_by(id=user_id).first()
+    blogs = Blog.query.filter_by(user_id=user_id).all()
 
-    message = MIMEMultipart()
-    message['From'] = sender_email
-    message['To'] = receiver_email
-    message['Subject'] = subject
-    message.attach(MIMEText('Hi,\n\nPlease find attached your exported blogs file.\n\nBest regards,\nBloglite Team'))
+    # Create list of dictionaries containing blog data
+    blogs_dict = []
+    for blog in blogs:
+        blog_dict = {
+            'id': blog.id,
+            'user_id': blog.user_id,
+            'text': blog.text,
+            'photo': blog.photo,
+            'photo_mimetype': blog.photo_mimetype,
+            'timestamp': blog.timestamp,
+            'hidden': blog.hidden
+        }
+        blogs_dict.append(blog_dict)
 
-    # # Read CSV file
-    # with open('blogs.csv', 'rb') as csv_file:
-    #     csv_data = csv_file.read()
+    return blogs_dict
+    # df = pd.DataFrame.from_dict(blogs_dict)
 
-    # # Attach CSV file
-    # csv_attachment = MIMEApplication(csv_data, Name='blogs.csv')
-    # csv_attachment['Content-Disposition'] = f'attachment; filename="blogs.csv"'
-    # message.attach(csv_attachment)
+    # csv_data = df.to_csv(index=False, header=True)
+    # csv_name = f"{user.name}_blogs.csv"
 
-    # Connect to MailHog and send email
-    with smtplib.SMTP('localhost', 1025) as smtp:
-        smtp.login(sender_email, sender_password)
-        smtp.send_message(message)
-        smtp.quit(message)
-        # smtp.sendmail(sender_email, receiver_email, message.as_string())
+    # print(csv_data)
+    # return csv_data
 
-    print('Email sent!')
+    # return {'csv_data': csv_data, 'csv_name': csv_name}
+    # response = {
+    #     'csv_data': csv_data
+    # }
+    # return jsonify(response)
+    # return {'csv_data': csv_data}
+#     return Response(
+#         csv_data,
+        # mimetype="text/csv",
+        # headers={"Content-disposition":
+        #         f"attachment; filename={csv_name}"}
+# )
+
+    # csv_name = f"{user.name}_blogs.csv"
+
+    # return Response(
+    # csv_data,
+    # mimetype="text/csv",
+    # headers={"Content-disposition":
+    #         "attachment; filename=blogs.csv"})
+    
+
+# @shared_task
+# def exportBlogs(user_id):
+#     # Create email message
+#     sender_email = 'noreply@bloglite.com'
+#     sender_password = ''
+#     receiver_email = 'example@example.com'
+#     subject = 'Exported blogs'
+
+#     message = MIMEMultipart()
+#     message['From'] = sender_email
+#     message['To'] = receiver_email
+#     message['Subject'] = subject
+#     message.attach(MIMEText('Hi,\n\nPlease find attached your exported blogs file.\n\nBest regards,\nBloglite Team'))
+
+#     # # Read CSV file
+#     # with open('blogs.csv', 'rb') as csv_file:
+#     #     csv_data = csv_file.read()
+
+#     # # Attach CSV file
+#     # csv_attachment = MIMEApplication(csv_data, Name='blogs.csv')
+#     # csv_attachment['Content-Disposition'] = f'attachment; filename="blogs.csv"'
+#     # message.attach(csv_attachment)
+
+#     # Connect to MailHog and send email
+#     with smtplib.SMTP('localhost', 1025) as smtp:
+#         smtp.login(sender_email, sender_password)
+#         smtp.send_message(message)
+#         smtp.quit(message)
+#         # smtp.sendmail(sender_email, receiver_email, message.as_string())
+
+#     print('Email sent!')
 
 # @celery.task
 # def async_export_blogs(user_id):

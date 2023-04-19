@@ -185,7 +185,7 @@ def export_blog(blog_id):
             'user_id': blog.user_id,
             'text': blog.text,
             'photo': blog.photo,
-            'mimetype': blog.photo_mimetype,
+            'photo_mimetype': blog.photo_mimetype,
             'timestamp': blog.timestamp,
             'hidden': blog.hidden
         }
