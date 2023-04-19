@@ -19,10 +19,8 @@ from email.mime.application import MIMEApplication
 # SENDER_ADDRESS = "noreply@bloglite.com"
 # SENDER_PASSWORD = ""
 @shared_task
-def long_task(duration):
+def long_task():
     
-    print(f'Starting task for {duration} seconds')
-    time.sleep(duration)
     print('Task complete!')
     return 'Task complete!'
 
