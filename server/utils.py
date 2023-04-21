@@ -16,7 +16,7 @@ def make_celery(app):
     celery.conf.beat_schedule = {
         'daily_reminder': {
             'task': 'tasks.daily_reminder',
-            'schedule': crontab(hour=17, minute=18), 
+            'schedule': crontab(hour=20, minute=0), 
         },
     }
     

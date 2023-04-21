@@ -30,6 +30,7 @@ def create_app():
 
     celery = make_celery(app)
     celery.set_default()
+    celery.conf.broker_connection_retry_on_startup = True
     
     CORS(app)
     
