@@ -5,17 +5,18 @@ from __init__ import ma
 import pytz
 from marshmallow import fields
 
+tz = pytz.timezone('Asia/Kolkata')
 
 user_followers = db.Table('user_followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
+    db.Column('timestamp', db.DateTime, default=datetime.now(tz))
 )
 
 user_likes = db.Table('user_likes',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('blog_id', db.Integer, db.ForeignKey('blog.id'), primary_key=True),
-    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
+    db.Column('timestamp', db.DateTime, default=datetime.now(tz))
 )
 
 class User(db.Model):
@@ -37,7 +38,7 @@ class User(db.Model):
     
     liked_blogs = db.relationship(
         'Blog', secondary=user_likes,primaryjoin=(user_likes.c.user_id == id),lazy='dynamic')
-    
+
     def follow(self, user):
      if not self.is_following(user):
             self.followed_users.append(user)
@@ -70,12 +71,13 @@ class User(db.Model):
             Like.blog_id == blog.id
         ).count() > 0        
 
+    # For Report
     def new_followers_past_month(self):
         count = (
         db.session.query(User)
         .join(user_followers, user_followers.c.followed_id == User.id)
         .filter(user_followers.c.follower_id == self.id)
-        .filter(user_followers.c.timestamp > (datetime.now() - timedelta(days=30)))
+        .filter(user_followers.c.timestamp > (datetime.now(tz) - timedelta(days=30)))
         .count()
         )
         return str(count)
@@ -85,7 +87,7 @@ class User(db.Model):
             db.session.query(User)
             .join(user_followers, user_followers.c.follower_id == User.id)
             .filter(user_followers.c.followed_id == self.id)
-            .filter(user_followers.c.timestamp > (datetime.now() - timedelta(days=30)))
+            .filter(user_followers.c.timestamp > (datetime.now(tz) - timedelta(days=30)))
             .count()
         )
         return str(count)
@@ -94,7 +96,7 @@ class User(db.Model):
         count = (
             db.session.query(Blog)
             .filter_by(user_id=self.id)
-            .filter(Blog.timestamp > (datetime.now() - timedelta(days=30)))
+            .filter(Blog.timestamp > (datetime.now(tz) - timedelta(days=30)))
             .count()
         )
         return str(count)
@@ -104,7 +106,7 @@ class User(db.Model):
             db.session.query(Blog)
             .join(user_likes, user_likes.c.blog_id == Blog.id)
             .filter(user_likes.c.user_id == self.id)
-            .filter(user_likes.c.timestamp > (datetime.now() - timedelta(days=30)))
+            .filter(user_likes.c.timestamp > (datetime.now(tz) - timedelta(days=30)))
             .count()
         )
         return str(count)
@@ -114,7 +116,7 @@ class User(db.Model):
             db.session.query(Comment)
             .join(Blog)
             .filter(Comment.user_id == self.id)
-            .filter(Comment.timestamp > (datetime.now() - timedelta(days=30)))
+            .filter(Comment.timestamp > (datetime.now(tz) - timedelta(days=30)))
             .count()
         )
         return str(count)
@@ -125,7 +127,7 @@ class Blog(db.Model):
     text = db.Column(db.String(255), nullable=False)
     photo = db.Column(db.String, nullable=False)
     photo_mimetype = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True),default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime(timezone=True),default=datetime.now(tz))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='blog')
     likes = db.relationship('Like', backref='blog', lazy=True)
@@ -149,7 +151,7 @@ class Like(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255), nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True),default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime(timezone=True),default=datetime.now(tz))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
 
@@ -167,12 +169,10 @@ class CommentSchema(ma.SQLAlchemyAutoSchema):
         include_relationships = True
         load_instance = True
 
-        # Define a new field for server_time
     server_time = fields.Method('get_server_time')
 
     def get_server_time(self, obj):
-    # Calculate the server time using datetime and pytz
-        tz = pytz.timezone('UTC')
+        tz = pytz.timezone('Asia/Kolkata')
         server_time = datetime.now(tz)
         server_time_str = server_time.strftime('%Y-%m-%dT%H:%M:%S.%f')
         return server_time_str
@@ -194,12 +194,10 @@ class BlogSchema(ma.SQLAlchemyAutoSchema):
         include_relationships = True
         load_instance = True
 
-    # Define a new field for server_time
     server_time = fields.Method('get_server_time')
 
     def get_server_time(self, obj):
-    # Calculate the server time using datetime and pytz
-        tz = pytz.timezone('UTC')
+        tz = pytz.timezone('Asia/Kolkata')
         server_time = datetime.now(tz)
         server_time_str = server_time.strftime('%Y-%m-%dT%H:%M:%S.%f')
         return server_time_str
