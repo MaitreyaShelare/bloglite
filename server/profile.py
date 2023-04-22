@@ -9,16 +9,7 @@ from blog import redis_conn
 profile = Blueprint('profile', __name__)
 
 from tasks import exportBlogs
-# from tasks import long_task
 
-
-# @profile.route('api/profile/export/<int:user_id>', methods=['GET'])
-# @jwt_required()
-# def run_task(user_id):
-#     # print(user_id)
-#     # task = long_task.apply_async(args=[10])
-#     task = long_task.delay(10)
-#     return jsonify({'task_id': task.id})
 
 # For Importing Blogs
 @profile.route('api/profile/import/<int:user_id>', methods=['POST'])
@@ -53,6 +44,7 @@ def export_blogs(user_id):
         task = exportBlogs.delay(user_id)
         return jsonify({'task_id': task.id})
 
+# For Checking Export Status
 @profile.route('api/tasks/<string:task_id>')
 @jwt_required()
 def task_status(task_id):

@@ -1,5 +1,4 @@
 from celery import shared_task
-from sqlalchemy import select
 from jinja2 import Template
 from weasyprint import HTML
 from datetime import date, datetime, timedelta

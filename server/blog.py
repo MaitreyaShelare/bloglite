@@ -16,7 +16,7 @@ now = datetime.utcnow()
 # Set up Redis connection
 redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 CACHE_EXPIRATION_TIME = 600
-# redis_conn.flushdb()
+redis_conn.flushdb()
 
 # # For Each Blog Component
 @blog.route('/api/blog/<int:blog_id>', methods=['GET'])
@@ -26,6 +26,7 @@ def getBlog(blog_id):
 
     cached_data = redis_conn.get(redis_key)
     if cached_data:
+        print("Cache hit")
         return jsonify(json.loads(cached_data))
 
     # If the request is not cached, retrieve the data from the database
@@ -33,6 +34,7 @@ def getBlog(blog_id):
 
     if blog is not None:
         blog_schema = BlogSchema()
+        print("Backend hit")
         result = blog_schema.dump(blog)
         redis_conn.setex(redis_key, CACHE_EXPIRATION_TIME, json.dumps(result))
         return jsonify(result)
