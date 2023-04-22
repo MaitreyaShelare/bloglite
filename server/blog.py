@@ -26,7 +26,7 @@ def getBlog(blog_id):
 
     cached_data = redis_conn.get(redis_key)
     if cached_data:
-        print("Cache hit")
+        # print("Cache hit")
         return jsonify(json.loads(cached_data))
 
     # If the request is not cached, retrieve the data from the database
@@ -34,7 +34,7 @@ def getBlog(blog_id):
 
     if blog is not None:
         blog_schema = BlogSchema()
-        print("Backend hit")
+        # print("Backend hit")
         result = blog_schema.dump(blog)
         redis_conn.setex(redis_key, CACHE_EXPIRATION_TIME, json.dumps(result))
         return jsonify(result)

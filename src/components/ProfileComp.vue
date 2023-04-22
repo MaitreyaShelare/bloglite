@@ -214,8 +214,45 @@ export default {
             a.click();
             clearInterval(pollingInterval);
           });
-      }, 1000);
+      }, 2000);
     },
+    // checkTaskStatus(taskID) {
+    //   var base = this.$store.getters.getBaseURL;
+    //   var url = base + "/api/tasks/" + taskID;
+
+    //   var token = this.$store.getters.getToken;
+    //   var pureToken = token.replace(/["]+/g, "");
+    //   var auth = `Bearer ${pureToken}`;
+
+    //   var requestOptions = {
+    //     method: "GET",
+    //     headers: {
+    //       Authorization: auth,
+    //     },
+    //   };
+
+    //   var pollingInterval = setInterval(() => {
+    //     fetch(url, requestOptions)
+    //       .then((response) => {
+    //         const contentType = response.headers.get("content-type");
+    //         if (contentType === "text/csv") {
+    //           return response.blob();
+    //         } else {
+    //           this.checkTaskStatus(taskID);
+    //         }
+    //       })
+    //       .then((blob) => {
+    //         const url = window.URL.createObjectURL(new Blob([blob]));
+    //         const a = document.createElement("a");
+    //         const timestamp = Date.now();
+    //         const filename = `blogs_${timestamp}.csv`;
+    //         a.href = url;
+    //         a.setAttribute("download", filename);
+    //         a.click();
+    //         clearInterval(pollingInterval);
+    //       });
+    //   }, 1000);
+    // },
 
     importPosts() {
       var id = this.user_id;

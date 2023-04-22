@@ -27,7 +27,6 @@ def exportBlogs(self, user_id):
             'hidden': blog.hidden
         }
         blogs_dict.append(blog_dict)
-
     return blogs_dict
 
 @shared_task
