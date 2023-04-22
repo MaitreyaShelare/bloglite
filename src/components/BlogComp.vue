@@ -17,9 +17,6 @@
                     })
                   "
                 >
-                  <!-- @click="$router.push('/profile/' + blogDetails.blogUserID)"
-                  :href="'#/profile/' + Blogdata.user.id"
-                  @click="$router.push('/profile/1')" -->
                   <img
                     id="dp-image-small"
                     v-if="blogDetails"
@@ -172,7 +169,6 @@ export default {
       this.showComments = !this.showComments;
     },
     editBlog() {
-      // console.log("edit blog");
       this.$emit("editBlog", this.blog_id);
     },
     toggleLike() {
@@ -181,8 +177,6 @@ export default {
     },
     toggleHide() {
       this.hidden = !this.hidden;
-      // this.hidden ? this.HideBlog() : this.UnhideBlog();
-      // console.log(this.hidden);
       var blogid = this.blog_id;
       var base = this.$store.getters.getBaseURL;
       var url = base + "/api/blog/toggleHide/" + blogid;
@@ -202,7 +196,6 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          // this.liked = true;
           this.$emit("toggleHide");
         })
         .catch((error) => {
@@ -324,15 +317,6 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-
-      // fetch(url, requestOptions)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     console.log(data);
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   });
     },
     FetchData() {
       var id = this.blog_id;
@@ -353,7 +337,6 @@ export default {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          // console.log(data);
           this.blogData = data;
           // console.log(this.blogData);
           this.isLiked();
@@ -401,7 +384,6 @@ export default {
       }
       if (minutesDifference < 60) {
         // less than an hour
-        // return `${minutesDifference} minutes ago`;
         return `A while ago`;
       }
       if (minutesDifference < 120) {
@@ -411,7 +393,6 @@ export default {
       if (minutesDifference < 1440) {
         // less than a day
         return `${hoursDifference} hours ago`;
-        // return `${currentTimestamp} current time,${postTimestamp} post time`;
       } else {
         const day = postTimestamp.getDate();
         const month = postTimestamp.toLocaleString("default", {

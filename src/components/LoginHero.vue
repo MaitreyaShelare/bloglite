@@ -64,19 +64,7 @@
             >
               New Here? Sign up
             </button>
-            <!-- <a
-              href="#/signup"
-              class="w-100 btn btn-outline-dark btn-lg rounded-pill"
-              >New Here? Sign up</a
-            > -->
-            <!-- <button
-                class="w-100 btn btn-outline-dark btn-lg rounded-pill"
-                type="submit"
-              >
-                New Here? Sign up
-              </button> -->
           </form>
-          <!-- <p>{{ $store.getters.getToken }}</p> -->
         </div>
         <div class="container-fluid col-12 col-sm-6 col-lg-6 mt-5">
           <img
@@ -154,7 +142,6 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // "Authentication-Token": "",
         },
         body: JSON.stringify(form),
       };
@@ -178,40 +165,6 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-
-      // fetch(url, requestOptions)
-      //   .then((response) => {
-      //     if (response.status == 201) {
-      //       this.$store.commit("loginUser");
-      //     }
-      //     return response.json();
-      //   })
-      //   .then((data) => {
-      //     (this.data = data),
-      //       // console.log(this.data.message),
-      //       this.$store.commit("setCurrentUserID", data.id),
-      //       this.$store.commit("setToken", data.access_token),
-      //       this.$store.commit("setRefreshToken", data.refresh_token),
-      //       this.$router.push("/feed");
-      //   });
-
-      // .then((data) => {
-      //   console.log(data),
-      //   this.data = data,
-      //     this.$store.commit("setToken", data.access_token),
-      //     this.$store.commit("setRefreshToken", data.refresh_token);
-      // });
-
-      // console.log(data),
-      // .then((response) => response.json())
-      // console.log(this.$store.state.count),
-      // localStorage.setItem("token", JSON.stringify(data.access_token));
-      // this.$store.commit("setToken", JSON.stringify(data.access_token));
-      //WORKING ABOVE
-      // const response = await fetch(url, requestOptions);
-      // var data = response.json();
-      // this.data = data;
-      // this.$store.commit("setToken", token);
     },
   },
 };

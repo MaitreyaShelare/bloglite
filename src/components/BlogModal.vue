@@ -12,7 +12,6 @@
             <h1 class="modal-title fs-5">Edit Blog</h1>
           </div>
           <div class="modal-body py-3">
-            <!-- {{ blog_id }} -->
             <div class="card mx-auto">
               <textarea
                 class="form-control border-200 rounded border-0 flex-1 fs-0"
@@ -137,8 +136,6 @@ export default {
           console.log(this.blogData);
           this.blogtext = this.blogData.text;
           this.preview = `data:${this.blogData.photo_mimetype};charset=utf-8;base64,${this.blogData.photo}`;
-          // this.image = this.blogData.photo;
-          // console.log(this.image);
         })
         .catch((error) => {
           console.error(error);
@@ -152,7 +149,6 @@ export default {
           this.preview = e.target.result;
         };
         this.image = input.files[0];
-        // console.log(this.image);
         reader.readAsDataURL(input.files[0]);
       }
     },
@@ -291,11 +287,6 @@ export default {
   justify-content: center;
   background-color: #000000b2;
 }
-
-/* .modal {
-  min-height: 9rem;
-  max-width: 20rem;
-} */
 
 .btn-file {
   position: relative;

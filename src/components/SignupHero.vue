@@ -80,12 +80,7 @@
               >
                 Join
               </button>
-              <!-- <p>
-                Already have an Account?
-                <router-link to="/">Sign in</router-link>
-              </p> -->
             </form>
-            <!-- <p>{{ data.message }}</p> -->
           </div>
         </div>
         <div class="container-fluid col-12 col-sm-8 col-lg-6">
@@ -197,40 +192,6 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-
-      // fetch(url, requestOptions)
-      //   .then((response) => {
-      //     if (response.status == 201) {
-      //       this.$store.commit("loginUser");
-      //     }
-      //     return response.json();
-      //   })
-      //   .then((data) => {
-      //     (this.data = data),
-      //       // console.log(this.data),
-      //       this.$store.commit("setCurrentUserID", data.id),
-      //       this.$store.commit("setToken", data.access_token),
-      //       this.$store.commit("setRefreshToken", data.refresh_token),
-      //       this.$router.push("/feed");
-      //   });
-
-      // .then((data) => {
-      //   console.log(data),
-      //     this.data = data,
-      //     this.$store.commit("setToken", data.access_token),
-      //     this.$store.commit("setRefreshToken", data.refresh_token);
-
-      // this.$store.commit("setToken", JSON.stringify(data.access_token));
-      // .then((v) => console.log(v));
-      // fetch(url, requestOptions)
-      //   .then((response) => JSON.parse(response))
-      //   .then((data) => console.log(data));
-      // if (data.message == "User added sucessfully") {
-      //   this.$router.push("/about");
-      // }
-      // if (response.status == 201) {
-      //       this.$router.push("/about");
-      //     }
     },
   },
 };

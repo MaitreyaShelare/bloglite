@@ -50,22 +50,12 @@
           </div>
         </div>
         <div pt-2 mt-3 v-if="preview">
-          <!-- <div v-for="(item, index) in preview_list" :key="index"> -->
-          <!-- <p class="text-center">{{ image_list[index].name }}</p> -->
           <div class="text-center col-lg-10 mx-3 mx-lg-auto">
             <div class="text-end mt-2">
               <button class="btn-close" @click="clearImage"></button>
             </div>
             <img :src="preview" class="img-thumbnail my-4" />
-            <!-- <img :src="item" class="img-fluid mt-4" /> -->
           </div>
-          <!-- <p>size: {{ image_list[index].size / 1024 }}KB</p> -->
-          <!-- </div> -->
-          <!-- <div
-            class="container-fluid d-grid col-2 align-items-center text-center py-3"
-          >
-            
-          </div> -->
         </div>
       </div>
     </div>
@@ -123,48 +113,8 @@ export default {
           }
         });
     },
-    // sanitizeHtml(html) {
-    //   const allowedTags = ["p", "b", "i", "u", "ul", "ol", "li"];
-    //   const regex = /<([^>]+)>/gi;
 
-    //   return html
-    //     .replace(regex, (tag, name) => {
-    //       if (allowedTags.includes(name)) {
-    //         return tag;
-    //       } else {
-    //         return "";
-    //       }
-    //     })
-    //     .replace(/&/g, "&amp;")
-    //     .replace(/</g, "&lt;")
-    //     .replace(/>/g, "&gt;")
-    //     .replace(/"/g, "&quot;")
-    //     .replace(/'/g, "&#x27;")
-    //     .replace(/\//g, "&#x2F;");
-    // },
-
-    // sanitizeHtml(html) {
-    //   const allowedTags = ["p", "b", "i", "u", "ul", "ol", "li"];
-    //   // const allowedAttrs = ["href"];
-
-    //   return html.replace(/<(\/?)(\w+)[^>]*>/g, (match, endTag, tagName) => {
-    //     if (allowedTags.indexOf(tagName.toLowerCase()) !== -1) {
-    //       return `<${endTag}${tagName}>`;
-    //     } else {
-    //       return "";
-    //     }
-    //   });
-    //   // .replace(/\b(\w+)="[^"]*"/g, (match, attrName) => {
-    //   //   if (allowedAttrs.indexOf(attrName.toLowerCase()) !== -1) {
-    //   //     return `${attrName}="${match.slice(attrName.length + 2, -1)}"`;
-    //   //   } else {
-    //   //     return "";
-    //   //   }
-    //   // });
-    // },
     PostBlog: function () {
-      // console.log(this.image);
-      // console.log(this.blogtext);
       var base = this.$store.getters.getBaseURL;
       var url = base + "/api/blog";
 
@@ -197,39 +147,6 @@ export default {
         });
       this.reset();
     },
-    // async postBlog() {
-    //   var base = this.$store.getters.getBaseURL;
-    //   var url = base + "/api/blog";
-    //   var photo = document.getElementById("blog-image").files[0];
-    //   console.log(photo);
-    //   // const photo = this.$refs.image.files[0];
-    //   var form = {
-    //     text: this.blogtext,
-    //     photo: photo,
-    //   };
-    //   var token = this.$store.getters.getToken;
-    //   var pureToken = token.replace(/["]+/g, "");
-    //   var auth = `Bearer ${pureToken}`;
-    //   // console.log(auth);
-    //   var requestOptions = {
-    //     method: "POST",
-    //     headers: {
-    //       // Authorization: this.$store.getters.getToken,
-    //       "Content-Type": "application/json",
-    //       Authorization: auth,
-    //     },
-    //     body: JSON.stringify(form),
-    //   };
-    //   const response = await fetch(url, requestOptions);
-    //   if (response.status == 201) {
-    //     this.$emit("BlogCreated");
-    //     console.log("Blog Successfully Created");
-    //   }
-    //   if (response.status == 401) {
-    //     console.log("Failure");
-    //   }
-    //   this.reset();
-    // },
   },
 };
 </script>

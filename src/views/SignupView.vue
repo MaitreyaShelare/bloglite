@@ -27,13 +27,4 @@ export default {
   height: 100vh;
   width: 100%;
 }
-/* html,
-body {
-  height: 100%;
-}
-
-body {
-  align-items: center;
-  padding-bottom: 40px;
-} */
 </style>

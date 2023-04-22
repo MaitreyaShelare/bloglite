@@ -6,7 +6,6 @@
       >
         <div class="col-md-4 d-flex align-items-center">
           <a href="#" class="mb-3 me-2 mb-md-0 lh-1">
-            <!-- <img src="@/assets/alexa.svg" alt="" width="24" height="24" /> -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -21,10 +20,6 @@
             </svg>
           </a>
         </div>
-        <!-- <a class="text-muted" href="#">
-          <img src="@/assets/kanban.png" alt="" width="24" height="24" />
-        </a> -->
-        <!-- <p class="col-md-4 mb-0 text-muted">&copy; 2022 Kanban, Inc</p> -->
         <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li class="ms-3">
             <span class="mb-3 mb-md-0 text-muted"
@@ -32,12 +27,6 @@
             >
           </li>
         </ul>
-        <!-- <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-          <li class="ms-3"> -->
-        <!-- <a class="text-muted" href="#"><i class="bi bi-badge-tm"></i></a> -->
-        <!-- <p class="col-md-4 mb-0 text-muted">&copy; 2022 Kanban, Inc</p>
-          </li>
-        </ul> -->
       </footer>
     </div>
   </div>

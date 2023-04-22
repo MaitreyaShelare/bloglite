@@ -217,7 +217,7 @@ export default {
       var id = this.user_id;
       var base = this.$store.getters.getBaseURL;
       var url = base + "/api/profile/import/" + id;
-      // api/profile/import/<int:user_id>
+
       var file = this.$refs.fileInput.files[0];
       const formData = new FormData();
 
@@ -329,11 +329,6 @@ export default {
           .then((data) => {
             console.log(data);
             this.$emit("profile-updated");
-            // if (data.msg === "Name Updated") {
-
-            //   // this.profileData.dp = data.dp;
-            //   // this.profileData.dp_mimetype = data.dp_mimetype;
-            // }
           })
           .catch((error) => {
             console.log(error);
@@ -422,7 +417,6 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-      // this.FetchProfile();
     },
     UnfollowUser() {
       var id = this.user_id;
@@ -450,7 +444,6 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-      // this.FetchProfile();
     },
   },
 
@@ -461,10 +454,7 @@ export default {
           userName: this.profileData.name,
           dpImageSrc: `data:${this.profileData.dp_mimetype};charset=utf-8;base64,${this.profileData.dp}`,
           userPosts: this.profileData.blog.length,
-          // userFollowers: this.profileData.followers_users.length,
           userFollowing: this.profileData.followed_users.length,
-          // authorName: this.blogData.user.name,
-          // blogUserID: this.blogData.user.id,
         };
       }
       return null;
@@ -505,22 +495,4 @@ export default {
   border: none;
   outline: none;
 }
-/* .editable :focus {
-  outline: none;
-  border: none;
-} */
-/* .editable {
-  font-size: 2em;
-  border: none;
-  font-weight: bold;
-  line-height: 1.2;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em; 
-
-} */
-
-/* .h2-input :focus {
-  outline: none;
-  border: none;
-} */
 </style>
