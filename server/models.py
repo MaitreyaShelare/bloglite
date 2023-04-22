@@ -1,20 +1,21 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from __init__ import db
 from __init__ import ma
 
 import pytz
 from marshmallow import fields
 
-# Define the association table for the many-to-many relationship between users for following
+
 user_followers = db.Table('user_followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
 )
 
-# Define the association table for the many-to-many relationship between users and blogs for liking
 user_likes = db.Table('user_likes',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('blog_id', db.Integer, db.ForeignKey('blog.id'), primary_key=True)
+    db.Column('blog_id', db.Integer, db.ForeignKey('blog.id'), primary_key=True),
+    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
 )
 
 class User(db.Model):
@@ -69,7 +70,54 @@ class User(db.Model):
             Like.blog_id == blog.id
         ).count() > 0        
 
-   
+    def new_followers_past_month(self):
+        count = (
+        db.session.query(User)
+        .join(user_followers, user_followers.c.followed_id == User.id)
+        .filter(user_followers.c.follower_id == self.id)
+        .filter(user_followers.c.timestamp > (datetime.now() - timedelta(days=30)))
+        .count()
+        )
+        return str(count)
+    
+    def new_following_past_month(self):
+        count = (
+            db.session.query(User)
+            .join(user_followers, user_followers.c.follower_id == User.id)
+            .filter(user_followers.c.followed_id == self.id)
+            .filter(user_followers.c.timestamp > (datetime.now() - timedelta(days=30)))
+            .count()
+        )
+        return str(count)
+
+    def blogs_posted_past_month(self):
+        count = (
+            db.session.query(Blog)
+            .filter_by(user_id=self.id)
+            .filter(Blog.timestamp > (datetime.now() - timedelta(days=30)))
+            .count()
+        )
+        return str(count)
+    
+    def blogs_liked_past_month(self):
+        count = (
+            db.session.query(Blog)
+            .join(user_likes, user_likes.c.blog_id == Blog.id)
+            .filter(user_likes.c.user_id == self.id)
+            .filter(user_likes.c.timestamp > (datetime.now() - timedelta(days=30)))
+            .count()
+        )
+        return str(count)
+    
+    def blogs_commented_past_month(self):
+        count = (
+            db.session.query(Comment)
+            .join(Blog)
+            .filter(Comment.user_id == self.id)
+            .filter(Comment.timestamp > (datetime.now() - timedelta(days=30)))
+            .count()
+        )
+        return str(count)
 
 
 class Blog(db.Model):
@@ -96,8 +144,6 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
 
-    def __repr__(self):
-        return f"Like('{self.id}', '{self.user_id}', '{self.blog_id}')"
 
 
 class Comment(db.Model):
@@ -107,8 +153,6 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
 
-    def __repr__(self):
-        return f"Comment('{self.text}', '{self.timestamp}', '{self.user_id}', '{self.blog_id}')"
 
 class LikeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

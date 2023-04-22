@@ -4,7 +4,7 @@ from weasyprint import HTML
 # import pandas as pd
 # import time
 # from flask import current_app, Response, jsonify
-from datetime import date
+from datetime import date, datetime, timedelta
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -191,34 +191,28 @@ def generate_report(message):
 def monthly_report():
     from __init__ import db
     from models import User, Blog, Like, Comment, user_followers, user_likes
+
+    users = (
+        db.session.query(User).all()
+    )
     
-    data = {
+    user_data = {
         "users": [
             {
-                "name": "John Doe",
-                "age": 42,
-                "occupation": "Software Engineer",
-                "hobbies": ["Programming", "Reading", "Hiking"],
-                "email": "john.doe@example.com"
-            },
-            {
-                "name": "Jane Smith",
-                "age": 35,
-                "occupation": "Graphic Designer",
-                "hobbies": ["Painting", "Traveling", "Cooking"],
-                "email": "jane.smith@example.com"
-            },
-            {
-                "name": "Bob Johnson",
-                "age": 50,
-                "occupation": "Marketing Manager",
-                "hobbies": ["Golfing", "Watching Movies", "Fishing"],
-                "email": "bob.johnson@example.com"
+                "name": user.name,
+                "email": user.email,
+                "prev_month": (datetime.now() - timedelta(days=30)).strftime("%B"),
+                "new_followers": user.new_followers_past_month(),
+                "new_following": user.new_following_past_month(),
+                "blogs_posted": user.blogs_posted_past_month(),
+                "blogs_liked": user.blogs_liked_past_month(),
+                "blogs_commented": user.blogs_commented_past_month(),
             }
+            for user in users
         ]
     }
 
-    for user in data['users']:
+    for user in user_data['users']:
         generate_and_send_report.delay(user)
 
     return 'Monthly Report Emails sent!'

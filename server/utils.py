@@ -20,7 +20,7 @@ def make_celery(app):
         },
         'monthly_report': {
             'task': 'tasks.monthly_report',
-            'schedule': crontab(hour=10, minute=17),
+            'schedule': crontab(hour=14, minute=3),
             # 'schedule': crontab(day_of_month='1', hour='0', minute='0'),
     },
     }
