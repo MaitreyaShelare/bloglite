@@ -1,4 +1,6 @@
-from celery import shared_task
+from celery import shared_task, group
+from jinja2 import Template
+from weasyprint import HTML
 # import pandas as pd
 # import time
 # from flask import current_app, Response, jsonify
@@ -13,6 +15,27 @@ from email.mime.application import MIMEApplication
 # def long_task():
 #     print('Task complete!')
 #     return 'Task complete!'
+
+@shared_task(bind=True)
+def exportBlogs(self, user_id):
+    from models import Blog
+    blogs = Blog.query.filter_by(user_id=user_id).all()
+
+    # Create list of dictionaries containing blog data
+    blogs_dict = []
+    for blog in blogs:
+        blog_dict = {
+            'id': blog.id,
+            'user_id': blog.user_id,
+            'text': blog.text,
+            'photo': blog.photo,
+            'photo_mimetype': blog.photo_mimetype,
+            'timestamp': blog.timestamp,
+            'hidden': blog.hidden
+        }
+        blogs_dict.append(blog_dict)
+
+    return blogs_dict
 
 @shared_task
 def daily_reminder():
@@ -55,27 +78,165 @@ def daily_reminder():
 
     return 'Daily Reminder Emails sent!'
 
-@shared_task(bind=True)
-def exportBlogs(self, user_id):
-    from models import User, Blog
-    user = User.query.filter_by(id=user_id).first()
-    blogs = Blog.query.filter_by(user_id=user_id).all()
+# @shared_task
+# def monthly_report():
+#     # from __init__ import db
+#     # from models import User, Blog, Like, Comment, user_followers, user_likes
 
-    # Create list of dictionaries containing blog data
-    blogs_dict = []
-    for blog in blogs:
-        blog_dict = {
-            'id': blog.id,
-            'user_id': blog.user_id,
-            'text': blog.text,
-            'photo': blog.photo,
-            'photo_mimetype': blog.photo_mimetype,
-            'timestamp': blog.timestamp,
-            'hidden': blog.hidden
-        }
-        blogs_dict.append(blog_dict)
+#     # users_with_blog_today = (
+#     #     db.session.query(Blog.user_id)
+#     #     .filter(Blog.timestamp >= date.today())
+#     #     .distinct()
+#     #     .subquery()
+#     # )
 
-    return blogs_dict
+#     # # Query for all users who are not in the above result
+#     # users_without_blog_today = (
+#     #     db.session.query(User)
+#     #     .filter(~User.id.in_(users_with_blog_today))
+#     #     .all()
+#     # )
+#     data = {
+#     "users": [
+#         {
+#             "name": "John Doe",
+#             "age": 42,
+#             "occupation": "Software Engineer",
+#             "hobbies": ["Programming", "Reading", "Hiking"],
+#             "email": "john.doe@example.com"
+#         },
+#         {
+#             "name": "Jane Smith",
+#             "age": 35,
+#             "occupation": "Graphic Designer",
+#             "hobbies": ["Painting", "Traveling", "Cooking"],
+#             "email": "jane.smith@example.com"
+#         },
+#         {
+#             "name": "Bob Johnson",
+#             "age": 50,
+#             "occupation": "Marketing Manager",
+#             "hobbies": ["Golfing", "Watching Movies", "Fishing"],
+#             "email": "bob.johnson@example.com"
+#         }
+#     ]
+# }
+
+#     for user in data['users']:
+#         sender_email = 'noreply@bloglite.com'
+#         sender_password = ''
+#         receiver_email = user.email
+#         subject = 'Your daily blogging reminder'
+
+#         message = MIMEMultipart()
+#         message['From'] = sender_email
+#         message['To'] = receiver_email
+#         message['Subject'] = subject
+#         message_text = "Hello {}, we hope you're doing well.\n\n Just a friendly reminder that it's been a while since you posted a blog.\n Please take a few minutes today to share your thoughts with our community.\n Your contributions are always valuable and appreciated.\n\nRegards,\nTeam Bloglite".format(user.name)
+#         message.attach(MIMEText(message_text))
+        
+
+#         # Connect to SMTP server and send email
+#         with smtplib.SMTP('localhost', 1025) as smtp:
+#             smtp.login(sender_email, sender_password)
+#             smtp.send_message(message)
+#             smtp.quit()
+
+#     return 'Monthly Report Emails sent!'
+
+@shared_task
+def generate_and_send_report(user_data):
+   
+    # Generate the report for the current user 
+    message = format_report("report.html", user_data)
+    pdf_bytes = generate_report(message)
+
+    # Attach the report to an email and send it to the user
+    sender_email = 'noreply@bloglite.com'
+    sender_password = ''
+    # receiver_email = user.email
+    subject = 'Your Monthly Report, '+ str(user_data['name'])
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = user_data['email']
+    msg['Subject'] = subject
+
+    body = 'Hi {},\n\nPlease find attached your monthly report.\n\nBest regards,\nTeam Bloglite'.format(user_data['name'])
+    msg.attach(MIMEText(body, 'plain'))
+
+    attachment = MIMEApplication(pdf_bytes, _subtype='pdf')
+    attachment.add_header('Content-Disposition', 'attachment', filename='report.pdf')
+    msg.attach(attachment)
+
+
+    with smtplib.SMTP('localhost', 1025) as smtp:
+        smtp.login(sender_email, sender_password)
+        smtp.send_message(msg)
+        smtp.quit()
+      
+
+
+def format_report(template_file, data={}):
+    with open(template_file) as f:
+        template = Template(f.read())
+    return template.render(data=data)
+
+def generate_report(message):
+    html=HTML(string=message)
+    return html.write_pdf()
+
+
+@shared_task
+def monthly_report():
+    from __init__ import db
+    from models import User, Blog, Like, Comment, user_followers, user_likes
+    
+    data = {
+        "users": [
+            {
+                "name": "John Doe",
+                "age": 42,
+                "occupation": "Software Engineer",
+                "hobbies": ["Programming", "Reading", "Hiking"],
+                "email": "john.doe@example.com"
+            },
+            {
+                "name": "Jane Smith",
+                "age": 35,
+                "occupation": "Graphic Designer",
+                "hobbies": ["Painting", "Traveling", "Cooking"],
+                "email": "jane.smith@example.com"
+            },
+            {
+                "name": "Bob Johnson",
+                "age": 50,
+                "occupation": "Marketing Manager",
+                "hobbies": ["Golfing", "Watching Movies", "Fishing"],
+                "email": "bob.johnson@example.com"
+            }
+        ]
+    }
+
+    for user in data['users']:
+        generate_and_send_report.delay(user)
+
+    return 'Monthly Report Emails sent!'
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # df = pd.DataFrame.from_dict(blogs_dict)
 

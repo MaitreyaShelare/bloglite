@@ -7,7 +7,6 @@ def format_report(template_file, data={}):
     return template.render(data=data)
 
 def generate_report(data):
-    # message = format_report("/home/tej/Documents/MAD-II/bloglite/server/report.html", data)
     message = format_report("bloglite/server/report.html", data=data)
     html=HTML(string=message)
     file_name = str(data['name']) + ".pdf"

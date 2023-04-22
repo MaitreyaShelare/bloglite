@@ -18,6 +18,11 @@ def make_celery(app):
             'task': 'tasks.daily_reminder',
             'schedule': crontab(hour=20, minute=0), 
         },
+        'monthly_report': {
+            'task': 'tasks.monthly_report',
+            'schedule': crontab(hour=10, minute=17),
+            # 'schedule': crontab(day_of_month='1', hour='0', minute='0'),
+    },
     }
     
     celery.conf.timezone = 'Asia/Kolkata'
