@@ -56,8 +56,6 @@ def create_app():
 
     return app, celery
 
-# if __name__ == '__main__':
-#     celery.worker_main(argv=['worker', '-l', 'info', '-E'])
 
 def create_database(app):
     if not path.exists('backend/instance' + DB_NAME):

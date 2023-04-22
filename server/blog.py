@@ -9,9 +9,6 @@ import base64
 from __init__ import db
 blog = Blueprint('blog', __name__)
 
-from datetime import datetime
-
-now = datetime.utcnow()
 
 # Set up Redis connection
 redis_conn = redis.Redis(host='localhost', port=6379, db=0)
