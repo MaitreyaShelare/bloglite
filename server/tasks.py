@@ -31,7 +31,6 @@ def exportBlogs(self, user_id):
 
 @shared_task
 def daily_reminder():
-    from __init__ import db
     from models import User, Blog
 
     # Get users who haven't posted a blog today                    
@@ -42,11 +41,12 @@ def daily_reminder():
                     Blog.timestamp < datetime.combine(today + timedelta(days=1), datetime.min.time()))
         )).all()
 
+
     for user in users_without_blog_today:
         sender_email = 'noreply@bloglite.com'
         sender_password = ''
         receiver_email = user.email
-        subject = 'Your daily blogging reminder'
+        subject = 'Your daily reminder, '+ str(user.name)
 
         message = MIMEMultipart()
         message['From'] = sender_email
@@ -114,13 +114,14 @@ def monthly_report():
     users = (
         db.session.query(User).all()
     )
+    now = datetime.now()
     
     user_data = {
         "users": [
             {
                 "name": user.name,
                 "email": user.email,
-                "prev_month": (datetime.now() - timedelta(days=30)).strftime("%B"),
+                "prev_month": (now - timedelta(days=30)).strftime("%B"),
                 "new_followers": user.new_followers_past_month(),
                 "new_following": user.new_following_past_month(),
                 "blogs_posted": user.blogs_posted_past_month(),
