@@ -1,5 +1,7 @@
-## Open Project Documentation to view Demo Video link.
-## Awarded Certificate of Appreciation from IIT Madras for Best Project.
+```
+Open Project Documentation to view Demo Video link.
+Awarded Certificate of Appreciation from IIT Madras for Best Project.
+```
 
 # bloglite
 
