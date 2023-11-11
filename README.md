@@ -1,7 +1,6 @@
 # bloglite
 
 ```
-Open Project Documentation to view Demo Video link.
 Awarded Certificate of Appreciation from IIT Madras for Best Project.
 ```
 <p align="center">
