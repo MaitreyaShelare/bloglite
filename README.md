@@ -8,7 +8,7 @@ Awarded Certificate of Appreciation from IIT Madras for this project.
 </p>
 
 ## Demo
-https://www.youtube.com/watch?v=200HUhU0C84
+https://github.com/MaitreyaShelare/bloglite/assets/87932132/f1ea799d-33ac-4692-a41e-26aae82722f7
 ## How to Run this Project?
 
 1. Install Node and Vue CLI.
@@ -20,4 +20,8 @@ https://www.youtube.com/watch?v=200HUhU0C84
 7. Run Celery Beat by typing "celery -A main.celery beat --loglevel=INFO" in new terminal.
 8. Run Mailhog SMTP Server by typing "Mailhog" in new terminal.
    
+
+
+
+
 
