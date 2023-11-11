@@ -1,6 +1,10 @@
 ```
 Open Project Documentation to view Demo Video link.
 Awarded Certificate of Appreciation from IIT Madras for Best Project.
+
+<p align="center">
+	<img src="https://github.com/MaitreyaShelare/Spectra-Transformers-SIH-2023/blob/main/assets/model%20training%20history.png">
+</p>
 ```
 
 # bloglite
