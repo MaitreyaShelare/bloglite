@@ -1,8 +1,8 @@
-# bloglite
+# Bloglite
 
-```
+
 Awarded Certificate of Appreciation from IIT Madras for Best Project.
-```
+
 <p align="center">
 	<img src="Best Project.png">
 </p>
